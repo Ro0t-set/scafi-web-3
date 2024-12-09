@@ -1,4 +1,4 @@
-package livechart
+package view
 
 class ModelTest extends munit.FunSuite:
   test("fullPrice") {

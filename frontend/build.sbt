@@ -5,8 +5,10 @@ lazy val livechart = project.in(file("."))
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
   .settings(
     scalaVersion := "3.5.2",
+//    crossScalaVersions ++= Seq("2.13.0", "3.5.2"),
 
-    // Tell Scala.js that this is an application with a main method
+
+        // Tell Scala.js that this is an application with a main method
     scalaJSUseMainModuleInitializer := true,
 
     /* Configure Scala.js to emit modules in the optimal way to
@@ -19,7 +21,7 @@ lazy val livechart = project.in(file("."))
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
         .withModuleSplitStyle(
-          ModuleSplitStyle.SmallModulesFor(List("livechart")))
+          ModuleSplitStyle.SmallModulesFor(List("view")))
     },
 
     /* Depend on the scalajs-dom library.
@@ -32,7 +34,10 @@ lazy val livechart = project.in(file("."))
 
     // Testing framework
     libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0" % Test,
-
+    // scafi-core
+//    libraryDependencies += "it.unibo.scafi" %% "scafi-core" % scafiVersion cross CrossVersion.for3Use2_13,
+//    libraryDependencies += "it.unibo.scafi" %% "scafi-commons" % scafiVersion cross CrossVersion.for3Use2_13,
+//    libraryDependencies += "it.unibo.scafi" %% "scafi-simulator" % scafiVersion cross CrossVersion.for3Use2_13,
     // Tell ScalablyTyped that we manage `npm install` ourselves
     externalNpm := baseDirectory.value,
   )

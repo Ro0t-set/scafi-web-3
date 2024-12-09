@@ -1,8 +1,8 @@
-package livechart
-
-import scala.util.Random
+package view
 
 import com.raquo.laminar.api.L.{*, given}
+
+import scala.util.Random
 
 final class NodeID
 
