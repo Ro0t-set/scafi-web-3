@@ -37,22 +37,37 @@ object Main:
      new Node {
         id = 1
         label = "Node 1"
+        x = 10
+        y = 10
+        fixed = true
       },
       new Node {
         id = 2
         label = "Node 2"
+        x = 100
+        y = 200
+        fixed = true
       },
       new Node {
         id = 3
         label = "Node 3"
+        x =  200
+        y = 300
+        fixed = true
       },
       new Node {
         id = 4
         label = "Node 4"
+        x = 130
+        y = 400
+        fixed = true
       },
       new Node {
         id = 5
         label = "Node 5"
+        x = 140
+        y = 500
+        fixed = true
      }
     )
 
