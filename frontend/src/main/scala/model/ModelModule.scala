@@ -15,5 +15,5 @@ object ModelModule:
       def getEdges: Set[Edge] = edges
       def getNodes: Set[Node] = nodes
       def addEdge(edge: Edge): Unit = edges += edge
-      def addNode(node: Node): Unit = nodes += node
+      def addNode(node: Node): Unit = nodes += node; println("Added node")
   trait Interface extends Provider with Component

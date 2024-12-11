@@ -10,4 +10,4 @@ object MVC extends ModelModule.Interface with ViewModule.Interface with Controll
   override val controller = new ControllerImpl()
 
 
-  @main def main(): Unit = view.renderTitle()
+  @main def main(): Unit = view.renderPage()
