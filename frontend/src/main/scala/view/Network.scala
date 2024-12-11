@@ -6,20 +6,13 @@ import com.raquo.laminar.api.L.{*, given}
 import org.scalajs.dom
 import org.scalajs.dom.window
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
-import typings.three.examplesJsmGeometriesTextGeometryMod.{TextGeometry, TextGeometryParameters}
-import typings.three.examplesJsmLoadersFontLoaderMod
-import typings.three.examplesJsmLoadersFontLoaderMod.FontLoader
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsMeshBasicMaterialMod.MeshBasicMaterialParameters
-import typings.three.srcMaterialsPointsMaterialMod.PointsMaterialParameters
 import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
-
 import scala.language.postfixOps
-import scala.scalajs.js.JSConverters.iterableOnceConvertible2JSRichIterableOnce
-import scala.scalajs.js.typedarray.Float32Array
 
-@main
+
 def LiveGraph(): Unit =
   renderOnDomContentLoaded(
     dom.document.getElementById("app"),
@@ -138,7 +131,7 @@ object Main:
         val randomValue = Math.floor(Math.random() * 100).toInt.toString
         updateLabel(s"Value: $randomValue")
       }
-    }, 10) // Update every second
+    }, 20) // Update every second
 
     def renderLoop(): Unit =
       window.requestAnimationFrame((_: Double) => renderLoop())
