@@ -6,9 +6,9 @@ import typings.three.srcMaterialsLineBasicMaterialMod.LineBasicMaterialParameter
 
 import scala.scalajs.js
 
-def newEdge(x1 : Double, x2 : Double, y1 : Double, y2: Double):Object3D[Object3DEventMap] = {
+def newEdge(x1 : Double, x2 : Double, y1 : Double, y2: Double, z1: Double, z2: Double):Object3D[Object3DEventMap] = {
   val group = new Group()
-  val lineGeometry = new BufferGeometry().setFromPoints(js.Array(new Vector3(x1, y1, 0), new Vector3(x2, y2, 0)))
+  val lineGeometry = new BufferGeometry().setFromPoints(js.Array(new Vector3(x1, y1, z1), new Vector3(x2, y2, z2)))
   val lineMaterial = new LineBasicMaterial(new LineBasicMaterialParameters {
     color = 0xffff00
   })

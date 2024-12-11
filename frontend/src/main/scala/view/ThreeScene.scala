@@ -7,8 +7,7 @@ import model.Node
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcMaterialsMeshBasicMaterialMod.MeshBasicMaterialParameters
-import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
+
 
 import scala.scalajs.js
 
@@ -28,7 +27,7 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeSc
   private val controls = new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
   controls.enableZoom = true
   controls.enablePan = true
-  controls.enableRotate = false
+  controls.enableRotate = true
   controls.update()
 
 
@@ -45,13 +44,15 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeSc
       }
     )
 
+
+
   def setNodes(nodes: Set[Node]): Unit =
     import view.component.*
     nodes.foreach(node => {
       val x = node.position._1
       val y = node.position._2
       val z = node.position._3
-      val nodeObject = newNode(node.label, x, y)
+      val nodeObject = newNode(node.label, x, y, z)
       scene.add(nodeObject)
     })
 
@@ -63,7 +64,9 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeSc
       val y1 = edge._1.position._2
       val x2 = edge._2.position._1
       val y2 = edge._2.position._2
-      val edgeObject = newEdge(x1, x2, y1, y2)
+      val z1 = edge._1.position._3
+      val z2 = edge._2.position._3
+      val edgeObject = newEdge(x1, x2, y1, y2, z1, z2)
       scene.add(edgeObject)
     })
 

@@ -7,7 +7,7 @@ import typings.three.mod.*
 import org.scalajs.dom
 import scala.scalajs.js
 
-def newNode(textLabel: String, x: Double, y: Double): Object3D[Object3DEventMap] =
+def newNode(textLabel: String, x: Double, y: Double, z:Double): Object3D[Object3DEventMap] =
   val group = new Group() // Group to hold the point and label
 
   // Create the point
@@ -21,7 +21,7 @@ def newNode(textLabel: String, x: Double, y: Double): Object3D[Object3DEventMap]
     color = 0xff0000
   })
   val pointMesh = new Mesh(pointGeometry, pointMaterial)
-  pointMesh.position.set(x, y, 0) // Set the position of the point
+  pointMesh.position.set(x, y, z) // Set the position of the point
   group.add(pointMesh.asInstanceOf[Object3D[Object3DEventMap]])
 
   // Create a canvas to draw the label
@@ -70,7 +70,7 @@ def newNode(textLabel: String, x: Double, y: Double): Object3D[Object3DEventMap]
   // Create the sprite
   val sprite = new Sprite(spriteMaterial)
   sprite.scale.set(100, 25, 1) // Adjust the scale to fit your needs
-  sprite.position.set(x, y - 20, 0) // Position the label beneath the point
+  sprite.position.set(x, y - 20, z) // Position the label beneath the point
   group.add(sprite.asInstanceOf[Object3D[Object3DEventMap]])
 
   group.asInstanceOf[js.Dynamic].updateLabel = (newText: String) => {

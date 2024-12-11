@@ -28,7 +28,7 @@ object ControllerModule:
 
       def generateRandomGraph(numberOfNode: Int, numberOfEdge: Int): Unit =
         for _ <- 1 to numberOfNode do
-          context.model.addNode(SimpleNode(Random.nextInt(100).toString, (Random.nextInt(800)- 400, Random.nextInt(800) - 400, 0), Random.nextInt(100).toString, 0xff0000))
+          context.model.addNode(SimpleNode(Random.nextInt(100).toString, (Random.nextInt(800)- 400, Random.nextInt(800) - 400,  Random.nextInt(800)- 400), Random.nextInt(100).toString, 0xff0000))
 
         for _ <- 1 to numberOfEdge do
           val nodes = context.model.getNodes.toList
