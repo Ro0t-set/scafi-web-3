@@ -26,18 +26,26 @@ object ViewModule:
           placeholder := "Number of nodes",
           required := true
         )
+        val numberOfEdgesInput = input(
+          typ := "number",
+          placeholder := "Number of edges",
+          required := true
+        )
         val generateButton = button("Generate")
         div(
           h2("Node Generator"),
           form(
             onSubmit.preventDefault --> { _ =>
               val numberOfNodes = numberOfNodesInput.ref.value.toInt
-              context.controller.generateRandomGraph(numberOfNodes, 0)
+              val numberOfEdges = numberOfEdgesInput.ref.value.toInt
+              context.controller.generateRandomGraph(numberOfNodes, numberOfEdges)
               val newNodes = context.controller.getNodes
               nodeCount.set(newNodes.size)
-              scene.setNode(context.controller.getNodes)
+              scene.setNodes(context.controller.getNodes)
+              scene.setEdges(context.controller.getEdges)
             },
             numberOfNodesInput,
+            numberOfEdgesInput,
             generateButton,
 
           ),

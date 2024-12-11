@@ -14,8 +14,8 @@ import scala.scalajs.js
 
 trait ThreeScene:
   def renderScene(): Element
-  def setNode(nodes: Set[Node]): Unit
-  def setEdge(edges: Set[Edge]): Unit
+  def setNodes(nodes: Set[Node]): Unit
+  def setEdges(edges: Set[Edge]): Unit
 
 
 class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeScene:
@@ -45,7 +45,7 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeSc
       }
     )
 
-  def setNode(nodes: Set[Node]): Unit =
+  def setNodes(nodes: Set[Node]): Unit =
     import view.component.*
     nodes.foreach(node => {
       val x = node.position._1
@@ -56,7 +56,16 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int) extends ThreeSc
     })
 
 
-  def setEdge(edges: Set[Edge]): Unit = ???
+  def setEdges(edges: Set[Edge]): Unit =
+    import view.component.*
+    edges.foreach(edge => {
+      val x1 = edge._1.position._1
+      val y1 = edge._1.position._2
+      val x2 = edge._2.position._1
+      val y2 = edge._2.position._2
+      val edgeObject = newEdge(x1, x2, y1, y2)
+      scene.add(edgeObject)
+    })
 
 
 
