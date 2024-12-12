@@ -1,0 +1,5 @@
+package scafi
+
+class scafiTest {
+
+}
