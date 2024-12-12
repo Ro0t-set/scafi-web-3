@@ -2,6 +2,7 @@ package view
 
 import com.raquo.laminar.api.L.{*, given}
 import controller.ControllerModule
+import model.Node
 import org.scalajs.dom
 
 object ViewModule:
@@ -9,6 +10,7 @@ object ViewModule:
     def renderTitle(): Element
     def renderNodeGeneratorForm(): Element
     def renderPage(): Unit
+    def setNodes(nodes: Set[Node]): Unit
   trait Provider:
     val view: View
   private type Requirements = ControllerModule.Provider
@@ -16,7 +18,9 @@ object ViewModule:
     context: Requirements =>
     class ViewImpl extends View:
       private val nodeCount = Var(0)
-      private val scene = ThreeSceneImpl(500, 500, 800)
+      private val scene = ThreeSceneImpl(800, 800, 800)
+      
+      def setNodes(nodes: Set[Node]): Unit = scene.setNodes(nodes)
 
       def renderTitle(): Element = h1("ScaFi Web 3")
 

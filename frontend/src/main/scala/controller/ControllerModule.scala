@@ -1,20 +1,21 @@
 package controller
-import model.ModelModule
-import model.SimpleNode
-import model.Node
+import model.{ModelModule, Node, SimpleNode}
+import org.scalajs.dom
 import view.ViewModule
 
-import scala.scalajs.js
-import scala.util.Random
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 
 
 object ControllerModule:
   trait Controller:
-    def notifyChange(): Unit
+
     def generateRandomGraph(numberOfNode: Int, numberOfEdge: Int): Unit
     def getNodes: Set[Node]
     def getEdges: Set[(Node, Node)]
+    def runSimulation(): Unit
   trait Provider:
     val controller: Controller
   type Requirements = ViewModule.Provider with ModelModule.Provider
@@ -27,16 +28,77 @@ object ControllerModule:
       def getEdges: Set[(Node, Node)] = context.model.getEdges
 
       def generateRandomGraph(numberOfNode: Int, numberOfEdge: Int): Unit =
-        for _ <- 1 to numberOfNode do
-          context.model.addNode(SimpleNode(Random.nextInt(100).toString, (Random.nextInt(800)- 400, Random.nextInt(800) - 400,  Random.nextInt(800)- 400), Random.nextInt(100).toString, 0xff0000))
 
-        for _ <- 1 to numberOfEdge do
-          val nodes = context.model.getNodes.toList
-          val node1 = nodes(Random.nextInt(nodes.size))
-          val node2 = nodes(Random.nextInt(nodes.size))
-          context.model.addEdge((node1, node2))
+          runSimulation()
 
 
-      def notifyChange(): Unit = context.view.renderPage()
+      def runSimulation(): Unit = {
+        import it.unibo.scafi.config.GridSettings
+        import it.unibo.scafi.incarnations.BasicAbstractSpatialSimulationIncarnation
+        import it.unibo.scafi.space.{Point2D, SpaceHelper}
+
+        object BasicSpatialIncarnation extends BasicAbstractSpatialSimulationIncarnation:
+          override type P = Point2D
+
+          trait MyEuclideanStrategy extends EuclideanStrategy:
+            this: Basic3DSpace[_] =>
+            override val proximityThreshold = 0.1
+
+          override def buildNewSpace[E](elems: Iterable[(E, P)]): SPACE[E] =
+            new Basic3DSpace(elems.toMap) with MyEuclideanStrategy
+
+        import BasicSpatialIncarnation._
+
+        object DemoSpatial extends AggregateProgram with StandardSensors {
+          def main(): Int = foldhood(0)(_ + _) {
+            1
+          }
+        }
+
+        val (ncols, nrows) = (10, 10)
+        val (stepx, stepy) = (1, 1)
+        val positions: List[Point2D] = SpaceHelper.gridLocations(GridSettings(nrows, ncols, stepx, stepy, tolerance = 0))
+        val ids: IndexedSeq[Int] = for (i <- 1 to ncols * nrows) yield i
+        val devsToPos: Map[Int, Point2D] = ids.zip(positions).toMap
+        val net = new SpaceAwareSimulator(
+          space = new Basic3DSpace(devsToPos, proximityThreshold = 1.8),
+          devs = devsToPos.map { case (d, p) => d -> new DevInfo(d, p,
+            lsns = Map.empty,
+            nsns => nbr => null)
+          },
+          simulationSeed = System.currentTimeMillis(),
+          randomSensorSeed = System.currentTimeMillis()
+        )
+
+        Future {
+          var v: Long = java.lang.System.currentTimeMillis()
+          net.executeMany(
+            node = DemoSpatial,
+            size = 100000,
+            action = (n, i) => {
+              if (i % 10 == 0) {
+                println("Simulation step: " + i)
+                context.model.setNodes(positions.map(p => SimpleNode(p.toString(), (p.x, p.y, p.z), i.toString, 0xff000)).toSet)
+                // Aggiorna la view sul main thread
+                dom.window.setTimeout(() => {
+                  context.view.setNodes(context.model.getNodes)
+                  println("Nodes updated")
+                }, 0)
+
+                val newv = java.lang.System.currentTimeMillis()
+                v = newv
+              }
+              if (i > 0 && i % 500 == 0) {
+                println("Repositioning device 3 at step " + i)
+                net.setPosition(3, new Point2D(0, 0))
+              }
+            }
+          )
+        }.recover {
+          case e: Throwable => println("Error in simulation: " + e.getMessage)
+        }
+      }
+
+
   trait Interface extends Provider with Component:
     self: Requirements =>

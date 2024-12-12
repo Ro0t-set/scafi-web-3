@@ -1,10 +1,8 @@
 import org.scalajs.linker.interface.ModuleSplitStyle
 
 
-val scafi_version = "1.3.0"
-val scafi_core  =  "it.unibo.scafi" %% "scafi-core" % scafi_version
-val scafi_simulator  =  "it.unibo.scafi" %% "scafi-simulator" % scafi_version
-val scafi_simulator_gui =  "it.unibo.scafi" %% "simulator-gui-new" % scafi_version
+val scafiVersion = "1.3.0"
+
 
 lazy val livechart = project.in(file("."))
   .enablePlugins(ScalaJSPlugin) // Enable the Scala.js plugin in this project
@@ -34,9 +32,9 @@ lazy val livechart = project.in(file("."))
        */
 
       libraryDependencies ++= Seq(
-          scafi_simulator_gui.cross(CrossVersion.for3Use2_13),
-          scafi_core.cross(CrossVersion.for3Use2_13),
-          scafi_simulator.cross(CrossVersion.for3Use2_13)
+        ("it.unibo.scafi" %%% "scafi-core" % scafiVersion).cross(CrossVersion.for3Use2_13),
+        ("it.unibo.scafi" %%% "scafi-commons" % scafiVersion).cross(CrossVersion.for3Use2_13),
+        ("it.unibo.scafi" %%% "scafi-simulator" % scafiVersion).cross(CrossVersion.for3Use2_13)
       ),
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
 
