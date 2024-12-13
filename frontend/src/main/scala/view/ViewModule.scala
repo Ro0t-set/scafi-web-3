@@ -3,20 +3,25 @@ package view
 import com.raquo.laminar.api.L.{*, given}
 import controller.ControllerModule
 import org.scalajs.dom
+import com.raquo.airstream.ownership.Owner
 
 object ViewModule:
   trait View:
     def renderTitle(): Element
     def renderNodeGeneratorForm(): Element
     def renderPage(): Unit
+
   trait Provider:
     val view: View
+
   private type Requirements = ControllerModule.Provider
+
   trait Component:
     context: Requirements =>
+
     class ViewImpl extends View:
       private val nodeCount = Var(0)
-      private val scene = ThreeSceneImpl(500, 500, 800)
+      val scene = ThreeSceneImpl(500, 500, 800)
 
       def renderTitle(): Element = h1("ScaFi Web 3")
 
@@ -39,21 +44,13 @@ object ViewModule:
               val numberOfNodes = numberOfNodesInput.ref.value.toInt
               val numberOfEdges = numberOfEdgesInput.ref.value.toInt
               context.controller.generateRandomGraph(numberOfNodes, numberOfEdges)
-              val newNodes = context.controller.getNodes
-              nodeCount.set(newNodes.size)
-              scene.setNodes(context.controller.getNodes)
-              scene.setEdges(context.controller.getEdges)
             },
             numberOfNodesInput,
             numberOfEdgesInput,
-            generateButton,
-
+            generateButton
           ),
-          h3("Number of nodes: ", child.text <-- nodeCount.signal.map(_.toString))
+          h3("Number of nodes: ", child.text <-- nodeCount.signal)
         )
-
-
-
 
       def renderPage(): Unit =
         renderOnDomContentLoaded(
@@ -61,7 +58,16 @@ object ViewModule:
           div(
             renderTitle(),
             renderNodeGeneratorForm(),
-            scene.renderScene()
+            scene.renderScene(),
+            // Assicurati che il Signal venga osservato
+            onMountCallback { ctx =>
+              implicit val owner: Owner = ctx.owner
+              context.controller.getNodes.foreach { nodes =>
+                nodeCount.set(nodes.size)
+                scene.setNodes(nodes)
+                println(nodes.size)
+              }
+            }
           )
         )
 

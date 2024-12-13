@@ -1,19 +1,22 @@
 package model
+import com.raquo.laminar.api.L.{*, given}
+import model.Node
+import model.Edge
 
 object ModelModule:
   trait Model:
-    def getEdges: Set[Edge]
-    def getNodes: Set[Node]
-    def addEdge(edge: Edge): Unit
-    def addNode(node: Node): Unit
+    def setEdge(edge: Set[Edge]): Unit
+    def setNode(node: Set[Node]): Unit
+    def getEdges: Signal[Set[Edge]]
+    def getNodes: Signal[Set[Node]]
   trait Provider:
     val model: Model
   trait Component:
     class ModelImpl extends Model:
-      private var nodes: Set[Node] = Set.empty
-      private var edges: Set[Edge] = Set.empty
-      def getEdges: Set[Edge] = edges
-      def getNodes: Set[Node] = nodes
-      def addEdge(edge: Edge): Unit = edges += edge
-      def addNode(node: Node): Unit = nodes += node; println("Added node")
+      val nodes: Var[Set[Node]] = Var(Set.empty)
+      val edges: Var[Set[Edge]] = Var(Set.empty)
+      def getEdges: Signal[Set[Edge]] = edges.signal
+      def getNodes: Signal[Set[Node]] = nodes.signal
+      def setEdge(edges: Set[Edge]): Unit = this.edges.update(_ => edges)
+      def setNode(nodes: Set[Node]): Unit = this.nodes.update(_ => nodes)
   trait Interface extends Provider with Component
