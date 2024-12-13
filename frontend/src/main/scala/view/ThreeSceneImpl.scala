@@ -12,7 +12,7 @@ import component.*
 class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
   private val scene = new Scene()
-  private val camera = new PerspectiveCamera(75, width.toDouble / height, 0.1, 1000)
+  private val camera = new PerspectiveCamera(75, width.toDouble / height, 0.1, 1600)
   camera.position.z = zPointOfView
   private val renderer = new WebGLRenderer()
   renderer.setSize(width, height)
@@ -22,20 +22,28 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   controls.enableRotate = true
   controls.update()
 
-  def setNodes(nodes: Set[Node]): Unit =
-    scene.clear()
-    val group = new Group()
-    nodes.foreach { node =>
-      val nodeObject = newNode(
-        node.label,
-        node.p3D.x,
-        node.p3D.y,
-        node.p3D.z
-      )
-      nodeObject.name = s"node-${node.label}"
-      group.add(nodeObject)
+  private var currentNode = Set.empty[Node]
+
+
+  def setNodes(nodes: Set[Node]): Unit = {
+
+    val nodesToRemove = currentNode.diff(nodes)
+    val nodesToAdd = nodes.diff(currentNode)
+    nodesToRemove.foreach { oldNode =>
+      val obj = scene.getObjectByName(oldNode.id)
+      if (obj != null) {
+        scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
+      }
     }
-    scene.add(group.asInstanceOf[Object3D[Object3DEventMap]])
+
+    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id, node.label, node.position.x, node.position.y, node.position.z) }
+    nodeObject.foreach(nodeObject =>
+      scene.add(nodeObject)
+    )
+
+    currentNode = nodes
+  }
+
 
   private def renderLoop(): Unit =
     dom.window.requestAnimationFrame((_: Double) => renderLoop())

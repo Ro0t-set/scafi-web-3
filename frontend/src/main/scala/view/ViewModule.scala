@@ -2,7 +2,7 @@ package view
 
 import com.raquo.laminar.api.L.*
 import com.raquo.laminar.nodes.ReactiveHtmlElement
-import model.{Edge, Node, P3D}
+import model.{Edge, Node, Position}
 import model.*
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
@@ -23,24 +23,28 @@ private val commandObserver = Observer[Command] {
 }
 
 final case class Mvc():
-  val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 800)
+  val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
+  private val renderTime: Var[Long] = Var(0)
 
   private def addRandomNode(): Unit = {
     val id = Math.random().toString
     val x = Math.random() * 800 - 400
     val y = Math.random() * 800 - 400
     val z = Math.random() * 800 - 400
-    val node = Node(id, P3D(x, y, z), "i", 0x00ff00)
+    val node = Node(id, Position(x, y, z), "i", 0x00ff00)
     commandObserver.onNext(AddNode(node))
   }
 
   private def addRandomElementButton(): Element =
     button(
       "Add Random Node",
+      h2(child.text <-- renderTime.signal.map(rt => s"Render time: $rt ms")),
       onClick --> (_ =>
+        val now = System.currentTimeMillis()
         for (_ <- 1 to 200) yield
-          setTimeout(2) {
+          setTimeout(5) {
             addRandomNode()
+            renderTime.set(System.currentTimeMillis() - now)
           }
         )
     )
@@ -53,8 +57,7 @@ final case class Mvc():
       onMountCallback { ctx =>
         implicit val owner: Owner = ctx.owner
         nodes.signal.combineWith(edges.signal).foreach {
-          case (currentNodes, currentEdges) =>
-            scene.setNodes(currentNodes)
+          case (currentNodes, currentEdges) => scene.setNodes(currentNodes)
         }
       }
     )
