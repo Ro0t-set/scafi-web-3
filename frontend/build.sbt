@@ -38,6 +38,7 @@ lazy val livechart = project.in(file("."))
           scafi_core.cross(CrossVersion.for3Use2_13),
           scafi_simulator.cross(CrossVersion.for3Use2_13)
       ),
+
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
 
       // Depend on Laminar

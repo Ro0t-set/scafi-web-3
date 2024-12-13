@@ -1,75 +1,66 @@
 package view
 
-import com.raquo.laminar.api.L.{*, given}
-import controller.ControllerModule
+import com.raquo.laminar.api.L.*
+import com.raquo.laminar.nodes.ReactiveHtmlElement
+import model.{Edge, Node, P3D}
+import model.*
 import org.scalajs.dom
+import org.scalajs.dom.HTMLDivElement
 import com.raquo.airstream.ownership.Owner
 
-object ViewModule:
-  trait View:
-    def renderTitle(): Element
-    def renderNodeGeneratorForm(): Element
-    def renderPage(): Unit
+import scala.scalajs.js.timers.setTimeout
 
-  trait Provider:
-    val view: View
+private val nodes = Var(Set.empty[Node])
+private val edges = Var(Set.empty[Edge])
 
-  private type Requirements = ControllerModule.Provider
+private val commandObserver = Observer[Command] {
+  case SetNodes(newNodes)  => nodes.set(newNodes)
+  case SetEdges(newEdges)  => edges.set(newEdges)
+  case AddNode(node)       => nodes.update(_ + node)
+  case AddEdge(edge)       => edges.update(_ + edge)
+  case RemoveNode(node)    => nodes.update(_ - node)
+  case RemoveEdge(edge)    => edges.update(_ - edge)
+}
 
-  trait Component:
-    context: Requirements =>
+final case class Mvc():
+  val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 800)
 
-    class ViewImpl extends View:
-      private val nodeCount = Var(0)
-      val scene = ThreeSceneImpl(500, 500, 800)
+  private def addRandomNode(): Unit = {
+    val id = Math.random().toString
+    val x = Math.random() * 800 - 400
+    val y = Math.random() * 800 - 400
+    val z = Math.random() * 800 - 400
+    val node = Node(id, P3D(x, y, z), "i", 0x00ff00)
+    commandObserver.onNext(AddNode(node))
+  }
 
-      def renderTitle(): Element = h1("ScaFi Web 3")
-
-      def renderNodeGeneratorForm(): Element =
-        val numberOfNodesInput = input(
-          typ := "number",
-          placeholder := "Number of nodes",
-          required := true
+  private def addRandomElementButton(): Element =
+    button(
+      "Add Random Node",
+      onClick --> (_ =>
+        for (_ <- 1 to 200) yield
+          setTimeout(2) {
+            addRandomNode()
+          }
         )
-        val numberOfEdgesInput = input(
-          typ := "number",
-          placeholder := "Number of edges",
-          required := true
-        )
-        val generateButton = button("Generate")
-        div(
-          h2("Node Generator"),
-          form(
-            onSubmit.preventDefault --> { _ =>
-              val numberOfNodes = numberOfNodesInput.ref.value.toInt
-              val numberOfEdges = numberOfEdgesInput.ref.value.toInt
-              context.controller.generateRandomGraph(numberOfNodes, numberOfEdges)
-            },
-            numberOfNodesInput,
-            numberOfEdgesInput,
-            generateButton
-          ),
-          h3("Number of nodes: ", child.text <-- nodeCount.signal)
-        )
+    )
 
-      def renderPage(): Unit =
-        renderOnDomContentLoaded(
-          dom.document.getElementById("app"),
-          div(
-            renderTitle(),
-            renderNodeGeneratorForm(),
-            scene.renderScene(),
-            // Assicurati che il Signal venga osservato
-            onMountCallback { ctx =>
-              implicit val owner: Owner = ctx.owner
-              context.controller.getNodes.foreach { nodes =>
-                nodeCount.set(nodes.size)
-                scene.setNodes(nodes)
-                println(nodes.size)
-              }
-            }
-          )
-        )
+  def render(): Unit = {
+    val rootElement = div(
+      h1("ScaFi Web 3"),
+      addRandomElementButton(),
+      scene.renderScene(),
+      onMountCallback { ctx =>
+        implicit val owner: Owner = ctx.owner
+        nodes.signal.combineWith(edges.signal).foreach {
+          case (currentNodes, currentEdges) =>
+            scene.setNodes(currentNodes)
+        }
+      }
+    )
 
-  trait Interface extends Provider with Component:
-    self: Requirements =>
+    renderOnDomContentLoaded(
+      dom.document.getElementById("app"),
+      rootElement
+    )
+  }

@@ -2,13 +2,12 @@ package view
 
 import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
-import model.Edge
 import model.Node
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 
-import scala.scalajs.js
+
 import component.*
 class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
@@ -29,9 +28,9 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     nodes.foreach { node =>
       val nodeObject = newNode(
         node.label,
-        node.position._1,
-        node.position._2,
-        node.position._3
+        node.p3D.x,
+        node.p3D.y,
+        node.p3D.z
       )
       nodeObject.name = s"node-${node.label}"
       group.add(nodeObject)
