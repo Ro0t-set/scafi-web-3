@@ -1,28 +1,16 @@
 package view
 
+import com.raquo.airstream.ownership.Owner
 import com.raquo.laminar.api.L.*
 import com.raquo.laminar.nodes.ReactiveHtmlElement
-import model.{Edge, Node, Position}
-import model.*
+import domain.{Node, *}
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
-import com.raquo.airstream.ownership.Owner
+import state.GraphModel.*
 
 import scala.scalajs.js.timers.setTimeout
 
-private val nodes = Var(Set.empty[Node])
-private val edges = Var(Set.empty[Edge])
-
-private val commandObserver = Observer[Command] {
-  case SetNodes(newNodes)  => nodes.set(newNodes)
-  case SetEdges(newEdges)  => edges.set(newEdges)
-  case AddNode(node)       => nodes.update(_ + node)
-  case AddEdge(edge)       => edges.update(_ + edge)
-  case RemoveNode(node)    => nodes.update(_ - node)
-  case RemoveEdge(edge)    => edges.update(_ - edge)
-}
-
-final case class Mvc():
+final case class View():
   val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
   private val renderTime: Var[Long] = Var(0)
 

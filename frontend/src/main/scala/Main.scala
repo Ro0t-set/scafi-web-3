@@ -1,10 +1,10 @@
 package scala
 
-import view.Mvc
+import view.View
 
 
 object Main:
-  def main(args: Array[String]): Unit = Mvc().render()
+  def main(args: Array[String]): Unit = View().render()
 
 
 

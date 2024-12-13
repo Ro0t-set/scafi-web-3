@@ -1,4 +1,4 @@
-package model
+package domain
 
 type Id = String
 type Color = Int

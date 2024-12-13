@@ -2,7 +2,7 @@ package view
 
 import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
-import model.Node
+import domain.Node
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
