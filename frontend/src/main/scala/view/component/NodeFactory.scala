@@ -12,7 +12,7 @@ object NodeFactory:
   def createNode(id: String, textLabel: String, x: Double, y: Double, z: Double): Object3D[Object3DEventMap] =
     val group = new Group()
     group.name = id
-    
+
     val pointGeometry = new SphereGeometry(5, 32, 32, js.undefined, js.undefined, js.undefined, js.undefined)
     val pointMaterial = new MeshBasicMaterial(new MeshBasicMaterialParameters {
       color = 0xff0000
@@ -21,7 +21,7 @@ object NodeFactory:
     pointMesh.position.set(x, y, z)
     group.add(pointMesh.asInstanceOf[Object3D[Object3DEventMap]])
 
-    
+
     val canvas = dom.document.createElement("canvas").asInstanceOf[dom.html.Canvas]
     val context = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
     canvas.width = 256
@@ -50,7 +50,7 @@ object NodeFactory:
       js.undefined)
     texture.needsUpdate_=(true)
 
-    
+
     val spriteMaterial = new SpriteMaterial(new SpriteMaterialParameters {
       map = texture
       transparent = true
@@ -67,5 +67,5 @@ object NodeFactory:
     }
 
     group.asInstanceOf[Object3D[Object3DEventMap]]
-  
+
 

@@ -25,24 +25,22 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private var currentNode = Set.empty[Node]
 
 
-  def setNodes(nodes: Set[Node]): Unit = {
-
-    val nodesToRemove = currentNode.diff(nodes)
+  def setNodes(nodes: Set[Node]): Unit =
+    val nodesToRemove = nodes.diff(currentNode)
     val nodesToAdd = nodes.diff(currentNode)
+
     nodesToRemove.foreach { oldNode =>
       val obj = scene.getObjectByName(oldNode.id)
       if (obj != null) {
         scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
       }
     }
-
     val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id, node.label, node.position.x, node.position.y, node.position.z) }
     nodeObject.foreach(nodeObject =>
       scene.add(nodeObject)
     )
-
     currentNode = nodes
-  }
+
 
 
   private def renderLoop(): Unit =
