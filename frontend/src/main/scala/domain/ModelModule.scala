@@ -1,6 +1,6 @@
 package domain
 
-type Id = String
+type Id = Int
 type Color = Int
 type Label = String
 
@@ -15,8 +15,10 @@ sealed trait Command
 
 case class SetNodes(nodes: Set[Node]) extends Command
 case class SetEdges(edges: Set[Edge]) extends Command
+case class SetEdgesByIds(edgesIds: Set[(Id, Id)]) extends Command
 case class AddNode(node: Node) extends Command
 case class AddEdge(edge: Edge) extends Command
+case class AddEdgeByNodeId(node1: Id, node2: Id) extends Command
 case class RemoveNode(node: Node) extends Command
 case class RemoveEdge(edge: Edge) extends Command
 

@@ -1,6 +1,5 @@
 package view
 
-import com.raquo.airstream.ownership.Owner
 import com.raquo.laminar.api.L.*
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.Node
@@ -8,7 +7,7 @@ import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
 import state.GraphModel.*
 
-import scala.scalajs.js.timers.setTimeout
+import scala.scalajs.js.timers.{setInterval, setTimeout}
 
 final case class View(simulator: (Int, Int) => Unit):
   val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
@@ -22,7 +21,7 @@ final case class View(simulator: (Int, Int) => Unit):
       onClick --> (_ =>
         val now = System.currentTimeMillis()
 
-          simulator(10000, 1)
+          simulator(10000, 0)
 
           renderTime.set(System.currentTimeMillis() - now)
       )
@@ -34,10 +33,11 @@ final case class View(simulator: (Int, Int) => Unit):
       addRandomElementButton(),
       scene.renderScene(),
       onMountCallback { ctx =>
-        implicit val owner: Owner = ctx.owner
         nodes.signal.combineWith(edges.signal).foreach {
-          case (currentNodes, currentEdges) => scene.setNodes(currentNodes)
-        }
+          case (currentNodes, currentEdges) =>
+              scene.setNodes(currentNodes)
+              scene.setEdges(currentEdges)
+        }(unsafeWindowOwner)
       }
     )
 

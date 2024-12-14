@@ -11,7 +11,7 @@ object NodeFactory:
 
   def createNode(id: String, textLabel: String, x: Double, y: Double, z: Double): Object3D[Object3DEventMap] =
     val group = new Group()
-    group.name = id
+    group.name = "node-" + id
 
     val pointGeometry = new SphereGeometry(5, 32, 32, js.undefined, js.undefined, js.undefined, js.undefined)
     val pointMaterial = new MeshBasicMaterial(new MeshBasicMaterialParameters {

@@ -2,12 +2,10 @@ package view
 
 import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
-import domain.Node
+import domain.{Edge, Node}
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
-
-
 import component.*
 class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
@@ -23,6 +21,7 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   controls.update()
 
   private var currentNode = Set.empty[Node]
+  private var currentEdge = Set.empty[Edge]
 
 
   def setNodes(nodes: Set[Node]): Unit =
@@ -30,16 +29,37 @@ class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     val nodesToAdd = nodes.diff(currentNode)
 
     nodesToRemove.foreach { oldNode =>
-      val obj = scene.getObjectByName(oldNode.id)
+      val obj = scene.getObjectByName("node-"+oldNode.id.toString)
       if (obj != null) {
         scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
       }
     }
-    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id, node.label, node.position.x, node.position.y, node.position.z) }
+    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id.toString, node.label, node.position.x, node.position.y, node.position.z) }
     nodeObject.foreach(nodeObject =>
       scene.add(nodeObject)
     )
     currentNode = nodes
+
+  def setEdges(edges: Set[Edge]): Unit =
+    val edgesToRemove = currentEdge.diff(edges)
+    val edgesToAdd = edges.diff(currentEdge)
+
+    edgesToRemove.foreach { oldEdge =>
+      val obj = scene.getObjectByName("edge-"+oldEdge.nodes._1.id.toString + oldEdge.nodes._2.id.toString)
+      if (obj != null) {
+        scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
+      }
+    }
+    val edgeObject = edgesToAdd.map { edge => EdgeFactory.createEdge(
+      edge.nodes._1.position.x, edge.nodes._2.position.x,
+      edge.nodes._1.position.y, edge.nodes._2.position.y,
+      edge.nodes._1.position.z, edge.nodes._2.position.z,
+      edge.nodes._1.id.toString + edge.nodes._2.id.toString
+    ) }
+    edgeObject.foreach(edgeObject =>
+      scene.add(edgeObject)
+    )
+    currentEdge = edges
 
 
 
