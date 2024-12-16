@@ -13,7 +13,7 @@ object NodeFactory:
     val group = new Group()
     group.name = "node-" + id
 
-    val pointGeometry = new SphereGeometry(5, 32, 32, js.undefined, js.undefined, js.undefined, js.undefined)
+    val pointGeometry = new BoxGeometry(10, 10, 10, 1, 1, 1)
     val pointMaterial = new MeshBasicMaterial(new MeshBasicMaterialParameters {
       color = 0xff0000
     })

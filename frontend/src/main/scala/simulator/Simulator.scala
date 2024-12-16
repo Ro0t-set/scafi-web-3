@@ -5,9 +5,12 @@ import it.unibo.scafi.config.Grid3DSettings
 import state.GraphModel.{commandObserver, nodes}
 
 import scala.Option.option2Iterable
+import scala.concurrent.Future
 import scala.scalajs.js.annotation.JSExportTopLevel
 import scala.scalajs.js.timers.{setInterval, setTimeout}
 import scala.util.Random
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object Simulator :
@@ -16,31 +19,13 @@ object Simulator :
     import it.unibo.scafi.incarnations.BasicAbstractSpatialSimulationIncarnation
     import it.unibo.scafi.space.{Point3D, SpaceHelper}
 
-    println("Starting simulation")
-
     object BasicSpatialIncarnation extends BasicAbstractSpatialSimulationIncarnation:
       override type P = Point3D
-
-      trait MyEuclideanStrategy extends EuclideanStrategy:
-        this: Basic3DSpace[_] => override val proximityThreshold = 1
-
+      trait MyDistanceStrategy extends DistanceStrategy
       override def buildNewSpace[E](elems: Iterable[(E, P)]): SPACE[E] =
-        new Basic3DSpace(elems.toMap) with MyEuclideanStrategy
-
+        new Basic3DSpace(elems.toMap) with MyDistanceStrategy
     import BasicSpatialIncarnation._
-
-
     object DemoSpatial extends AggregateProgram with StandardSensors:
-      def mySensor(): Int = sense[Int]("sensor")
-      def gradient(source: Boolean): Double = rep(Double.MaxValue) {
-        distance =>
-          mux(source) {
-            0.0
-          } {
-            rep(0){ _ + 1 }
-          }
-      }
-
       def main(): Int = rep(0){ _ + 1 }
 
     val (ncols, nrows, ndeep) = (10, 10, 2)
@@ -51,7 +36,7 @@ object Simulator :
 
 
     val net = new SpaceAwareSimulator(
-      space = new Basic3DSpace(devsToPos, proximityThreshold = 180),
+      space = new Basic3DSpace(devsToPos, proximityThreshold = 200),
       devs = devsToPos.map { case (d, p) => d -> new DevInfo(d, p,
         lsns = Map.empty,
         nsns => nbr => null)
@@ -60,27 +45,17 @@ object Simulator :
       randomSensorSeed = System.currentTimeMillis()
     )
 
-    net.addSensor(name = "sensor", value = 0)
-    net.chgSensorValue(name = "sensor", ids = Set(1), value = 1)
-    net.addSensor(name = "source", value = false)
-    net.chgSensorValue(name = "source", ids = Set(3), value = true)
-    net.addSensor(name = "sensor2", value = 0)
-    net.chgSensorValue(name = "sensor2", ids = Set(98), value = 1)
-    net.addSensor(name = "obstacle", value = false)
-    net.chgSensorValue(name = "obstacle", ids = Set(44,45,46,54,55,56,64,65,66), value = true)
-    net.addSensor(name = "label", value = "no")
-    net.chgSensorValue(name = "label", ids = Set(1), value = "go")
 
     val simulationRandom = new Random(1)
     var executedNodes = Seq[ID]()
-    for (i <- 0 until iterations) {
-      setTimeout(delay) {
-        val nextIdToRun = ids(simulationRandom.nextInt(ids.size))
-        executedNodes :+= nextIdToRun
-        net.exec(DemoSpatial,DemoSpatial.main(), nextIdToRun)
+    for (i <- 0 until iterations)
+      val nextIdToRun = ids(simulationRandom.nextInt(ids.size))
+      executedNodes :+= nextIdToRun
+      Future{
+        net.exec(DemoSpatial, DemoSpatial.main(), nextIdToRun)
+        //if i % 100 == 0 then action(i)
         action(i)
       }
-    }
 
 
       def action(i: Int): Unit =
@@ -96,6 +71,7 @@ object Simulator :
           }
           .filter { case (a, b) => a < b }
           .toSet
+        println(edges.size)
         commandObserver.onNext(SetNodes(nodes))
         commandObserver.onNext(SetEdgesByIds(edges))
 
