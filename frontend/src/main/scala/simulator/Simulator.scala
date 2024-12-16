@@ -2,7 +2,7 @@ package simulator
 
 import domain.{Id, Node, Position, SetEdgesByIds, SetNodes}
 import it.unibo.scafi.config.Grid3DSettings
-import state.GraphModel.{commandObserver}
+import state.GraphModel.commandObserver
 import scala.concurrent.Future
 
 import scala.util.Random
