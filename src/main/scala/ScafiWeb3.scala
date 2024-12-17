@@ -8,5 +8,4 @@ object MyProgram extends AggregateProgram:
 object ScafiWeb3:
   def main(args: Array[String]): Unit =
     EngineImpl(10, 10, 2)(100, 100, 100)(180)
-    EngineImpl(10, 10, 2)(10, 10, 10)(180)
     View().render()
