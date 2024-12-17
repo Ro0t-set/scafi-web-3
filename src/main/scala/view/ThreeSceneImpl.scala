@@ -10,17 +10,18 @@ import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
 import view.component.*
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
-  private val scene = new Scene()
+  private val scene  = new Scene()
   private val camera = new PerspectiveCamera(75, width / height, 0.1, 1600)
   camera.position.z = zPointOfView
   private val renderer = new WebGLRenderer(
     new WebGLRendererParameters {
-      powerPreference  =  WebGLPowerPreference.`high-performance`
+      powerPreference = WebGLPowerPreference.`high-performance`
       precision = "lowp"
     }
   )
   renderer.setSize(width, height)
-  private val controls = new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
+  private val controls =
+    new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
   controls.enableZoom = true
   controls.enablePan = true
   controls.enableRotate = true
@@ -29,18 +30,26 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private var currentNode = Set.empty[Node]
   private var currentEdge = Set.empty[Edge]
 
-
   def setNodes(nodes: Set[Node]): Unit =
     val nodesToRemove = nodes.diff(currentNode)
-    val nodesToAdd = nodes.diff(currentNode)
+    val nodesToAdd    = nodes.diff(currentNode)
 
     nodesToRemove.foreach { oldNode =>
-      val obj = scene.getObjectByName("node-"+oldNode.id.toString)
+      val obj = scene.getObjectByName("node-" + oldNode.id.toString)
       if (obj != null) {
         scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
       }
     }
-    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id.toString, node.label, node.position.x, node.position.y, node.position.z, node.color) }
+    val nodeObject = nodesToAdd.map { node =>
+      NodeFactory.createNode(
+        node.id.toString,
+        node.label,
+        node.position.x,
+        node.position.y,
+        node.position.z,
+        node.color
+      )
+    }
     nodeObject.foreach(nodeObject =>
       scene.add(nodeObject)
     )
@@ -48,26 +57,31 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
   def setEdges(edges: Set[Edge]): Unit =
     val edgesToRemove = currentEdge.diff(edges)
-    val edgesToAdd = edges.diff(currentEdge)
+    val edgesToAdd    = edges.diff(currentEdge)
 
     edgesToRemove.foreach { oldEdge =>
-      val obj = scene.getObjectByName("edge-"+oldEdge.nodes._1.id.toString + oldEdge.nodes._2.id.toString)
+      val obj = scene.getObjectByName(
+        "edge-" + oldEdge.nodes._1.id.toString + oldEdge.nodes._2.id.toString
+      )
       if (obj != null) {
         scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
       }
     }
-    val edgeObject = edgesToAdd.map { edge => EdgeFactory.createEdge(
-      edge.nodes._1.position.x, edge.nodes._2.position.x,
-      edge.nodes._1.position.y, edge.nodes._2.position.y,
-      edge.nodes._1.position.z, edge.nodes._2.position.z,
-      edge.nodes._1.id.toString + edge.nodes._2.id.toString
-    ) }
+    val edgeObject = edgesToAdd.map { edge =>
+      EdgeFactory.createEdge(
+        edge.nodes._1.position.x,
+        edge.nodes._2.position.x,
+        edge.nodes._1.position.y,
+        edge.nodes._2.position.y,
+        edge.nodes._1.position.z,
+        edge.nodes._2.position.z,
+        edge.nodes._1.id.toString + edge.nodes._2.id.toString
+      )
+    }
     edgeObject.foreach(edgeObject =>
       scene.add(edgeObject)
     )
     currentEdge = edges
-
-
 
   private def renderLoop(): Unit =
     dom.window.requestAnimationFrame((_: Double) => renderLoop())

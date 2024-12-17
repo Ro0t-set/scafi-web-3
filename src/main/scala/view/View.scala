@@ -8,29 +8,36 @@ import org.scalajs.dom.HTMLDivElement
 import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
 
-
 final case class View():
   val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
 
   private def animationControllerView(): Element =
     div(
-      //Render batch and counter from animationObserver.batch
+      // Render batch and counter from animationObserver.batch
 
       p("Batch: ", child.text <-- batch.signal.map(_.toString)),
       p("Counter: ", child.text <-- currentTick.signal.map(_.toString)),
       br(),
-      button("Start", onClick --> (_ => animationObserver.onNext(StartAnimation()))),
-      button("Pause", onClick --> (_ => animationObserver.onNext(PauseAnimation()))),
-      //slider
-      input(
-        `type` := "range",
-        `minAttr`:="1",
-        `maxAttr`:="100",
-        value := "1",
-        onInput.mapToValue.map(_.toInt) --> (batch => animationObserver.onNext(AnimationBatch(batch)))
+      button(
+        "Start",
+        onClick --> (_ => animationObserver.onNext(StartAnimation()))
       ),
-      //button("Next", onClick --> (_ => animationObserver.onNext(nextTick()))),
-      //button("Reset", onClick --> (_ => animationObserver.onNext(Reset())))
+      button(
+        "Pause",
+        onClick --> (_ => animationObserver.onNext(PauseAnimation()))
+      ),
+      // slider
+      input(
+        `type`    := "range",
+        `minAttr` := "1",
+        `maxAttr` := "100",
+        value     := "1",
+        onInput.mapToValue.map(_.toInt) --> (batch =>
+          animationObserver.onNext(AnimationBatch(batch))
+        )
+      )
+      // button("Next", onClick --> (_ => animationObserver.onNext(nextTick()))),
+      // button("Reset", onClick --> (_ => animationObserver.onNext(Reset())))
     )
 
   def render(): Unit = {
@@ -41,8 +48,8 @@ final case class View():
       onMountCallback { ctx =>
         nodes.signal.combineWith(edges.signal).foreach {
           case (currentNodes, currentEdges) =>
-              scene.setNodes(currentNodes)
-              scene.setEdges(currentEdges)
+            scene.setNodes(currentNodes)
+            scene.setEdges(currentEdges)
         }(unsafeWindowOwner)
       }
     )
