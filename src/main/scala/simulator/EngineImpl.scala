@@ -62,13 +62,13 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth : Int)(stepx: Int, stepy: I
                        ): Unit =
     if running.now() then
       animationObserver.onNext(NextTick())
-      
+
       val nextIdToRun = ids(simulationRandom.nextInt(ids.size))
       val updatedExecutedNodes = executedNodes :+ nextIdToRun
         if current % batch.now() == 0 then
           Future {
             net.exec(Spatial, Spatial.main(), nextIdToRun)
-            action(current)
+            gridAction(current)
           }.onComplete { _ =>
                 js.Dynamic.global.requestAnimationFrame { (_: Double) =>
                       executeIterations(current + 1, ids, simulationRandom, net, updatedExecutedNodes)
@@ -78,16 +78,12 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth : Int)(stepx: Int, stepy: I
           net.exec(Spatial, Spatial.main(), nextIdToRun)
           executeIterations(current + 1, ids, simulationRandom, net, updatedExecutedNodes)
 
-    
-  
 
-
-  private def action(current: Int) : Unit =
+  private def gridAction(current: Int) : Unit =
     val nodes = net.devs.map { case (id, devInfo) => Node(id, Position(devInfo.pos.x, devInfo.pos.y, devInfo.pos.z), net.`export`(id).map(_.root().toString).getOrElse("."), 0x00ff)}.toSet
     val edges: Set[(Id, Id)] = net.devs.flatMap { case (d, _) => net.neighbourhood(d).map(nbr => (d, nbr))}.filter { case (a, b) => a < b }.toSet
     commandObserver.onNext(SetNodes(nodes))
     commandObserver.onNext(SetEdgesByIds(edges))
-    
 
 
 

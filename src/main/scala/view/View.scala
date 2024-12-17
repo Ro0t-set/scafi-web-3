@@ -1,6 +1,6 @@
 package view
 
-import com.raquo.laminar.api.L.*
+import com.raquo.laminar.api.L.{*, given}
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
@@ -26,6 +26,8 @@ final case class View():
       //slider
       input(
         `type` := "range",
+        `minAttr`:="1",
+        `maxAttr`:="10000",
         value := "1",
         onInput.mapToValue.map(_.toInt) --> (batch => animationObserver.onNext(AnimationBatch(batch)))
       ),
