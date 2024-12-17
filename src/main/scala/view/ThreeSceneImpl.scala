@@ -7,12 +7,19 @@ import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import component.*
+import typings.std.WebGLPowerPreference
+import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
 class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
   private val scene = new Scene()
   private val camera = new PerspectiveCamera(75, width.toDouble / height, 0.1, 1600)
   camera.position.z = zPointOfView
-  private val renderer = new WebGLRenderer()
+  private val renderer = new WebGLRenderer(
+    new WebGLRendererParameters {
+      powerPreference  =  WebGLPowerPreference.`high-performance`
+      precision = "lowp"
+    }
+  )
   renderer.setSize(width, height)
   private val controls = new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
   controls.enableZoom = true

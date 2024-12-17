@@ -5,7 +5,7 @@ import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.Node
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
-import state.GraphModel.*
+import state.GraphState.*
 import scala.scalajs.js.timers.{setInterval, setTimeout}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -11,14 +11,22 @@ final case class Node(id: Id, position: Position, label: Label, color: Color):
     case _ => false
 final case class Edge(nodes: (Node, Node))
 
-sealed trait Command
+sealed trait GraphCommand
 
-case class SetNodes(nodes: Set[Node]) extends Command
-case class SetEdges(edges: Set[Edge]) extends Command
-case class SetEdgesByIds(edgesIds: Set[(Id, Id)]) extends Command
-case class AddNode(node: Node) extends Command
-case class AddEdge(edge: Edge) extends Command
-case class AddEdgeByNodeId(node1: Id, node2: Id) extends Command
-case class RemoveNode(node: Node) extends Command
-case class RemoveEdge(edge: Edge) extends Command
+case class SetNodes(nodes: Set[Node]) extends GraphCommand
+case class SetEdges(edges: Set[Edge]) extends GraphCommand
+case class SetEdgesByIds(edgesIds: Set[(Id, Id)]) extends GraphCommand
+case class AddNode(node: Node) extends GraphCommand
+case class AddEdge(edge: Edge) extends GraphCommand
+case class AddEdgeByNodeId(node1: Id, node2: Id) extends GraphCommand
+case class RemoveNode(node: Node) extends GraphCommand
+case class RemoveEdge(edge: Edge) extends GraphCommand
 
+
+sealed trait AnimationCommand
+
+case class StartAnimation() extends AnimationCommand
+case class PauseAnimation() extends AnimationCommand
+case class nextTick() extends AnimationCommand
+case class AnimationBatch(batch: Int) extends AnimationCommand
+case class Reset() extends AnimationCommand

@@ -1,15 +1,15 @@
 package state
 
 import com.raquo.laminar.api.L.*
-import domain.{Node, *}
+import domain.{Node, Edge, GraphCommand, *}
 
-object GraphModel:
+object GraphState:
   val nodes: Var[Set[Node]] = Var(Set.empty[Node])
   val edges: Var[Set[Edge]] = Var(Set.empty[Edge])
 
   private def foundNode(id: Id): Option[Node] = nodes.now().find(_.id == id)
 
-  val commandObserver: Observer[Command] = Observer[Command] {
+  val commandObserver: Observer[GraphCommand] = Observer[GraphCommand] {
     case SetNodes(newNodes)  => nodes.set(newNodes)
     case SetEdges(newEdges)  => edges.set(newEdges)
     case SetEdgesByIds(edgesIds) =>
@@ -33,3 +33,4 @@ object GraphModel:
     case RemoveNode(node)    => nodes.update(_ - node)
     case RemoveEdge(edge)    => edges.update(_ - edge)
   }
+
