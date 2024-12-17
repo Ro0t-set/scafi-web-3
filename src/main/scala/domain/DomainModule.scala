@@ -27,6 +27,6 @@ sealed trait AnimationCommand
 
 case class StartAnimation() extends AnimationCommand
 case class PauseAnimation() extends AnimationCommand
-case class nextTick() extends AnimationCommand
+case class NextTick() extends AnimationCommand
 case class AnimationBatch(batch: Int) extends AnimationCommand
 case class Reset() extends AnimationCommand

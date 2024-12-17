@@ -1,7 +1,7 @@
 package state
 
 import com.raquo.laminar.api.L.*
-import domain.{Node, Edge, GraphCommand, *}
+import domain.{Node, Edge, GraphCommand, AnimationCommand,*}
 
 object GraphState:
   val nodes: Var[Set[Node]] = Var(Set.empty[Node])
@@ -34,3 +34,20 @@ object GraphState:
     case RemoveEdge(edge)    => edges.update(_ - edge)
   }
 
+
+
+object AnimationState:
+  var running: Var[Boolean]= Var[Boolean](false)
+  val batch: Var[Int] = Var[Int](1)
+  val currentTick: Var[Int] = Var[Int](0)
+
+  val animationObserver: Observer[AnimationCommand] = Observer[AnimationCommand] {
+    case StartAnimation() => running.set(true)
+    case PauseAnimation() => running.set(false)
+    case NextTick() => currentTick.update(_ + 1)
+    case AnimationBatch(batch) => this.batch.set(batch)
+    case Reset() =>
+      running = Var[Boolean](false)
+      currentTick.set(0)
+      batch.set(1)
+  }

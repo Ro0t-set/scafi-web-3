@@ -1,18 +1,17 @@
 package view
 
-import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 import domain.{Edge, Node}
+import org.scalajs.dom
+import typings.std.WebGLPowerPreference
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
-import component.*
-import typings.std.WebGLPowerPreference
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
-class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
-
+import view.component.*
+case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private val scene = new Scene()
-  private val camera = new PerspectiveCamera(75, width.toDouble / height, 0.1, 1600)
+  private val camera = new PerspectiveCamera(75, width / height, 0.1, 1600)
   camera.position.z = zPointOfView
   private val renderer = new WebGLRenderer(
     new WebGLRendererParameters {

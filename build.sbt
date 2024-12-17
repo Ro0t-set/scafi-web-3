@@ -24,7 +24,7 @@ lazy val scafiWeb3 = project.in(file("."))
       ("it.unibo.scafi" %%% "scafi-simulator" % scafiVersion).cross(CrossVersion.for3Use2_13)
     ),
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
-    libraryDependencies += "com.raquo" %%% "laminar" % "17.0.0",
+    libraryDependencies += "com.raquo" %%% "laminar" % "17.2.0",
     libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0" % Test,
 
     externalNpm := baseDirectory.value,

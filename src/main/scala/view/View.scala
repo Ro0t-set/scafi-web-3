@@ -2,40 +2,41 @@ package view
 
 import com.raquo.laminar.api.L.*
 import com.raquo.laminar.nodes.ReactiveHtmlElement
-import domain.Node
+import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
-import state.GraphState.*
-import scala.scalajs.js.timers.{setInterval, setTimeout}
+import simulator.EngineImpl
+import state.GraphState.{edges, nodes}
+import state.AnimationState.{animationObserver, batch, currentTick}
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Failure}
-import scala.concurrent.ExecutionContext.Implicits.global
 
-final case class View(simulator: (Int, Int) => Unit):
+final case class View():
   val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
-  private val renderTime: Var[Long] = Var(0)
+  EngineImpl(10, 10, 2)(100, 100, 100)(180)
 
+  private def animationControllerView(): Element =
+    div(
+      //Render batch and counter from animationObserver.batch
 
-  private def addRandomElementButton(): Element =
-    button(
-      "Add Random Node",
-      h2(child.text <-- renderTime.signal.map(rt => s"Render time: $rt ms")),
-      onClick --> (_ =>
-        val now = System.currentTimeMillis()
-        Future{
-          simulator(10000, 0)
-        }.onComplete {
-          case Success(_) => renderTime.set(System.currentTimeMillis() - now)
-          case Failure(exception) => println(s"Execution failed with exception: $exception")
-        }
-      )
+      p("Batch: ", child.text <-- batch.signal.map(_.toString)),
+      p("Counter: ", child.text <-- currentTick.signal.map(_.toString)),
+      br(),
+      button("Start", onClick --> (_ => animationObserver.onNext(StartAnimation()))),
+      button("Pause", onClick --> (_ => animationObserver.onNext(PauseAnimation()))),
+      //slider
+      input(
+        `type` := "range",
+        value := "1",
+        onInput.mapToValue.map(_.toInt) --> (batch => animationObserver.onNext(AnimationBatch(batch)))
+      ),
+      //button("Next", onClick --> (_ => animationObserver.onNext(nextTick()))),
+      //button("Reset", onClick --> (_ => animationObserver.onNext(Reset())))
     )
 
   def render(): Unit = {
     val rootElement = div(
       h1("ScaFi Web 3"),
-      addRandomElementButton(),
+      animationControllerView(),
       scene.renderScene(),
       onMountCallback { ctx =>
         nodes.signal.combineWith(edges.signal).foreach {
