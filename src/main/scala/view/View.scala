@@ -5,14 +5,12 @@ import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
-import simulator.EngineImpl
 import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
 
 
 final case class View():
   val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
-  EngineImpl(10, 10, 2)(100, 100, 100)(180)
 
   private def animationControllerView(): Element =
     div(
@@ -27,7 +25,7 @@ final case class View():
       input(
         `type` := "range",
         `minAttr`:="1",
-        `maxAttr`:="10000",
+        `maxAttr`:="100",
         value := "1",
         onInput.mapToValue.map(_.toInt) --> (batch => animationObserver.onNext(AnimationBatch(batch)))
       ),

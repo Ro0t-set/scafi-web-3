@@ -9,13 +9,13 @@ import scala.scalajs.js
 
 object NodeFactory:
 
-  def createNode(id: String, textLabel: String, x: Double, y: Double, z: Double): Object3D[Object3DEventMap] =
+  def createNode(id: String, textLabel: String, x: Double, y: Double, z: Double, ncolor: Int): Object3D[Object3DEventMap] =
     val group = new Group()
     group.name = "node-" + id
 
     val pointGeometry = new BoxGeometry(10, 10, 10, 1, 1, 1)
     val pointMaterial = new MeshBasicMaterial(new MeshBasicMaterialParameters {
-      color = 0xff0000
+      color = ncolor
     })
     val pointMesh = new Mesh(pointGeometry, pointMaterial)
     pointMesh.position.set(x, y, z)

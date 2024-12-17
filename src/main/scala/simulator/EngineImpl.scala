@@ -40,7 +40,7 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth : Int)(stepx: Int, stepy: I
 
   private object Spatial extends AggregateProgram with StandardSensors:
     def main(): Int = rep(0){_ + 1}
-  
+
   
   private val net = new SpaceAwareSimulator(
     space = new Basic3DSpace(devsToPos, proximityThreshold = proximityThreshold),
@@ -79,8 +79,9 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth : Int)(stepx: Int, stepy: I
           executeIterations(current + 1, ids, simulationRandom, net, updatedExecutedNodes)
 
 
+
   private def gridAction(current: Int) : Unit =
-    val nodes = net.devs.map { case (id, devInfo) => Node(id, Position(devInfo.pos.x, devInfo.pos.y, devInfo.pos.z), net.`export`(id).map(_.root().toString).getOrElse("."), 0x00ff)}.toSet
+    val nodes = net.devs.map { case (id, devInfo) => Node(id, Position(devInfo.pos.x, devInfo.pos.y, devInfo.pos.z), net.`export`(id).map(_.root().toString).getOrElse("."), 0xeb3446)}.toSet
     val edges: Set[(Id, Id)] = net.devs.flatMap { case (d, _) => net.neighbourhood(d).map(nbr => (d, nbr))}.filter { case (a, b) => a < b }.toSet
     commandObserver.onNext(SetNodes(nodes))
     commandObserver.onNext(SetEdgesByIds(edges))

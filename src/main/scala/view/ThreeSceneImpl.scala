@@ -40,7 +40,7 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
       }
     }
-    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id.toString, node.label, node.position.x, node.position.y, node.position.z) }
+    val nodeObject = nodesToAdd.map { node => NodeFactory.createNode(node.id.toString, node.label, node.position.x, node.position.y, node.position.z, node.color) }
     nodeObject.foreach(nodeObject =>
       scene.add(nodeObject)
     )

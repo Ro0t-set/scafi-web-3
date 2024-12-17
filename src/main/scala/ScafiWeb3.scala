@@ -1,5 +1,5 @@
 import it.unibo.scafi.incarnations.BasicSimulationIncarnation.AggregateProgram
-
+import simulator.EngineImpl
 import view.View
 
 
@@ -8,6 +8,8 @@ object MyProgram extends AggregateProgram:
 
 
 object ScafiWeb3:
-  def main(args: Array[String]): Unit = View().render()
+  def main(args: Array[String]): Unit =
+    EngineImpl(10, 10, 2)(100, 100, 100)(180)
+    View().render()
 
 
