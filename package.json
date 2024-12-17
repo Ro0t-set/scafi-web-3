@@ -1,5 +1,5 @@
 {
-  "name": "livechart",
+  "name": "ScafiWeb3",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,7 +12,7 @@
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
     "@types/three": "^0.170.0",
     "typescript": "^5.7.2",
-    "vite": "^4.1.0"
+    "vite": "^6.0.3"
   },
   "dependencies": {
     "three": "^0.171.0"
