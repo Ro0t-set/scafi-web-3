@@ -7,12 +7,16 @@ import typings.std.WebGLPowerPreference
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
+import typings.three.srcMathQuaternionMod.QuaternionLike
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
 import view.component.*
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
-  private val scene  = new Scene()
+  private val scene = new Scene()
+
   private val camera = new PerspectiveCamera(75, width / height, 0.1, 1600)
-  camera.position.z = zPointOfView
+
+  camera.position.set(width / 2, height / 2, zPointOfView)
+
   private val renderer = new WebGLRenderer(
     new WebGLRendererParameters {
       powerPreference = WebGLPowerPreference.`high-performance`
@@ -25,6 +29,7 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   controls.enableZoom = true
   controls.enablePan = true
   controls.enableRotate = true
+  controls.target.set(width / 2, height / 2, 0)
   controls.update()
 
   private var currentNode = Set.empty[Node]
