@@ -5,7 +5,7 @@ import domain.{Node, *}
 import it.unibo.scafi.config.Grid3DSettings
 import it.unibo.scafi.incarnations.BasicAbstractSpatialSimulationIncarnation
 import it.unibo.scafi.space.{Point3D, SpaceHelper}
-import state.AnimationState.{animationObserver, batch, running}
+import state.AnimationState.{animationObserver, batch, currentTick, running}
 import state.GraphState.commandObserver
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,7 +21,9 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
 
   running.signal.foreach { isRunning =>
     if isRunning then
-      executeIterations(0, ids, new Random(), net, Seq.empty)
+      executeIterations(currentTick.now(), Seq.empty)
+    else
+      gridAction()
   }(unsafeWindowOwner)
 
   private object BasicSpatialIncarnation
@@ -54,27 +56,20 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
 
   private def executeIterations(
       current: Int,
-      ids: Seq[Int],
-      simulationRandom: scala.util.Random,
-      net: SpaceAwareSimulator,
       executedNodes: Seq[Int]
   ): Unit =
     if running.now() then
       animationObserver.onNext(NextTick())
-
-      val nextIdToRun          = ids(simulationRandom.nextInt(ids.size))
+      val nextIdToRun          = ids(Random.nextInt(ids.size))
       val updatedExecutedNodes = executedNodes :+ nextIdToRun
       if current % batch.now() == 0 then
         Future {
           net.exec(Spatial, Spatial.main(), nextIdToRun)
-          gridAction(current)
+          gridAction()
         }.onComplete { _ =>
           js.Dynamic.global.requestAnimationFrame { (_: Double) =>
             executeIterations(
               current + 1,
-              ids,
-              simulationRandom,
-              net,
               updatedExecutedNodes
             )
           }
@@ -83,13 +78,10 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
         net.exec(Spatial, Spatial.main(), nextIdToRun)
         executeIterations(
           current + 1,
-          ids,
-          simulationRandom,
-          net,
           updatedExecutedNodes
         )
 
-  private def gridAction(current: Int): Unit =
+  private def gridAction(): Unit =
     val nodes = net.devs.map { case (id, devInfo) =>
       Node(
         id,

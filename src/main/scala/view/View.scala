@@ -13,8 +13,6 @@ final case class View():
 
   private def animationControllerView(): Element =
     div(
-      // Render batch and counter from animationObserver.batch
-
       p("Batch: ", child.text <-- batch.signal.map(_.toString)),
       p("Counter: ", child.text <-- currentTick.signal.map(_.toString)),
       br(),

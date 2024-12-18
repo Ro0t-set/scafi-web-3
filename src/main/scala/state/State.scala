@@ -41,7 +41,7 @@ object AnimationState:
 
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
-      case StartAnimation()      => running.set(true)
+      case StartAnimation()      => if !running.now() then running.set(true)
       case PauseAnimation()      => running.set(false)
       case NextTick()            => currentTick.update(_ + 1)
       case AnimationBatch(batch) => this.batch.set(batch)
