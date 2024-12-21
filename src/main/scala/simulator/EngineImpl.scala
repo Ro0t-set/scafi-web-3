@@ -12,7 +12,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.scalajs.js
 import scala.util.Random
+import scala.scalajs.js.annotation.JSExportTopLevel
 
+@JSExportTopLevel("EngineImpl")
 case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
     stepx: Int,
     stepy: Int,
