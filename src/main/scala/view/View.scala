@@ -9,7 +9,7 @@ import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
 
 final case class View():
-  val scene: ThreeSceneImpl = ThreeSceneImpl(800, 800, 1000)
+  val scene: ThreeSceneImpl = ThreeSceneImpl(600, 600, 1000)
 
   private def animationControllerView(): Element =
     div(
@@ -40,8 +40,8 @@ final case class View():
 
   def render(): Unit = {
     val rootElement = div(
-      h1("ScaFi Web 3"),
-      animationControllerView(),
+      // h1("ScaFi Web 3"),
+      // animationControllerView(),
       scene.renderScene(),
       onMountCallback { _ =>
         nodes.signal.combineWith(edges.signal).foreach {
