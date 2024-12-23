@@ -1,5 +1,5 @@
 {
-  "name": "ScafiWeb3",
+  "name": "scafiweb3",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,10 +11,19 @@
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
     "@types/three": "^0.170.0",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "three": "^0.171.0"
-  }
+  },
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

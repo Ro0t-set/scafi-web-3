@@ -1,19 +1,16 @@
-import org.scalajs.linker.interface.ModuleSplitStyle
-
 val scafiVersion = "1.3.0"
 scalafmtOnCompile := true
 lazy val scafiWeb3 = project.in(file("."))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
   .settings(
-    scalaVersion                    := "3.5.2",
+    scalaVersion                    := "3.3.4",
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
-        .withModuleSplitStyle(
-          ModuleSplitStyle.SmallModulesFor(List("ScafiWeb3"))
-        )
-    },
+        .withOptimizer(false)
+    }
+    ,
     libraryDependencies ++= Seq(
       ("it.unibo.scafi" %%% "scafi-core" % scafiVersion).cross(
         CrossVersion.for3Use2_13

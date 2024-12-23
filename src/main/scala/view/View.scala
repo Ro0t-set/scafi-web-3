@@ -43,7 +43,7 @@ final case class View():
       h1("ScaFi Web 3"),
       animationControllerView(),
       scene.renderScene(),
-      onMountCallback { ctx =>
+      onMountCallback { _ =>
         nodes.signal.combineWith(edges.signal).foreach {
           case (currentNodes, currentEdges) =>
             scene.setNodes(currentNodes)
