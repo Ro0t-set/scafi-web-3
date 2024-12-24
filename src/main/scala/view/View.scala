@@ -38,11 +38,10 @@ final case class View():
       // button("Reset", onClick --> (_ => animationObserver.onNext(Reset())))
     )
 
-  def render(): Unit = {
+  def render(): Unit =
     val rootElement = div(
-      // h1("ScaFi Web 3"),
-      // animationControllerView(),
-      scene.renderScene(),
+      scene.renderScene("three_canvas"),
+      animationControllerView(),
       onMountCallback { _ =>
         nodes.signal.combineWith(edges.signal).foreach {
           case (currentNodes, currentEdges) =>
@@ -51,9 +50,7 @@ final case class View():
         }(unsafeWindowOwner)
       }
     )
-
     renderOnDomContentLoaded(
       dom.document.getElementById("app"),
       rootElement
     )
-  }

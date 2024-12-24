@@ -17,13 +17,14 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
 
   camera.position.set(width / 2, height / 2, zPointOfView)
 
-  private val renderer = new WebGLRenderer(
+  private val renderer = WebGLRenderer(
     new WebGLRendererParameters {
       powerPreference = WebGLPowerPreference.`high-performance`
       precision = "lowp"
     }
   )
   renderer.setSize(width, height)
+
   private val controls =
     new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
   controls.enableZoom = true
@@ -93,10 +94,10 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     controls.update()
     renderer.render(scene, camera)
 
-  def renderScene(): Element =
+  def renderScene(elementId: String): Element =
     div(
       onMountCallback { ctx =>
-        dom.document.body.appendChild(renderer.domElement)
+        dom.document.getElementById(elementId).appendChild(renderer.domElement)
         renderLoop()
       }
     )
