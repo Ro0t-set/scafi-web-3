@@ -13,29 +13,49 @@ final case class View():
 
   private def animationControllerView(): Element =
     div(
-      p("Batch: ", child.text <-- batch.signal.map(_.toString)),
-      p("Counter: ", child.text <-- currentTick.signal.map(_.toString)),
+      cls := "animation-controller",
+      div(
+        cls := "info-section",
+        p(
+          strong("Batch: "),
+          child.text <-- batch.signal.map(_.toString),
+          strong("Counter: "),
+          child.text <-- currentTick.signal.map(_.toString)
+        )
+      ),
       br(),
-      button(
-        "Start",
-        onClick --> (_ => animationObserver.onNext(StartAnimation()))
+      div(
+        cls := "controls",
+        button(
+          cls := "control-button",
+          i(cls := "fas fa-play"), // Font Awesome Play Icon
+          " Start",
+          onClick --> (_ => animationObserver.onNext(StartAnimation()))
+        ),
+        button(
+          cls := "control-button",
+          i(cls := "fas fa-pause"), // Font Awesome Pause Icon
+          " Pause",
+          onClick --> (_ => animationObserver.onNext(PauseAnimation()))
+        )
       ),
-      button(
-        "Pause",
-        onClick --> (_ => animationObserver.onNext(PauseAnimation()))
-      ),
-      // slider
-      input(
-        `type`    := "range",
-        `minAttr` := "1",
-        `maxAttr` := "100",
-        value     := "1",
-        onInput.mapToValue.map(_.toInt) --> (batch =>
-          animationObserver.onNext(AnimationBatch(batch))
+      div(
+        cls := "slider-container",
+        label(
+          i(cls := "fas fa-sliders-h"),
+          " Animation Batch"
+        ),
+        input(
+          idAttr  := "batch-slider",
+          `type`  := "range",
+          minAttr := "1",
+          maxAttr := "100",
+          value   := "1",
+          onInput.mapToValue.map(_.toInt) --> (batch =>
+            animationObserver.onNext(AnimationBatch(batch))
+          )
         )
       )
-      // button("Next", onClick --> (_ => animationObserver.onNext(nextTick()))),
-      // button("Reset", onClick --> (_ => animationObserver.onNext(Reset())))
     )
 
   def render(): Unit =

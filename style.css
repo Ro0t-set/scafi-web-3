@@ -1,11 +1,21 @@
 :root {
+  /* Schema Colori */
+  --primary-color: #00a6fb;
+  --primary-color-hover: #0582ca;
+
+  --secondary-color: #006494;
+  --secondary-color-hover: #003554;
+
+  --neutral-color: #051923;
+
+  /* Font e Altri Stili */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--primary-color);
+  background-color: var(--neutral-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,7 +24,7 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.scastie  {
+.scastie {
   margin: 1rem;
   height: 800px;
   width: 100%;
@@ -22,21 +32,22 @@
   position: relative;
 }
 
-.console-container{
-
+.console-container {
+  /* Eventuali stili aggiuntivi */
 }
 
-canvas{
+canvas {
   padding: 1rem;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--secondary-color);
   text-decoration: inherit;
 }
+
 a:hover {
-  color: #535bf2;
+  color: var(--secondary-color-hover);
 }
 
 body {
@@ -44,15 +55,15 @@ body {
   display: flex;
   flex-direction: row;
   min-height: 100vh;
-
+  background-color: var(--neutral-color);
+  color: var(--primary-color);
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: var(--primary-color);
 }
-
-
 
 .logo {
   height: 6em;
@@ -60,15 +71,21 @@ h1 {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  /* Utilizzo di rgba per aggiungere trasparenza */
+  filter: drop-shadow(0 0 2em rgba(255, 107, 107, 0.67)); /* Arancione Corallo con trasparenza */
 }
+
 .logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
+  filter: drop-shadow(0 0 2em rgba(247, 223, 30, 0.67)); /* Se necessario, mantenuto il colore originale */
 }
 
 .card {
   padding: 2em;
+  background-color: var(--neutral-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .read-the-docs {
@@ -82,13 +99,17 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-color);
+  color: var(--neutral-color);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s;
 }
+
 button:hover {
-  border-color: #646cff;
+  border-color: var(--secondary-color);
+  background-color: var(--primary-color-hover);
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -96,13 +117,76 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: var(--primary-color);
+    background-color: var(--neutral-color);
   }
   a:hover {
-    color: #747bff;
+    color: var(--secondary-color-hover);
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--primary-color);
   }
+}
+
+.animation-controller {
+  padding: 20px;
+  background-color: var(--neutral-color);
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-section p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.control-button {
+  background-color: var(--primary-color);
+  color: var(--neutral-color);
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.control-button i {
+  margin-right: 8px;
+}
+
+.control-button:hover {
+  background-color: var(--secondary-color-hover);
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+}
+
+.slider-container label {
+  margin-right: 10px;
+  font-size: 16px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+}
+
+.slider-container i {
+  margin-right: 5px;
+}
+
+.slider-container input[type="range"] {
+  flex: 1;
+  /* Stili aggiuntivi per il slider, se necessari */
 }

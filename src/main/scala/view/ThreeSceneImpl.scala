@@ -7,7 +7,6 @@ import typings.std.WebGLPowerPreference
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcMathQuaternionMod.QuaternionLike
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
 import view.component.*
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
