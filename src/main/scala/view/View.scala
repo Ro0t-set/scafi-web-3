@@ -9,7 +9,11 @@ import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
 
 final case class View():
-  val scene: ThreeSceneImpl = ThreeSceneImpl(600, 600, 1000)
+  // get windows size and set the canvas size
+  private val windowsWidth: Int  = dom.window.innerWidth.toInt
+  private val windowsHeight: Int = dom.window.innerHeight.toInt
+  val scene: ThreeSceneImpl =
+    ThreeSceneImpl(windowsWidth / 2, (windowsHeight / 1.5).toInt, 1000)
 
   private def animationControllerView(): Element =
     div(
