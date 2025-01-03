@@ -3,49 +3,51 @@ package view
 import com.raquo.laminar.api.L.{*, given}
 import domain.{Edge, Node}
 import org.scalajs.dom
-import typings.std.WebGLPowerPreference
-import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
-import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
+import view.adapter.ThreeJsAdapter.*
+import view.adapter.SceneWrapper
 import view.component.*
+
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
-  private val scene = new Scene()
+  private val sceneWrapper = SceneWrapper()
+  private val scene        = sceneWrapper.underlying
 
-  private val camera = new PerspectiveCamera(75, width / height, 0.1, 1600)
-
-  camera.position.set(width / 2, height / 2, zPointOfView)
-
-  private val renderer = WebGLRenderer(
-    new WebGLRendererParameters {
-      powerPreference = WebGLPowerPreference.`high-performance`
-      precision = "lowp"
-    }
+  private val camera = CameraFactory.createPerspectiveCamera(
+    fov = 75,
+    aspect = width / height,
+    near = 0.1,
+    far = 1600
   )
+
+  VectorUtils.setPosition(camera, width / 2, height / 2, zPointOfView)
+
+  private val renderer = RendererFactory.createWebGLRenderer()
   renderer.setSize(width, height)
 
-  private val controls =
-    new OrbitControls(camera.asInstanceOf[Camera], renderer.domElement)
+  private val controls = ControlsFactory.createOrbitControls(
+    camera = camera,
+    domElement = renderer.domElement.asInstanceOf[dom.HTMLElement]
+  )
+
   controls.enableZoom = true
   controls.enablePan = true
   controls.enableRotate = true
-  controls.target.set(width / 2, height / 2, 0)
+  VectorUtils.setTarget(controls, width / 2, height / 2, 0)
   controls.update()
 
   private var currentNode = Set.empty[Node]
   private var currentEdge = Set.empty[Edge]
 
   def setNodes(nodes: Set[Node]): Unit =
-    val nodesToRemove = nodes.diff(currentNode)
+    val nodesToRemove = currentNode.diff(nodes)
     val nodesToAdd    = nodes.diff(currentNode)
 
     nodesToRemove.foreach { oldNode =>
-      val obj = scene.getObjectByName("node-" + oldNode.id.toString)
-      if (obj != null) {
-        scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
-      }
+      sceneWrapper.findByName(s"node-${oldNode.id}")
+        .foreach(sceneWrapper.removeObject)
     }
-    val nodeObject = nodesToAdd.map { node =>
+
+    val nodeObjects = nodesToAdd.map { node =>
       NodeFactory.createNode(
         node.id.toString,
         node.label,
@@ -55,9 +57,8 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         node.color
       )
     }
-    nodeObject.foreach(nodeObject =>
-      scene.add(nodeObject)
-    )
+
+    nodeObjects.foreach(sceneWrapper.addObject)
     currentNode = nodes
 
   def setEdges(edges: Set[Edge]): Unit =
@@ -65,14 +66,11 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     val edgesToAdd    = edges.diff(currentEdge)
 
     edgesToRemove.foreach { oldEdge =>
-      val obj = scene.getObjectByName(
-        "edge-" + oldEdge.nodes._1.id.toString + oldEdge.nodes._2.id.toString
-      )
-      if (obj != null) {
-        scene.remove(obj.asInstanceOf[Object3D[Object3DEventMap]])
-      }
+      val edgeName = s"edge-${oldEdge.nodes._1.id}${oldEdge.nodes._2.id}"
+      sceneWrapper.findByName(edgeName).foreach(sceneWrapper.removeObject)
     }
-    val edgeObject = edgesToAdd.map { edge =>
+
+    val edgeObjects = edgesToAdd.map { edge =>
       EdgeFactory.createEdge(
         edge.nodes._1.position.x,
         edge.nodes._2.position.x,
@@ -80,12 +78,11 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         edge.nodes._2.position.y,
         edge.nodes._1.position.z,
         edge.nodes._2.position.z,
-        edge.nodes._1.id.toString + edge.nodes._2.id.toString
+        s"${edge.nodes._1.id}${edge.nodes._2.id}"
       )
     }
-    edgeObject.foreach(edgeObject =>
-      scene.add(edgeObject)
-    )
+
+    edgeObjects.foreach(sceneWrapper.addObject)
     currentEdge = edges
 
   private def renderLoop(): Unit =
