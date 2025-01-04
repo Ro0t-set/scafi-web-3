@@ -1,49 +1,28 @@
 package API
 
-import typings.std.JSON
 import com.raquo.laminar.api.L.{*, given}
-import domain.{
-  AddNode,
-  Color,
-  GraphCommand,
-  Id,
-  Label,
-  Node,
-  Position,
-  SetNodes
-}
+import domain.{Node, Position, SetNodes}
 import state.GraphState.*
-import scala.scalajs.js
-import scala.scalajs.js.JSON
-import scala.scalajs.js.annotation._
+
+import scala.scalajs.js.annotation.*
 
 @JSExportTopLevel("addNodesFromJson")
-def addNodeFromJson(input: Any): Unit =
-  try
-    val parsedNodes = input match {
-      case jsArray: js.Array[js.Dynamic] => jsArray
-      case jsonString: String =>
-        JSON.parse(jsonString).asInstanceOf[js.Array[js.Dynamic]]
-      case _ =>
-        throw new IllegalArgumentException(
-          "Invalid input: Expected JSON string or array of objects"
-        )
-    }
+def addNodesFromJson(input: String): Unit =
+  val json: ujson.Value = ujson.read(input)
+  val nodeSet = json.arr.map { nodeJson =>
+    val idValue    = nodeJson("id").num.toInt
+    val labelValue = nodeJson("label").str
+    val colorValue = nodeJson("color").num.toInt
+    val posJson    = nodeJson("position")
+    val x          = posJson("x").num
+    val y          = posJson("y").num
+    val z          = posJson("z").num
+    Node(
+      id = idValue,
+      label = labelValue,
+      color = colorValue,
+      position = Position(x, y, z)
+    )
+  }.toSet
 
-    val nodeSet: Set[Node] = parsedNodes.map { node =>
-      Node(
-        id = node.id.asInstanceOf[Id],
-        position = Position(
-          x = node.position.x.asInstanceOf[Double],
-          y = node.position.y.asInstanceOf[Double],
-          z = node.position.z.asInstanceOf[Double]
-        ),
-        label = node.label.asInstanceOf[Label],
-        color = node.color.asInstanceOf[Color]
-      )
-    }.toSet
-
-    commandObserver.onNext(SetNodes(nodeSet))
-  catch
-    case e: Exception =>
-      println(s"Error processing JSON: ${e.getMessage}")
+  commandObserver.onNext(SetNodes(nodeSet))

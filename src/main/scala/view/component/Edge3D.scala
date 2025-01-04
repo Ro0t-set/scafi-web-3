@@ -1,20 +1,15 @@
 package view.component
 
-import typings.three.mod.{
-  BufferGeometry,
-  Group,
-  Line,
-  LineBasicMaterial,
-  Object3D,
-  Vector3
-}
+import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsLineBasicMaterialMod.LineBasicMaterialParameters
-
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
-object EdgeFactory:
-  def createEdge(
+@SuppressWarnings(Array("org.wartremover.warts.All"))
+object Edge3D extends Object3D[Object3DEventMap]:
+  @JSName("apply")
+  def apply(
       x1: Double,
       x2: Double,
       y1: Double,

@@ -8,7 +8,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.scalajs.js.JSON
 
-// Rappresenta il risultato di nextAndGetJsonNetwork
 @js.native
 trait JsNetworkData extends js.Object:
   val ju_concurrent_atomic_AtomicReference__f_value: AtomicReference = js.native
@@ -17,9 +16,9 @@ trait JsNetworkData extends js.Object:
 trait AtomicReference extends js.Object:
   val s_util_Success__f_value: js.Any = js.native
 
-// Accesso a ClientMain nel contesto globale
 @js.native
 @JSGlobal("scastie.ClientMain")
+@SuppressWarnings(Array("org.wartremover.warts.All"))
 object ClientMain extends js.Object:
   var signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
@@ -27,9 +26,8 @@ object ClientMain extends js.Object:
 def initializeEngine(): Unit =
   println("Engine initializing...")
 
-  // Inizializza l'istanza di EngineImpl dallo scope globale
   val engine = js.Dynamic.global.EngineImpl(10, 20, 3, 100, 100, 100, 190)
-  API.addNodeFromJson(engine.nextAndGetJsonNetwork())
+  API.addNodesFromJson(JSON.stringify(engine.nextAndGetJsonNetwork()))
 
 def interceptSignal(): Unit =
   val originalSignal = ClientMain.signal
@@ -45,12 +43,8 @@ def interceptSignal(): Unit =
         )
       )
 
-      // Inizializza il motore al ricevimento del segnale
       initializeEngine()
-
-      // Richiama il segnale originale
       originalSignal(result, attachedElements, scastieId)
 
-// Funzione principale per inizializzare tutto
 def init(): Unit =
   interceptSignal()

@@ -8,6 +8,7 @@ import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
 import view.adapter.ThreeJsAdapter.SceneWrapper
 
+@SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:
   type Object3DType = Object3D[Object3DEventMap]
 

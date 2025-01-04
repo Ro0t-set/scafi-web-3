@@ -35,7 +35,7 @@ object GraphState:
   }
 
 object AnimationState:
-  var running: Var[Boolean] = Var[Boolean](false)
+  val running: Var[Boolean] = Var[Boolean](false)
   val batch: Var[Int]       = Var[Int](1)
   val currentTick: Var[Int] = Var[Int](0)
 
@@ -46,7 +46,7 @@ object AnimationState:
       case NextTick()            => currentTick.update(_ + 1)
       case AnimationBatch(batch) => this.batch.set(batch)
       case Reset() =>
-        running = Var[Boolean](false)
+        running.set(false)
         currentTick.set(0)
         batch.set(1)
     }

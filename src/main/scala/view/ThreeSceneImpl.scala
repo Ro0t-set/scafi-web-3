@@ -8,6 +8,7 @@ import view.adapter.ThreeJsAdapter.*
 import view.adapter.SceneWrapper
 import view.component.*
 
+@SuppressWarnings(Array("org.wartremover.warts.All"))
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private val sceneWrapper = SceneWrapper()
   private val scene        = sceneWrapper.underlying
@@ -48,7 +49,7 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     }
 
     val nodeObjects = nodesToAdd.map { node =>
-      NodeFactory.createNode(
+      Node3D(
         node.id.toString,
         node.label,
         node.position.x,
@@ -71,7 +72,7 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     }
 
     val edgeObjects = edgesToAdd.map { edge =>
-      EdgeFactory.createEdge(
+      Edge3D(
         edge.nodes._1.position.x,
         edge.nodes._2.position.x,
         edge.nodes._1.position.y,

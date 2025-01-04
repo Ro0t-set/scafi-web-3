@@ -1,5 +1,11 @@
 val scafiVersion = "1.3.0"
 scalafmtOnCompile := true
+
+wartremoverErrors ++= Warts.unsafe
+wartremoverErrors --= Seq(
+  Wart.DefaultArguments,
+)
+
 lazy val scafiWeb3 = project.in(file("."))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
@@ -11,6 +17,7 @@ lazy val scafiWeb3 = project.in(file("."))
         .withOptimizer(false)
     }
     ,
+
     libraryDependencies ++= Seq(
       ("it.unibo.scafi" %%% "scafi-core" % scafiVersion).cross(
         CrossVersion.for3Use2_13
@@ -25,5 +32,6 @@ lazy val scafiWeb3 = project.in(file("."))
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",
     libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.0" % Test,
+    libraryDependencies += "com.lihaoyi" %%% "upickle" % "4.0.2",
     externalNpm                             := baseDirectory.value
   )

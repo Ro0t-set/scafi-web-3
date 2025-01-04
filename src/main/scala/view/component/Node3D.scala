@@ -5,11 +5,14 @@ import typings.three.srcMaterialsMeshBasicMaterialMod.MeshBasicMaterialParameter
 import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
 import typings.three.mod.*
 import org.scalajs.dom
+
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
-object NodeFactory:
-
-  def createNode(
+@SuppressWarnings(Array("org.wartremover.warts.All"))
+object Node3D extends Object3D[Object3DEventMap]:
+  @JSName("apply")
+  def apply(
       id: String,
       textLabel: String,
       x: Double,
