@@ -14,18 +14,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object ClientMain extends js.Object:
   var signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
+@SuppressWarnings(Array("org.wartremover.warts.All"))
 def startAsyncNodeGeneration(engine: js.Dynamic): Unit =
-  Future {
+  def loop(): Unit =
     val nodes     = engine.nextAndGetJsonNetwork()
     val nodesJson = JSON.stringify(nodes)
-    GraphAPI.addNodesFromJson(nodesJson).getOrElse(
-      println("Failed to parse Nodes from JSON")
-    )
-  }.onComplete(_ =>
-    js.Dynamic.global.requestAnimationFrame { (_: Double) =>
-      startAsyncNodeGeneration(engine)
-    }
-  )
+    GraphAPI.addNodesFromJson(nodesJson)
+    dom.window.setTimeout(() => loop(), 0)
+
+  loop()
 
 def initializeEngineAsync(): Unit =
   println("Engine initializing (async)...")
