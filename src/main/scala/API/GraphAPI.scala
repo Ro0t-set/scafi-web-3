@@ -1,28 +1,35 @@
 package API
 
-import com.raquo.laminar.api.L.{*, given}
-import domain.{Node, Position, SetNodes}
+import domain.{Edge, Node, Position, SetEdges, SetNodes}
 import state.GraphState.*
 import scala.scalajs.js.annotation.*
 
-object GraphAPI:
-  @JSExportTopLevel("addNodesFromJson")
-  def addNodesFromJson(input: String): Unit =
-    val json: ujson.Value = ujson.read(input)
-    val nodeSet = json.arr.map { nodeJson =>
-      val idValue    = nodeJson("id").num.toInt
-      val labelValue = nodeJson("label").str
-      val colorValue = nodeJson("color").num.toInt
-      val posJson    = nodeJson("position")
-      val x          = posJson("x").num
-      val y          = posJson("y").num
-      val z          = posJson("z").num
-      Node(
-        id = idValue,
-        label = labelValue,
-        color = colorValue,
-        position = Position(x, y, z)
-      )
-    }.toSet
+sealed trait GraphApiError:
+  def message: String
 
-    commandObserver.onNext(SetNodes(nodeSet))
+case class ParsingError(message: String) extends GraphApiError
+
+trait GraphAPIService:
+  def addNodesFromJson(input: String): Option[GraphApiError]
+  def addEdgesFromJson(input: String): Option[GraphApiError]
+
+object GraphAPI extends GraphAPIService:
+  @JSExportTopLevel("addNodesFromJson")
+  override def addNodesFromJson(input: String): Option[GraphApiError] =
+    val maybeNodes: Option[Set[Node]] = NodeParser.parse(input)
+    maybeNodes match
+      case Some(nodeSet) =>
+        commandObserver.onNext(SetNodes(nodeSet))
+        None
+      case None =>
+        Some(ParsingError("Failed to parse Nodes from JSON"))
+
+  @JSExportTopLevel("addEdgesFromJson")
+  override def addEdgesFromJson(input: String): Option[GraphApiError] =
+    val maybeEdges: Option[Set[Edge]] = Option.empty
+    maybeEdges match
+      case Some(edgeSet) =>
+        commandObserver.onNext(SetEdges(edgeSet))
+        None
+      case None =>
+        Some(ParsingError("Failed to parse Edges from JSON"))
