@@ -1,12 +1,12 @@
-package view
+package view.graph
 
 import com.raquo.laminar.api.L.{*, given}
 import domain.{Edge, Node}
 import org.scalajs.dom
 import typings.three.mod.*
-import view.adapter.ThreeJsAdapter.*
 import view.adapter.SceneWrapper
-import view.component.*
+import view.adapter.ThreeJsAdapter.*
+import view.graph.component.{Edge3D, Node3D}
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):

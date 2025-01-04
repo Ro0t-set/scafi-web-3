@@ -1,4 +1,4 @@
-package view.component
+package view.graph.component
 
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap

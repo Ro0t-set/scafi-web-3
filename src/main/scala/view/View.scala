@@ -7,6 +7,7 @@ import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
 import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
+import view.graph.ThreeSceneImpl
 
 final case class View():
   // get windows size and set the canvas size

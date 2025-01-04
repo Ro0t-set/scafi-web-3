@@ -1,11 +1,11 @@
-package view
+package view.player
+
+import API.GraphAPI
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation._
-import scala.scalajs.js.Dynamic.{global => g}
+import scala.scalajs.js.annotation.*
+import scala.scalajs.js.Dynamic.global as g
 import org.scalajs.dom
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.scalajs.js.JSON
 
 @js.native
@@ -27,7 +27,7 @@ def initializeEngine(): Unit =
   println("Engine initializing...")
 
   val engine = js.Dynamic.global.EngineImpl(10, 20, 3, 100, 100, 100, 190)
-  API.addNodesFromJson(JSON.stringify(engine.nextAndGetJsonNetwork()))
+  GraphAPI.addNodesFromJson(JSON.stringify(engine.nextAndGetJsonNetwork()))
 
 def interceptSignal(): Unit =
   val originalSignal = ClientMain.signal

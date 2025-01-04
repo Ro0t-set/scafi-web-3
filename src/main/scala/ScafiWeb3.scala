@@ -8,4 +8,4 @@ object ScafiWeb3:
 
   def main(args: Array[String]): Unit =
     View().render()
-    view.init()
+    view.player.init()
