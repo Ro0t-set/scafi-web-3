@@ -1,18 +1,16 @@
 package view
 
-import API.GraphAPI
 import com.raquo.laminar.api.L.{*, given}
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{setEngine, AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
-import org.scalajs.dom.{console, HTMLDivElement}
+import org.scalajs.dom.HTMLDivElement
 import state.GraphState.{edges, nodes}
-import state.AnimationState.{animationObserver, batch, currentTick, running}
+import state.AnimationState.{animationObserver, batch, currentTick}
 import view.graph.ThreeSceneImpl
-import view.player.EngineController
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel, JSGlobal}
+import scala.scalajs.js.annotation.JSGlobal
 
 @js.native
 @JSGlobal("scastie.ClientMain")
@@ -38,11 +36,10 @@ final case class View():
       animationObserver.onNext(PauseAnimation())
 
       val newEngine =
-        js.Dynamic.global.EngineImpl(10, 10, 3, 100, 100, 100, 190)
+        js.Dynamic.global.EngineImpl(5, 5, 2, 100, 100, 100, 190)
 
       animationObserver.onNext(setEngine(newEngine))
 
-      EngineController.start()
       originalSignal(result, attachedElements, scastieId)
 
     js.Dynamic.global.scastie.ClientMain.signal = newSignal

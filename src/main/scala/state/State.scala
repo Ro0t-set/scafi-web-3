@@ -40,16 +40,18 @@ object AnimationState:
   val batch: Var[Int]         = Var[Int](1)
   val currentTick: Var[Int]   = Var[Int](0)
   val engine: Var[js.Dynamic] = Var[js.Dynamic](js.Dynamic.literal())
+  private def reset(): Unit =
+    running.set(false)
+    currentTick.set(0)
 
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
-      case setEngine(engine)     => this.engine.set(engine)
+      case setEngine(engine) =>
+        this.engine.set(engine)
+        reset()
       case StartAnimation()      => if !running.now() then running.set(true)
       case PauseAnimation()      => running.set(false)
       case NextTick()            => currentTick.update(_ + 1)
       case AnimationBatch(batch) => this.batch.set(batch)
-      case Reset() =>
-        running.set(false)
-        currentTick.set(0)
-        batch.set(1)
+      case Reset()               => reset()
     }
