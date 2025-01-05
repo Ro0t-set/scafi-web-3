@@ -3,7 +3,7 @@ package view
 import API.GraphAPI
 import com.raquo.laminar.api.L.{*, given}
 import com.raquo.laminar.nodes.ReactiveHtmlElement
-import domain.{AnimationBatch, PauseAnimation, StartAnimation}
+import domain.{setEngine, AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
 import org.scalajs.dom.{console, HTMLDivElement}
 import state.GraphState.{edges, nodes}
@@ -20,10 +20,6 @@ object ClientMain extends js.Object:
   val signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-object EngineState:
-  var engine: Option[js.Dynamic]           = None
-  var controller: Option[EngineController] = None
-
 final case class View():
   private val windowsWidth: Int  = 600
   private val windowsHeight: Int = 600
@@ -41,17 +37,12 @@ final case class View():
     ): Unit =
       animationObserver.onNext(PauseAnimation())
 
-      EngineState.controller.foreach(_.kill())
-
       val newEngine =
         js.Dynamic.global.EngineImpl(10, 10, 3, 100, 100, 100, 190)
-      val newController = EngineController(newEngine)
 
-      EngineState.engine = Some(newEngine)
-      EngineState.controller = Some(newController)
+      animationObserver.onNext(setEngine(newEngine))
 
-      newController.start()
-
+      EngineController.start()
       originalSignal(result, attachedElements, scastieId)
 
     js.Dynamic.global.scastie.ClientMain.signal = newSignal

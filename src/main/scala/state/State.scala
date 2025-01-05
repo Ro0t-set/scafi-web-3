@@ -2,6 +2,7 @@ package state
 
 import com.raquo.laminar.api.L.*
 import domain.{AnimationCommand, Edge, GraphCommand, Node, *}
+import scala.scalajs.js
 
 object GraphState:
   val nodes: Var[Set[Node]] = Var(Set.empty[Node])
@@ -35,12 +36,14 @@ object GraphState:
   }
 
 object AnimationState:
-  val running: Var[Boolean] = Var[Boolean](false)
-  val batch: Var[Int]       = Var[Int](1)
-  val currentTick: Var[Int] = Var[Int](0)
+  val running: Var[Boolean]   = Var[Boolean](false)
+  val batch: Var[Int]         = Var[Int](1)
+  val currentTick: Var[Int]   = Var[Int](0)
+  val engine: Var[js.Dynamic] = Var[js.Dynamic](js.Dynamic.literal())
 
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
+      case setEngine(engine)     => this.engine.set(engine)
       case StartAnimation()      => if !running.now() then running.set(true)
       case PauseAnimation()      => running.set(false)
       case NextTick()            => currentTick.update(_ + 1)

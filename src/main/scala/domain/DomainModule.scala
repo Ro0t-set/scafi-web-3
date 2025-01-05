@@ -1,5 +1,7 @@
 package domain
 
+import scala.scalajs.js
+
 type Id    = Int
 type Color = Int
 type Label = String
@@ -23,9 +25,9 @@ case class RemoveNode(node: Node)                 extends GraphCommand
 case class RemoveEdge(edge: Edge)                 extends GraphCommand
 
 sealed trait AnimationCommand
-
-case class StartAnimation()           extends AnimationCommand
-case class PauseAnimation()           extends AnimationCommand
-case class NextTick()                 extends AnimationCommand
-case class AnimationBatch(batch: Int) extends AnimationCommand
-case class Reset()                    extends AnimationCommand
+case class setEngine(engine: js.Dynamic) extends AnimationCommand
+case class StartAnimation()              extends AnimationCommand
+case class PauseAnimation()              extends AnimationCommand
+case class NextTick()                    extends AnimationCommand
+case class AnimationBatch(batch: Int)    extends AnimationCommand
+case class Reset()                       extends AnimationCommand

@@ -5,12 +5,12 @@ import domain.NextTick
 import com.raquo.laminar.api.L.{*, given}
 
 import scala.scalajs.js
-import state.AnimationState.{animationObserver, batch, running}
+import state.AnimationState.{animationObserver, batch, engine, running}
 
 import scala.scalajs.js.JSON
 import scala.scalajs.js.annotation.JSExport
 
-class EngineController(engine: js.Dynamic):
+object EngineController:
   private val death: Var[Boolean] = Var(false)
 
   running.signal.foreach {
@@ -18,11 +18,10 @@ class EngineController(engine: js.Dynamic):
     case false => ()
   }(unsafeWindowOwner)
 
-  @JSExport
   def kill(): Unit = death.set(true)
 
   private def processNextBatch(): js.Dynamic =
-    engine.nextAndGetJsonNetwork()
+    engine.now().nextAndGetJsonNetwork()
 
   private def handleNewData(nodes: js.Dynamic): Unit =
     val nodesJson = JSON.stringify(nodes)
