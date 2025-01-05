@@ -31,5 +31,5 @@ object GraphAPI extends GraphAPIService:
       case Some(edgeSet) =>
         commandObserver.onNext(SetEdges(edgeSet))
         None
-      case None =>
+      case _ =>
         Some(ParsingError("Failed to parse Edges from JSON"))

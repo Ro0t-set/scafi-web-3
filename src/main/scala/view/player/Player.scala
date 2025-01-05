@@ -1,41 +1,45 @@
 package view.player
 
 import API.GraphAPI
-import org.scalajs.dom
+import domain.NextTick
+import com.raquo.laminar.api.L.{*, given}
+
 import scala.scalajs.js
-import scala.scalajs.js.annotation.*
+import scala.concurrent.Promise
+import state.AnimationState.{animationObserver, batch, running}
+
 import scala.scalajs.js.JSON
-import scala.concurrent.{Future, Promise}
-import scala.concurrent.ExecutionContext.Implicits.global
+case class EngineState(
+    isPlaying: Boolean = false,
+    batchSize: Int = 1
+)
 
-@js.native
-@SuppressWarnings(Array("org.wartremover.warts.All"))
-@JSGlobal("scastie.ClientMain")
-object ClientMain extends js.Object:
-  var signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
+class EngineController(engine: js.Dynamic):
+  private val state = Promise[EngineState]()
+  state.success(EngineState())
 
-@SuppressWarnings(Array("org.wartremover.warts.All"))
-def startAsyncNodeGeneration(engine: js.Dynamic): Unit =
-  def loop(): Unit =
-    val nodes     = engine.nextAndGetJsonNetwork()
+  running.signal.foreach {
+    case true  => start(); println("Start")
+    case false => ()
+  }(unsafeWindowOwner)
+
+  private def processNextBatch(): js.Dynamic =
+    engine.nextAndGetJsonNetwork()
+
+  private def handleNewData(nodes: js.Dynamic): Unit =
     val nodesJson = JSON.stringify(nodes)
     GraphAPI.addNodesFromJson(nodesJson)
-    dom.window.setTimeout(() => loop(), 0)
 
-  loop()
+  def start(): Unit =
+    def loop(): Unit =
+      if running.signal.now() then
+        val batchValue = batch.signal.now()
+        for _ <- 0 until batchValue - 1 do
+          animationObserver.onNext(NextTick())
+          processNextBatch()
 
-def initializeEngineAsync(): Unit =
-  println("Engine initializing (async)...")
-  val engine = js.Dynamic.global.EngineImpl(10, 10, 3, 100, 100, 100, 190)
-  startAsyncNodeGeneration(engine)
+        val result = processNextBatch()
+        handleNewData(result)
+        js.timers.setTimeout(0)(loop())
 
-def interceptSignal(): Unit =
-  val originalSignal = ClientMain.signal
-  ClientMain.signal =
-    (result: js.Any, attachedElements: js.Any, scastieId: js.Any) =>
-      initializeEngineAsync()
-      originalSignal(result, attachedElements, scastieId)
-
-@JSExportTopLevel("init")
-def init(): Unit =
-  interceptSignal()
+    loop()

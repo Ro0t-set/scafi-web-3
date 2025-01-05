@@ -1,22 +1,55 @@
 package view
 
+import API.GraphAPI
 import com.raquo.laminar.api.L.{*, given}
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
 import state.GraphState.{edges, nodes}
-import state.AnimationState.{animationObserver, batch, currentTick}
+import state.AnimationState.{animationObserver, batch, currentTick, running}
 import view.graph.ThreeSceneImpl
+import view.player.EngineController
+
+import scala.scalajs.js
+import scala.scalajs.js.JSON
+import scala.scalajs.js.annotation.JSGlobal
+
+@js.native
+@SuppressWarnings(Array("org.wartremover.warts.All"))
+@JSGlobal("scastie.ClientMain")
+object ClientMain extends js.Object:
+  val signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
 final case class View():
-  // get windows size and set the canvas size
   private val windowsWidth: Int  = dom.window.innerWidth.toInt
   private val windowsHeight: Int = dom.window.innerHeight.toInt
+
   val scene: ThreeSceneImpl =
     ThreeSceneImpl(windowsWidth / 2, (windowsHeight / 1.5).toInt, 1000)
 
-  private def animationControllerView(): Element =
+  private val engineSignal     = Var[Option[js.Dynamic]](None)
+  private val controllerSignal = Var[Option[EngineController]](None)
+
+  private def initialize(): Unit =
+    val originalSignal = ClientMain.signal
+
+    def newSignal(
+        result: js.Any,
+        attachedElements: js.Any,
+        scastieId: js.Any
+    ): Unit =
+      val newEngine =
+        js.Dynamic.global.EngineImpl(10, 10, 3, 100, 100, 100, 190)
+      engineSignal.set(Some(newEngine))
+      val newController = EngineController(newEngine)
+      controllerSignal.set(Some(newController))
+      newController.start()
+      originalSignal(result, attachedElements, scastieId)
+
+    js.Dynamic.global.scastie.ClientMain.signal = newSignal
+
+  private val animationControllerView: Element =
     div(
       cls := "animation-controller",
       div(
@@ -33,13 +66,13 @@ final case class View():
         cls := "controls",
         button(
           cls := "control-button",
-          i(cls := "fas fa-play"), // Font Awesome Play Icon
+          i(cls := "fas fa-play"),
           " Start",
           onClick --> (_ => animationObserver.onNext(StartAnimation()))
         ),
         button(
           cls := "control-button",
-          i(cls := "fas fa-pause"), // Font Awesome Pause Icon
+          i(cls := "fas fa-pause"),
           " Pause",
           onClick --> (_ => animationObserver.onNext(PauseAnimation()))
         )
@@ -66,8 +99,9 @@ final case class View():
   def render(): Unit =
     val rootElement = div(
       scene.renderScene("three_canvas"),
-      animationControllerView(),
+      animationControllerView,
       onMountCallback { _ =>
+        initialize()
         nodes.signal.combineWith(edges.signal).foreach {
           case (currentNodes, currentEdges) =>
             scene.setNodes(currentNodes)
