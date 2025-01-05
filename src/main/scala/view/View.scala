@@ -5,8 +5,8 @@ import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{setEngine, AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
 import org.scalajs.dom.HTMLDivElement
-import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick}
+import state.GraphState.{edges, nodes}
 import view.graph.ThreeSceneImpl
 
 import scala.scalajs.js
@@ -17,13 +17,89 @@ import scala.scalajs.js.annotation.JSGlobal
 object ClientMain extends js.Object:
   val signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
-@SuppressWarnings(Array("org.wartremover.warts.All"))
 final case class View():
-  private val windowsWidth: Int  = 600
-  private val windowsHeight: Int = 600
+  private val windowsWidth: Int  = 700
+  private val windowsHeight: Int = 400
 
   val scene: ThreeSceneImpl =
     ThreeSceneImpl(windowsWidth, windowsHeight, 1000)
+
+  private val xVar        = Var(5)
+  private val yVar        = Var(5)
+  private val zVar        = Var(2)
+  private val distXVar    = Var(100)
+  private val distYVar    = Var(100)
+  private val distZVar    = Var(100)
+  private val edgeDistVar = Var(190)
+
+  private val engineSettingsView: Element =
+    div(
+      cls := "engine-form-layout",
+      h3("Engine Settings"),
+      div(
+        label("x: "),
+        input(
+          typ   := "number",
+          value := xVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> xVar
+        ),
+        label("y: "),
+        input(
+          typ   := "number",
+          value := yVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> yVar
+        ),
+        label("z: "),
+        input(
+          typ   := "number",
+          value := zVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> zVar
+        ),
+        label("distX: "),
+        input(
+          typ   := "number",
+          value := distXVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> distXVar
+        ),
+        label("distY: "),
+        input(
+          typ   := "number",
+          value := distYVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> distYVar
+        ),
+        label("distZ: "),
+        input(
+          typ   := "number",
+          value := distZVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> distZVar
+        ),
+        label("edgeDist: "),
+        input(
+          typ   := "number",
+          value := edgeDistVar.now().toString,
+          onInput.mapToValue.map(_.toInt) --> edgeDistVar
+        )
+      ),
+      button(
+        "Load Parameters",
+        onClick --> { _ =>
+
+          animationObserver.onNext(PauseAnimation())
+
+          val newEngine = js.Dynamic.global.EngineImpl(
+            xVar.now(),
+            yVar.now(),
+            zVar.now(),
+            distXVar.now(),
+            distYVar.now(),
+            distZVar.now(),
+            edgeDistVar.now()
+          )
+
+          animationObserver.onNext(setEngine(newEngine))
+        }
+      )
+    )
 
   private def initialize(): Unit =
     val originalSignal = ClientMain.signal
@@ -33,12 +109,8 @@ final case class View():
         attachedElements: js.Any,
         scastieId: js.Any
     ): Unit =
+
       animationObserver.onNext(PauseAnimation())
-
-      val newEngine =
-        js.Dynamic.global.EngineImpl(5, 5, 2, 100, 100, 100, 190)
-
-      animationObserver.onNext(setEngine(newEngine))
 
       originalSignal(result, attachedElements, scastieId)
 
@@ -52,6 +124,7 @@ final case class View():
         p(
           strong("Batch: "),
           child.text <-- batch.signal.map(_.toString),
+          " | ",
           strong("Counter: "),
           child.text <-- currentTick.signal.map(_.toString)
         )
@@ -84,8 +157,8 @@ final case class View():
           minAttr := "1",
           maxAttr := "100",
           value   := "1",
-          onInput.mapToValue.map(_.toInt) --> (batch =>
-            animationObserver.onNext(AnimationBatch(batch))
+          onInput.mapToValue.map(_.toInt) --> (batchSize =>
+            animationObserver.onNext(AnimationBatch(batchSize))
           )
         )
       )
@@ -94,6 +167,7 @@ final case class View():
   def render(): Unit =
     val rootElement = div(
       scene.renderScene("three_canvas"),
+      engineSettingsView,
       animationControllerView,
       onMountCallback { _ =>
         initialize()
@@ -104,6 +178,7 @@ final case class View():
         }(unsafeWindowOwner)
       }
     )
+
     renderOnDomContentLoaded(
       dom.document.getElementById("app"),
       rootElement
