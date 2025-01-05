@@ -5,31 +5,31 @@ import com.raquo.laminar.api.L.{*, given}
 import com.raquo.laminar.nodes.ReactiveHtmlElement
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import org.scalajs.dom
-import org.scalajs.dom.HTMLDivElement
+import org.scalajs.dom.{console, HTMLDivElement}
 import state.GraphState.{edges, nodes}
 import state.AnimationState.{animationObserver, batch, currentTick, running}
 import view.graph.ThreeSceneImpl
 import view.player.EngineController
 
 import scala.scalajs.js
-import scala.scalajs.js.JSON
-import scala.scalajs.js.annotation.JSGlobal
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel, JSGlobal}
 
 @js.native
-@SuppressWarnings(Array("org.wartremover.warts.All"))
 @JSGlobal("scastie.ClientMain")
 object ClientMain extends js.Object:
   val signal: js.Function3[js.Any, js.Any, js.Any, Unit] = js.native
 
+@SuppressWarnings(Array("org.wartremover.warts.All"))
+object EngineState:
+  var engine: Option[js.Dynamic]           = None
+  var controller: Option[EngineController] = None
+
 final case class View():
-  private val windowsWidth: Int  = dom.window.innerWidth.toInt
-  private val windowsHeight: Int = dom.window.innerHeight.toInt
+  private val windowsWidth: Int  = 600
+  private val windowsHeight: Int = 600
 
   val scene: ThreeSceneImpl =
-    ThreeSceneImpl(windowsWidth / 2, (windowsHeight / 1.5).toInt, 1000)
-
-  private val engineSignal     = Var[Option[js.Dynamic]](None)
-  private val controllerSignal = Var[Option[EngineController]](None)
+    ThreeSceneImpl(windowsWidth, windowsHeight, 1000)
 
   private def initialize(): Unit =
     val originalSignal = ClientMain.signal
@@ -39,12 +39,19 @@ final case class View():
         attachedElements: js.Any,
         scastieId: js.Any
     ): Unit =
+      animationObserver.onNext(PauseAnimation())
+
+      EngineState.controller.foreach(_.kill())
+
       val newEngine =
         js.Dynamic.global.EngineImpl(10, 10, 3, 100, 100, 100, 190)
-      engineSignal.set(Some(newEngine))
       val newController = EngineController(newEngine)
-      controllerSignal.set(Some(newController))
+
+      EngineState.engine = Some(newEngine)
+      EngineState.controller = Some(newController)
+
       newController.start()
+
       originalSignal(result, attachedElements, scastieId)
 
     js.Dynamic.global.scastie.ClientMain.signal = newSignal
