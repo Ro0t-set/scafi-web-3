@@ -24,7 +24,10 @@ jobs:
           distribution: 'temurin'
           cache: 'sbt'
       - name: Run tests
-        run: sbt fastLinkJS && sbt test
+        run: |
+          npm install
+          sbt -J-Xmx6G fastLinkJS
+          sbt test
 
   format:
     runs-on: ubuntu-22.04
