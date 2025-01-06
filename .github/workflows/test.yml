@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
           cache: 'sbt'
       - name: Run tests
-        run: sbt test
+        run: sbt fastLinkJS && sbt test
 
   format:
     runs-on: ubuntu-22.04
