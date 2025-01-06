@@ -16,7 +16,6 @@ object EngineController:
     engine.now().nextAndGetJsonNetwork()
   private def handleNewData(nodes: js.Dynamic): Unit =
     val nodesJson = JSON.stringify(nodes)
-    println(s" = ${nodesJson}")
     GraphAPI.addNodesFromJson(nodesJson)
   private def start(): Unit =
     def loop(): Unit =
