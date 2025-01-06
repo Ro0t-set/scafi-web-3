@@ -11,6 +11,7 @@ final case class Node(id: Id, position: Position, label: Label, color: Color):
   override def equals(obj: Any): Boolean = obj match
     case that: Node => this.id == that.id
     case _          => false
+  override def hashCode(): Int = id.##
 final case class Edge(nodes: (Node, Node))
 
 sealed trait GraphCommand

@@ -31,7 +31,7 @@ lazy val scafiWeb3 = project.in(file("."))
     ),
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",
-    libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.0" % Test,
+    libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.3" % Test,
     libraryDependencies += "com.lihaoyi" %%% "upickle" % "4.0.2",
     externalNpm                             := baseDirectory.value
   )
