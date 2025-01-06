@@ -21,7 +21,7 @@ object GraphAPI extends GraphAPIService:
       case Some(nodeSet) =>
         commandObserver.onNext(SetNodes(nodeSet))
         None
-      case None =>
+      case _ =>
         Some(ParsingError("Failed to parse Nodes from JSON"))
 
   @JSExportTopLevel("addEdgesFromJson")
