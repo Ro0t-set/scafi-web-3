@@ -36,10 +36,10 @@ object GraphState:
   }
 
 object AnimationState:
-  val running: Var[Boolean]   = Var[Boolean](false)
-  val batch: Var[Int]         = Var[Int](1)
-  val currentTick: Var[Int]   = Var[Int](0)
-  val engine: Var[js.Dynamic] = Var[js.Dynamic](js.Dynamic.literal())
+  val running: Var[Boolean]           = Var[Boolean](false)
+  val batch: Var[Int]                 = Var[Int](1)
+  val currentTick: Var[Int]           = Var[Int](0)
+  val engine: Var[Option[js.Dynamic]] = Var[Option[js.Dynamic]](None)
   private def reset(): Unit =
     running.set(false)
     currentTick.set(0)
@@ -47,7 +47,7 @@ object AnimationState:
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
       case setEngine(engine) =>
-        this.engine.set(engine)
+        this.engine.set(Some(engine))
         reset()
       case StartAnimation()      => if !running.now() then running.set(true)
       case PauseAnimation()      => running.set(false)

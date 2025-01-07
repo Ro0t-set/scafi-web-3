@@ -13,7 +13,7 @@ object EngineController:
     case false => ()
   }(unsafeWindowOwner)
   private def processNextBatch(): js.Dynamic =
-    engine.now().nextAndGetJsonNetwork()
+    engine.now().getOrElse(js.Dynamic.literal()).nextAndGetJsonNetwork()
   private def handleNewData(nodes: js.Dynamic): Unit =
     val nodesJson = JSON.stringify(nodes)
     GraphAPI.addNodesFromJson(nodesJson)
