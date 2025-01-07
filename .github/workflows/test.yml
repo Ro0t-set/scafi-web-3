@@ -28,6 +28,7 @@ jobs:
           npm install
           sbt -J-Xmx6G fastLinkJS
           sbt test
+          sbt cucumber
 
   format:
     runs-on: ubuntu-22.04
