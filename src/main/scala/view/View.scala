@@ -32,6 +32,21 @@ final case class View():
   private val distZVar    = Var(100)
   private val edgeDistVar = Var(190)
 
+  private def loadEngine(): Unit =
+    animationObserver.onNext(PauseAnimation())
+
+    val newEngine = js.Dynamic.global.EngineImpl(
+      xVar.now(),
+      yVar.now(),
+      zVar.now(),
+      distXVar.now(),
+      distYVar.now(),
+      distZVar.now(),
+      edgeDistVar.now()
+    )
+
+    animationObserver.onNext(setEngine(newEngine))
+
   private val engineSettingsView: Element =
     div(
       cls := "engine-form-layout",
@@ -82,22 +97,7 @@ final case class View():
       ),
       button(
         "Load Parameters",
-        onClick --> { _ =>
-
-          animationObserver.onNext(PauseAnimation())
-
-          val newEngine = js.Dynamic.global.EngineImpl(
-            xVar.now(),
-            yVar.now(),
-            zVar.now(),
-            distXVar.now(),
-            distYVar.now(),
-            distZVar.now(),
-            edgeDistVar.now()
-          )
-
-          animationObserver.onNext(setEngine(newEngine))
-        }
+        onClick --> { _ => loadEngine() }
       )
     )
 
@@ -109,9 +109,7 @@ final case class View():
         attachedElements: js.Any,
         scastieId: js.Any
     ): Unit =
-
-      animationObserver.onNext(PauseAnimation())
-
+      loadEngine()
       originalSignal(result, attachedElements, scastieId)
 
     js.Dynamic.global.scastie.ClientMain.signal = newSignal
