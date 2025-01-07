@@ -15,23 +15,20 @@ lazy val scafiWeb3 = project.in(file("."))
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
         .withOptimizer(false)
-    }
-    ,
+    },
 
-    libraryDependencies ++= Seq(
-      ("it.unibo.scafi" %%% "scafi-core" % scafiVersion).cross(
-        CrossVersion.for3Use2_13
-      ),
-      ("it.unibo.scafi" %%% "scafi-commons" % scafiVersion).cross(
-        CrossVersion.for3Use2_13
-      ),
-      ("it.unibo.scafi" %%% "scafi-simulator" % scafiVersion).cross(
-        CrossVersion.for3Use2_13
-      )
-    ),
+
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",
     libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.3" % Test,
+    libraryDependencies += "io.cucumber" %% "cucumber-scala" % "8.25.1" % Test,
+    libraryDependencies += "io.cucumber" % "cucumber-junit" % "7.20.1" % Test,
+    libraryDependencies += "org.scalatestplus" %% "selenium-4-21" % "3.2.19.0" % Test,
     libraryDependencies += "com.lihaoyi" %%% "upickle" % "4.0.2",
     externalNpm                             := baseDirectory.value
   )
+
+
+
+
+
