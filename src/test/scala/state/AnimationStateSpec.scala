@@ -11,7 +11,7 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.running.set(false)
     AnimationState.batch.set(1)
     AnimationState.currentTick.set(0)
-    AnimationState.engine.set(js.Dynamic.literal())
+    AnimationState.engine.set(None)
   }
 
   test("setEngine sets the engine and resets running & currentTick") {
@@ -24,7 +24,7 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.animationObserver.onNext(cmd)
 
     assertEquals(
-      AnimationState.engine.now(),
+      AnimationState.engine.now().getOrElse(js.Dynamic.literal()),
       dummyEngine,
       "AnimationState.engine should be set to dummyEngine"
     )
@@ -95,7 +95,7 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.currentTick.set(5)
     AnimationState.batch.set(42)
 
-    val dummyEngine = js.Dynamic.literal("someField" -> "someValue")
+    val dummyEngine = Some(js.Dynamic.literal("someField" -> "someValue"))
     AnimationState.engine.set(dummyEngine)
 
     // Send Reset command
