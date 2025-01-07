@@ -1,7 +1,11 @@
 name: Test
 on:
+  workflow_run:
+    workflows: [ "github-pages" ]
+    types:
+      - completed
   push:
-    branches-ignore: [ 'doc', 'develop' ]
+    branches-ignore: [ 'doc' ]
   pull_request:
     branches: [ 'tests', 'dev' ]
 
@@ -29,6 +33,13 @@ jobs:
           sbt -J-Xmx6G fastLinkJS
           sbt test
           sbt cucumber
+      - name: Copy cucumber html page
+        run: |
+          cp ./target/test-report/cucumber/cucumber.html ./site/cucumber.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./site
 
   format:
     runs-on: ubuntu-22.04
@@ -42,3 +53,14 @@ jobs:
           cache: 'sbt'
       - name: Check scalafmt format
         run: sbt scalafmtCheckAll
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2p

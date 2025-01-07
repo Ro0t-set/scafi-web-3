@@ -14,8 +14,9 @@ CucumberPlugin.mainClass := "io.cucumber.core.cli.Main"
 CucumberPlugin.plugin := {
   import com.waioeka.sbt.Plugin._
   val cucumberDir = CucumberPlugin.cucumberTestReports.value
+  println(cucumberDir)
   List(
-    HtmlPlugin(new File(cucumberDir, "/resources/cucumber.html")),
+    HtmlPlugin(new File(cucumberDir, "cucumber.html")),
   )
 }
 
