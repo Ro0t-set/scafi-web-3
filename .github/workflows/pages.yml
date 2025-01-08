@@ -106,10 +106,11 @@ jobs:
         run: |
           mkdir -p ./site/cucumber
           cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
+
       - name: Upload updated site artifact with test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: site
+          artifact_name: site
           path: ./site
 
   deploy-cucumber-results:
@@ -126,8 +127,7 @@ jobs:
           path: ./site
 
       - name: Deploy Cucumber Reports to GitHub Pages
-        id: tests
+        id: deployment
         uses: actions/deploy-pages@v2
         with:
-          name: site
-          path: ./site
+          artifact_name: site

@@ -3,9 +3,12 @@ package view.player
 import API.GraphAPI
 import domain.NextTick
 import com.raquo.laminar.api.L.{*, given}
+
 import scala.scalajs.js
 import state.AnimationState.{animationObserver, batch, engine, running}
+
 import scala.scalajs.js.JSON
+import scala.scalajs.js.timers.setTimeout
 
 object EngineController:
   running.signal.foreach {
@@ -27,5 +30,6 @@ object EngineController:
         animationObserver.onNext(NextTick())
         val result = processNextBatch()
         handleNewData(result)
-        js.timers.setTimeout(0)(loop())
+        setTimeout(0)(loop())
+
     loop()
