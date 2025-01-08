@@ -103,7 +103,9 @@ jobs:
           sbt cucumber
 
       - name: Copy Cucumber HTML report
-        run: cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
+        run: |
+          mkdir -p ./site/cucumber
+          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
       - name: Upload updated site artifact with test results
         uses: actions/upload-artifact@v3
         with:
