@@ -73,12 +73,18 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'sbt'
+      - name: Download site artifact
+        uses: actions/download-pages-artifact@v2
+        with:
+          name: site
       - name: Run tests
         run: |
           npm install
           sbt -J-Xmx6G fastLinkJS
           sbt test
           sbt cucumber
+      - name: Create site directory
+        run: mkdir -p ./site
       - name: Copy cucumber html page
         run: |
           cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
@@ -97,4 +103,3 @@ jobs:
       - name: Deploy Cucumber Reports to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
