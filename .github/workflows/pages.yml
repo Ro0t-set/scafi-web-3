@@ -114,7 +114,7 @@ jobs:
 
   deploy-cucumber-results:
     environment:
-      name: github-pages
+      name: site
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: tests
