@@ -1,7 +1,8 @@
 package API
 
-import domain.{Edge, Node, Position, SetEdges, SetNodes}
+import domain.{Edge, Id, Node, Position, SetEdges, SetEdgesByIds, SetNodes}
 import state.GraphState.*
+
 import scala.scalajs.js.annotation.*
 
 sealed trait GraphApiError:
@@ -26,10 +27,10 @@ object GraphAPI extends GraphAPIService:
 
   @JSExportTopLevel("addEdgesFromJson")
   override def addEdgesFromJson(input: String): Option[GraphApiError] =
-    val maybeEdges: Option[Set[Edge]] = Option.empty
+    val maybeEdges: Option[Set[(Id, Id)]] = EdgeParser.parse(input)
     maybeEdges match
       case Some(edgeSet) =>
-        commandObserver.onNext(SetEdges(edgeSet))
+        commandObserver.onNext(SetEdgesByIds(edgeSet))
         None
       case _ =>
         Some(ParsingError("Failed to parse Edges from JSON"))

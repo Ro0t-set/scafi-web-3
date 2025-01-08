@@ -1,6 +1,7 @@
 package API
 
-import domain.{Node, Position}
+import domain.{Id, Node, Position}
+
 import scala.util.Try
 
 abstract class Parser[T, A]:
@@ -24,5 +25,16 @@ case object NodeParser extends Parser[String, Node]:
           color = colorValue,
           position = Position(x, y, z)
         )
+      }.toSet
+    }.toOption
+
+case object EdgeParser extends Parser[String, (Id, Id)]:
+  override def parse(jsonString: String): Option[Set[(Id, Id)]] =
+    Try {
+      val jsonVal = ujson.read(jsonString)
+      jsonVal.arr.map { edgeJson =>
+        val source = edgeJson("source").num.toInt
+        val target = edgeJson("target").num.toInt
+        (source, target)
       }.toSet
     }.toOption

@@ -66,12 +66,8 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     val edgesToRemove = currentEdge.diff(edges)
     val edgesToAdd    = edges.diff(currentEdge)
 
-    edgesToRemove.foreach { oldEdge =>
-      val edgeName = s"edge-${oldEdge.nodes._1.id}${oldEdge.nodes._2.id}"
-      sceneWrapper.findByName(edgeName).foreach(sceneWrapper.removeObject)
-    }
 
-    val edgeObjects = edgesToAdd.map { edge =>
+    val edgeObjects: Unit = edgesToAdd.map { edge =>
       Edge3D(
         edge.nodes._1.position.x,
         edge.nodes._2.position.x,
@@ -79,9 +75,10 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         edge.nodes._2.position.y,
         edge.nodes._1.position.z,
         edge.nodes._2.position.z,
-        s"${edge.nodes._1.id}${edge.nodes._2.id}"
       )
     }
+
+
 
     edgeObjects.foreach(sceneWrapper.addObject)
     currentEdge = edges

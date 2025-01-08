@@ -11,15 +11,28 @@ import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
 
 object EngineController:
+  private type n           = js.Dynamic
+  private type e           = js.Dynamic
+  private type JsonNetwork = (n, e)
+
   running.signal.foreach {
     case true  => start()
     case false => ()
   }(unsafeWindowOwner)
-  private def processNextBatch(): js.Dynamic =
-    engine.now().getOrElse(js.Dynamic.literal()).nextAndGetJsonNetwork()
-  private def handleNewData(nodes: js.Dynamic): Unit =
-    val nodesJson = JSON.stringify(nodes)
-    GraphAPI.addNodesFromJson(nodesJson)
+  private def processNextBatch(): JsonNetwork =
+    engine.now().getOrElse(js.Dynamic.literal()).executeIterations()
+    val net: n  = engine.now().getOrElse(js.Dynamic.literal()).getNodes()
+    val edge: e = engine.now().getOrElse(js.Dynamic.literal()).getEdges()
+    (net, edge)
+
+  private def handleNewData(net: JsonNetwork): Unit =
+    net match
+      case (nodes: js.Dynamic, edges: js.Dynamic) =>
+        val nodesJson: String = JSON.stringify(nodes)
+        val edgesJson: String = JSON.stringify(edges)
+        GraphAPI.addNodesFromJson(nodesJson)
+        GraphAPI.addEdgesFromJson(edgesJson)
+
   private def start(): Unit =
     def loop(): Unit =
       if running.signal.now() then
