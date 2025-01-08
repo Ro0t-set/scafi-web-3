@@ -62,7 +62,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
 
-  selenium-tests:
+  tests:
     runs-on: ubuntu-22.04
     needs: deploy
     steps:
@@ -92,7 +92,7 @@ jobs:
       name: github-pages-cucumber
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: selenium-cucumber-tests
+    needs: tests
     steps:
       - name: Deploy Cucumber Reports to GitHub Pages
         id: deployment
