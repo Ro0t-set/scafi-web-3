@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 jobs:
-
-  build:
+  run-tests:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-22.04
 
     steps:
@@ -35,7 +35,7 @@ jobs:
           sbt cucumber
       - name: Copy cucumber html page
         run: |
-          cp ./target/test-report/cucumber/cucumber.html ./site/cucumber.html
+          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
