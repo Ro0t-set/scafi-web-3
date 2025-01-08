@@ -15,7 +15,8 @@ object Edge3D extends Object3D[Object3DEventMap]:
       y1: Double,
       y2: Double,
       z1: Double,
-      z2: Double
+      z2: Double,
+      name: String
   ): Object3D[Object3DEventMap] =
     val group = new Group()
     val lineGeometry = new BufferGeometry().setFromPoints(js.Array(
@@ -26,6 +27,6 @@ object Edge3D extends Object3D[Object3DEventMap]:
       color = 0xffff00
     })
     val line = new Line(lineGeometry, lineMaterial)
-    line.name = "edge-" + x1 + "-" + x2 + "-" + y1 + "-" + y2 + "-" + z1 + "-" + z2
+    line.name = name
     group.add(line.asInstanceOf[Object3D[Object3DEventMap]])
     group.asInstanceOf[Object3D[Object3DEventMap]]

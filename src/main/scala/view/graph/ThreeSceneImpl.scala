@@ -8,6 +8,13 @@ import view.adapter.SceneWrapper
 import view.adapter.ThreeJsAdapter.*
 import view.graph.component.{Edge3D, Node3D}
 
+extension (node: Node)
+  def object3dName: String = "node-" + node.id.toString
+
+extension (edge: Edge)
+  def object3dName: String =
+    "edge-" + edge.nodes._1.id.toString + "-" + edge.nodes._2.id.toString
+
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private val sceneWrapper = SceneWrapper()
@@ -40,12 +47,16 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
   private var currentEdge = Set.empty[Edge]
 
   def setNodes(nodes: Set[Node]): Unit =
-    val nodesToRemove = currentNode.diff(nodes)
     val nodesToAdd    = nodes.diff(currentNode)
+    val nodesToRemove = currentNode.diff(nodes)
+
+    println("nodesToAdd " + nodesToAdd.size)
+    println("nodesToRemove " + nodesToRemove.size)
 
     nodesToRemove.foreach { oldNode =>
-      sceneWrapper.findByName(s"node-${oldNode.id}")
-        .foreach(sceneWrapper.removeObject)
+      sceneWrapper.findByName(oldNode.object3dName).foreach(
+        sceneWrapper.removeObject
+      )
     }
 
     val nodeObjects = nodesToAdd.map { node =>
@@ -55,7 +66,8 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         node.position.x,
         node.position.y,
         node.position.z,
-        node.color
+        node.color,
+        node.object3dName
       )
     }
 
@@ -63,11 +75,13 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
     currentNode = nodes
 
   def setEdges(edges: Set[Edge]): Unit =
-    val edgesToRemove = currentEdge.diff(edges)
     val edgesToAdd    = edges.diff(currentEdge)
+    val edgesToRemove = currentEdge.diff(edges)
 
+    println("edgesToRemove " + edgesToRemove.size)
+    println("edgesToAdd " + edgesToAdd.size)
 
-    val edgeObjects: Unit = edgesToAdd.map { edge =>
+    val edgeObjects = edgesToAdd.map { edge =>
       Edge3D(
         edge.nodes._1.position.x,
         edge.nodes._2.position.x,
@@ -75,10 +89,9 @@ case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
         edge.nodes._2.position.y,
         edge.nodes._1.position.z,
         edge.nodes._2.position.z,
+        edge.object3dName
       )
     }
-
-
 
     edgeObjects.foreach(sceneWrapper.addObject)
     currentEdge = edges

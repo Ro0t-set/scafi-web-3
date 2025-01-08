@@ -18,14 +18,15 @@ object Node3D extends Object3D[Object3DEventMap]:
       x: Double,
       y: Double,
       z: Double,
-      ncolor: Int
+      nodeColor: Int,
+      name: String
   ): Object3D[Object3DEventMap] =
     val group = new Group()
-    group.name = "node-" + id
+    group.name = name
 
     val pointGeometry = new BoxGeometry(10, 10, 10, 1, 1, 1)
     val pointMaterial = new MeshBasicMaterial(new MeshBasicMaterialParameters {
-      color = ncolor
+      color = nodeColor
     })
     val pointMesh = new Mesh(pointGeometry, pointMaterial)
     pointMesh.position.set(x, y, z)

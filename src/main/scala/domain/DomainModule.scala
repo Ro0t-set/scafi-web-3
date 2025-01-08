@@ -13,8 +13,9 @@ final case class Node(id: Id, position: Position, label: Label, color: Color):
     case _          => false
 final case class Edge(nodes: (Node, Node)):
   override def equals(obj: Any): Boolean = obj match
-    case that: Edge => this.nodes == that.nodes
+    case that: Edge => this.nodes == that.nodes || this.nodes == that.nodes.swap
     case _          => false
+
 sealed trait GraphCommand
 
 case class SetNodes(nodes: Set[Node])             extends GraphCommand
