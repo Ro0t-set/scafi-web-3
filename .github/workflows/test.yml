@@ -1,7 +1,7 @@
 name: Test
 on:
   workflow_run:
-    workflows: [ "github-pages" ]
+    workflows: [ "Deploy application and releases on Pages" ]
     types:
       - completed
   push:

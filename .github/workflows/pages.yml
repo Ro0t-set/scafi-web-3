@@ -1,9 +1,6 @@
 name: Deploy application and releases on Pages
-
 on:
-
   push:
-
   workflow_dispatch:
 
 permissions:
