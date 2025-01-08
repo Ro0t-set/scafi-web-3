@@ -59,6 +59,12 @@ jobs:
         with:
           path: ./site
 
+      - name: Upload site artifact for testing
+        uses: actions/upload-artifact@v3
+        with:
+          name: site
+          path: ./site
+
   deploy:
     environment:
       name: github-pages
@@ -97,24 +103,29 @@ jobs:
           sbt cucumber
 
       - name: Copy Cucumber HTML report
-        run: |
-          mkdir -p ./site/reports
-          cp ./target/test-reports/cucumber/cucumber.html ./site/reports/cucumber.html
-
+        run: cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
       - name: Upload updated site artifact with test results
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
+          name: site
           path: ./site
 
   deploy-cucumber-results:
     environment:
-      name: github-pages
+      name: github-pages-cucumber
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: tests
     steps:
+      - name: Download updated site artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: site
+          path: ./site
+
       - name: Deploy Cucumber Reports to GitHub Pages
-        id: deployment
+        id: tests
         uses: actions/deploy-pages@v2
         with:
+          name: site
           path: ./site
