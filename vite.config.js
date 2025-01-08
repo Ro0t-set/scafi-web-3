@@ -5,6 +5,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [scalaJSPlugin()],
     base: mode === "production" ? "./" : "/",
+    server: {
+      port: 8080
+    },
     build: {
       outDir: "dist",
     },

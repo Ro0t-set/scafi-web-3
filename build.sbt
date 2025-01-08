@@ -2,21 +2,20 @@ val scafiVersion = "1.3.0"
 scalafmtOnCompile := true
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
-  Wart.DefaultArguments,
+  Wart.DefaultArguments
 )
 
 enablePlugins(CucumberPlugin)
 
 CucumberPlugin.glues := List("features")
 CucumberPlugin.features := List("src/test/resources/features")
-// settings for cucumber 6 - see https://github.com/sbt/sbt-cucumber/issues/15
 CucumberPlugin.mainClass := "io.cucumber.core.cli.Main"
 CucumberPlugin.plugin := {
   import com.waioeka.sbt.Plugin._
   val cucumberDir = CucumberPlugin.cucumberTestReports.value
   println(cucumberDir)
   List(
-    HtmlPlugin(new File(cucumberDir, "cucumber.html")),
+    HtmlPlugin(new File(cucumberDir, "cucumber.html"))
   )
 }
 
@@ -31,7 +30,6 @@ lazy val scafiWeb3 = project.in(file("."))
         .withOptimizer(false)
     },
 
-
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",
     libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.3" % Test,
@@ -41,7 +39,29 @@ lazy val scafiWeb3 = project.in(file("."))
     libraryDependencies += "com.lihaoyi" %%% "upickle" % "4.0.2",
     externalNpm                             := baseDirectory.value
   )
+
 ThisBuild / evictionErrorLevel := Level.Info
 
+lazy val startNpmServer = taskKey[Unit]("Start the npm server on port 8080")
+
+startNpmServer := {
+  val process = sys.process.Process("npm run dev").run()
+  Thread.sleep(15000)
+  println("Server npm running!")
+}
 
 
+lazy val cucumberWithServer = taskKey[Unit]("Run Cucumber tests with npm server")
+
+cucumberWithServer := {
+  startNpmServer.value
+  try {
+    val result = sys.process.Process("sbt cucumber").!
+    if (result == 0) println("Cucumber tests passed!")
+    else println("Cucumber tests failed...")
+  } finally {
+    val result = sys.process.Process("pkill -f \"npm run dev\"").!
+    if (result == 0) println("Server npm stopped!")
+    else println("Server non found...")
+  }
+}

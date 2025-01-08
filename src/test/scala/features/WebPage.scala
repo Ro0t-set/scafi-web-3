@@ -15,7 +15,7 @@ class WebPage extends ScalaDsl with EN {
   val driver = new FirefoxDriver(options)
 
   Given("I am on the Scafi Web Page") {
-    driver.get("https://www.tommasopatriti.me/scafi-web-3/dist/")
+    driver.get("localhost:8080")
   }
 
   Then("the page title should start with {string}") {
