@@ -62,7 +62,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
 
-  selenium-cucumber-tests:
+  selenium-tests:
     runs-on: ubuntu-22.04
     needs: deploy
     steps:
@@ -75,6 +75,9 @@ jobs:
           cache: 'sbt'
       - name: Run tests
         run: |
+          npm install
+          sbt -J-Xmx6G fastLinkJS
+          sbt test
           sbt cucumber
       - name: Copy cucumber html page
         run: |
