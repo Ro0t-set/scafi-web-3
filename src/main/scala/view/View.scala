@@ -24,8 +24,8 @@ final case class View():
   val scene: ThreeSceneImpl =
     ThreeSceneImpl(windowsWidth, windowsHeight, 1000)
 
-  private val xVar        = Var(5)
-  private val yVar        = Var(5)
+  private val xVar        = Var(10)
+  private val yVar        = Var(10)
   private val zVar        = Var(2)
   private val distXVar    = Var(100)
   private val distYVar    = Var(100)
@@ -153,7 +153,7 @@ final case class View():
           idAttr  := "batch-slider",
           `type`  := "range",
           minAttr := "1",
-          maxAttr := "100",
+          maxAttr := "512",
           value   := "1",
           onInput.mapToValue.map(_.toInt) --> (batchSize =>
             animationObserver.onNext(AnimationBatch(batchSize))

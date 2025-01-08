@@ -39,7 +39,7 @@ object EngineController:
         val batchValue = batch.signal.now()
         for _ <- 0 until batchValue - 1 do
           animationObserver.onNext(NextTick())
-          processNextBatch()
+          engine.now().getOrElse(js.Dynamic.literal()).executeIterations()
         animationObserver.onNext(NextTick())
         val result = processNextBatch()
         handleNewData(result)
