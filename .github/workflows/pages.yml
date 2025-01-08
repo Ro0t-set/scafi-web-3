@@ -64,6 +64,7 @@ jobs:
 
   selenium-cucumber-tests:
     runs-on: ubuntu-22.04
+    needs: deploy
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 21
@@ -88,7 +89,7 @@ jobs:
       name: github-pages-cucumber
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: run-tests
+    needs: selenium-cucumber-tests
     steps:
       - name: Deploy Cucumber Reports to GitHub Pages
         id: deployment
