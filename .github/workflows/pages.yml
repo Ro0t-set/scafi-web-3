@@ -99,15 +99,11 @@ jobs:
         run: |
           npm install
           sbt -J-Xmx6G fastLinkJS
-          npm run build
           sbt test
           sbt cucumber
 
       - name: Copy Cucumber HTML report
-        run: |
-          cp -r ./dist ./site
-          cp ./resources/linktree.html ./site/index.html
-          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
+        run: cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber.html
       - name: Upload updated site artifact with test results
         uses: actions/upload-artifact@v3
         with:
@@ -128,8 +124,8 @@ jobs:
           path: ./site
 
       - name: Deploy Cucumber Reports to GitHub Pages
-        id: deployment
+        id: tests
         uses: actions/deploy-pages@v2
         with:
-          # Specify the path to the site directory containing the Cucumber report
+          name: site
           path: ./site
