@@ -29,8 +29,8 @@ final class MainView(config: ViewConfig):
   def render(): Unit =
     val rootElement = div(
       scene.renderScene("three_canvas"),
-      engineSettings.render,
       animationController.render,
+      engineSettings.render,
       onMountCallback { _ =>
         initialize()
         nodes.signal.combineWith(edges.signal).foreach {

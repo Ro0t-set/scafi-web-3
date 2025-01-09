@@ -22,6 +22,9 @@ trait EngineController[N, E]:
   /** Starts the animation processing loop */
   def start(): Unit
 
+  /** Load first frame */
+  def loadNextFrame(): Unit
+
   /** Processes the next batch of network data
     * @return
     *   A tuple of nodes and edges
@@ -45,15 +48,23 @@ object EngineController:
       case false => ()
     }(unsafeWindowOwner)
 
+    engine.signal.foreach {
+      case Some(_) => loadNextFrame()
+      case None    => ()
+    }(unsafeWindowOwner)
+
     private def getEngineOrEmpty: js.Dynamic =
       engine.now().getOrElse {
         console.error("Engine not loaded")
         js.Dynamic.literal()
       }
 
+    override def loadNextFrame(): Unit =
+      handleNewData((getEngineOrEmpty.getNodes(), getEngineOrEmpty.getEdges()))
+
     override def processNextBatch(): JsonNetwork =
       val currentEngine = getEngineOrEmpty
-      currentEngine.executeIterations()
+      getEngineOrEmpty.executeIterations()
       (currentEngine.getNodes(), currentEngine.getEdges())
 
     override def handleNewData(net: JsonNetwork): Unit = net match
@@ -69,15 +80,12 @@ object EngineController:
       def loop(): Unit =
         if running.signal.now() then
           val batchCount = batch.signal.now()
-
           (1 until batchCount).foreach { _ =>
             animationObserver.onNext(NextTick())
             getEngineOrEmpty.executeIterations()
           }
-
           animationObserver.onNext(NextTick())
           handleNewData(processNextBatch())
-
           setTimeout(0)(loop())
 
       loop()

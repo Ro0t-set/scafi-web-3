@@ -20,7 +20,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body {
+
+
+
+  body {
   margin: 0;
   display: flex;
   flex-direction: row;
@@ -261,7 +264,7 @@ canvas {
   grid-template-columns: 1fr 1fr; /* Two equal-width columns */
   grid-template-rows: auto auto auto auto; /* Four rows to accommodate labels and inputs */
   grid-gap: 15px; /* Space between grid items */
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto; /* Center the form horizontally */
 }
 
@@ -307,6 +310,7 @@ canvas {
   padding: 10px 20px;
   cursor: pointer;
   justify-self: start; /* Align the button to the start of its grid cell */
+  width: 100%;
 }
 
 /* Styling Inputs */

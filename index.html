@@ -9,29 +9,60 @@
 </head>
 <body>
 
-<div id="code"></div>
+<div id = "form-container"  class="scastie-form-container">
+  <form id="scastie-form" >
+    <label for="user">User:</label>
+    <input type="text" id="user" name="user" value="Ro0t-set">
+
+    <label for="base64UUID">Base64 UUID:</label>
+    <input type="text" id="base64UUID" name="base64UUID" value="9koe8Gl6RlKE3DKNheZvnw">
+
+    <label for="update">Update:</label>
+    <input type="number" id="update" name="update" value="96">
+
+    <button type="submit">Update Scastie</button>
+  </form>
+  <div id="code"></div>
+</div>
+
+
 
 <div>
   <div id="three_canvas"></div>
-  <div id = "form-container"  class="scastie-form-container">
-    <form id="scastie-form" >
-      <label for="user">User:</label>
-      <input type="text" id="user" name="user" value="Ro0t-set">
 
-      <label for="base64UUID">Base64 UUID:</label>
-      <input type="text" id="base64UUID" name="base64UUID" value="9koe8Gl6RlKE3DKNheZvnw">
-
-      <label for="update">Update:</label>
-      <input type="number" id="update" name="update" value="96">
-
-      <button type="submit">Update Scastie</button>
-    </form>
-  </div>
   <div id="app"></div>
 </div>
 
 
 <script type="module" src="main.js"></script>
+
+<script>
+  (function() {
+
+    function updateZoom() {
+      const designedWidth = 1450;
+      const currentWidth = window.innerWidth;
+      let zoom = currentWidth / designedWidth;
+
+      const minZoom = 0.1; // 50%
+      const maxZoom = 5;   // 100%
+      zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
+
+      document.body.style.transform = `scale(${zoom})`;
+      document.body.style.transformOrigin = 'top left';
+      document.body.style.width = `${designedWidth * zoom}px`;
+    }
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+    window.addEventListener('load', updateZoom);
+    window.addEventListener('resize', debounce(updateZoom, 100));
+  })();
+</script>
 
 <script>
   function loadScastie(user, base64UUID, update) {
