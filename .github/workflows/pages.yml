@@ -38,7 +38,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v3
 
       - name: Create artifact directory
         run: mkdir -p ./site
@@ -59,7 +59,7 @@ jobs:
           cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
 
       - name: Upload site artifact for deployment
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./site
 
@@ -78,4 +78,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
