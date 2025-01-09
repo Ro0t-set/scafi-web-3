@@ -9,16 +9,8 @@ import view.controller.EngineController
 import view.graph.ThreeSceneImpl
 
 final class MainView(config: ViewConfig):
-  private val scene = ThreeSceneImpl(config.sceneConfig)
-  private val engineController = new EngineController(
-    Var(10),
-    Var(10),
-    Var(2),
-    Var(100),
-    Var(100),
-    Var(100),
-    Var(190)
-  )
+  private val scene               = ThreeSceneImpl(config.sceneConfig)
+  private val engineController    = new EngineController()
   private val engineSettings      = new EngineSettingsView(engineController)
   private val animationController = new AnimationControllerView
 
@@ -31,7 +23,6 @@ final class MainView(config: ViewConfig):
     ): Unit =
       engineController.loadEngine()
       originalSignal(result, attachedElements, scastieId)
-      println("Engine loaded")
 
     scala.scalajs.js.Dynamic.global.scastie.ClientMain.signal = newSignal
 

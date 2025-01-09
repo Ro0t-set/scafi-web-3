@@ -2,7 +2,7 @@ package view.components
 
 import com.raquo.laminar.api.L.*
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
-import state.AnimationState.{animationObserver, batch, currentTick}
+import state.AnimationState.{animationObserver, batch, currentTick, engine}
 
 final class AnimationControllerView:
   def render: Element =

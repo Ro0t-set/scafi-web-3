@@ -1,7 +1,7 @@
 package view.graph
 
 import com.raquo.laminar.api.L.*
-import domain.{Edge, Node, Position}
+import domain.{Edge, Node}
 import org.scalajs.dom
 import org.scalajs.dom.window.requestAnimationFrame
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls

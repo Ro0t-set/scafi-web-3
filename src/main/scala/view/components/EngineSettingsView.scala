@@ -1,29 +1,21 @@
 package view.components
 
-import com.raquo.laminar.api.L.{*, given}
+import com.raquo.laminar.api.L.*
 import view.controller.EngineController
 
 final class EngineSettingsView(controller: EngineController):
-  private val xVar        = Var(10)
-  private val yVar        = Var(10)
-  private val zVar        = Var(2)
-  private val distXVar    = Var(100)
-  private val distYVar    = Var(100)
-  private val distZVar    = Var(100)
-  private val edgeDistVar = Var(190)
-
   def render: Element =
     div(
       cls := "engine-form-layout",
       h3("Engine Settings"),
       div(
-        renderNumberInput("x", xVar),
-        renderNumberInput("y", yVar),
-        renderNumberInput("z", zVar),
-        renderNumberInput("distX", distXVar),
-        renderNumberInput("distY", distYVar),
-        renderNumberInput("distZ", distZVar),
-        renderNumberInput("edgeDist", edgeDistVar)
+        renderNumberInput("x", controller.xVar),
+        renderNumberInput("y", controller.yVar),
+        renderNumberInput("z", controller.zVar),
+        renderNumberInput("distX", controller.distXVar),
+        renderNumberInput("distY", controller.distYVar),
+        renderNumberInput("distZ", controller.distZVar),
+        renderNumberInput("edgeDist", controller.edgeDistVar)
       ),
       button(
         "Load Parameters",
