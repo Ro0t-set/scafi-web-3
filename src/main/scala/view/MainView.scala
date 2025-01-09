@@ -10,7 +10,7 @@ import view.graph.ThreeSceneImpl
 
 final class MainView(config: ViewConfig):
   private val scene               = ThreeSceneImpl(config.sceneConfig)
-  private val engineController    = new EngineController()
+  private val engineController    = new EngineController()()()
   private val engineSettings      = new EngineSettingsView(engineController)
   private val animationController = new AnimationControllerView
 

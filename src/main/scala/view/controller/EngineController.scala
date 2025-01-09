@@ -5,14 +5,15 @@ import domain.{setEngine, PauseAnimation}
 import state.AnimationState.animationObserver
 import scala.scalajs.js
 
-final class EngineController:
-  val xVar        = Var(10)
-  val yVar        = Var(10)
-  val zVar        = Var(2)
-  val distXVar    = Var(100)
-  val distYVar    = Var(100)
-  val distZVar    = Var(100)
-  val edgeDistVar = Var(190)
+class EngineController(
+    val xVar: Var[Int] = Var(10),
+    val yVar: Var[Int] = Var(10),
+    val zVar: Var[Int] = Var(2)
+)(
+    val distXVar: Var[Int] = Var(100),
+    val distYVar: Var[Int] = Var(100),
+    val distZVar: Var[Int] = Var(100)
+)(val edgeDistVar: Var[Int] = Var(190)):
 
   def loadEngine(): Unit =
     animationObserver.onNext(PauseAnimation())
