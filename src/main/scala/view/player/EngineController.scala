@@ -2,51 +2,84 @@ package view.player
 
 import API.GraphAPI
 import domain.NextTick
-import com.raquo.laminar.api.L.{*, given}
+import com.raquo.laminar.api.L.*
+import org.scalajs.dom.window.console
+
 import scala.scalajs.js
-import state.AnimationState.{animationObserver, batch, engine, running}
 import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
+import state.AnimationState.{animationObserver, batch, engine, running}
 
-trait EngineControllerImpl:
-  type N = js.Dynamic
-  type E = js.Dynamic
+/** Represents an engine controller for handling network data and animations.
+  * @tparam N
+  *   Type of network nodes
+  * @tparam E
+  *   Type of network edges
+  */
+trait EngineController[N, E]:
   type JsonNetwork = (N, E)
 
+  /** Starts the animation processing loop */
   def start(): Unit
+
+  /** Processes the next batch of network data
+    * @return
+    *   A tuple of nodes and edges
+    */
   def processNextBatch(): JsonNetwork
+
+  /** Handles new network data
+    * @param net
+    *   Tuple of nodes and edges to process
+    */
   def handleNewData(net: JsonNetwork): Unit
 
-object EngineControllerImpl extends EngineControllerImpl:
-  running.signal.foreach {
-    case true  => start()
-    case false => ()
-  }(unsafeWindowOwner)
+/** Default implementation of the EngineController for JavaScript dynamic types
+  */
+object EngineController:
+  opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
-  def processNextBatch(): JsonNetwork =
-    engine.now().getOrElse(js.Dynamic.literal()).executeIterations()
-    val net: N  = engine.now().getOrElse(js.Dynamic.literal()).getNodes()
-    val edge: E = engine.now().getOrElse(js.Dynamic.literal()).getEdges()
-    (net, edge)
+  class Impl extends EngineController[js.Dynamic, js.Dynamic]:
+    running.signal.foreach {
+      case true  => start()
+      case false => ()
+    }(unsafeWindowOwner)
 
-  def handleNewData(net: JsonNetwork): Unit =
-    net match
-      case (nodes: js.Dynamic, edges: js.Dynamic) =>
-        val nodesJson = JSON.stringify(nodes)
-        val edgesJson = JSON.stringify(edges)
-        GraphAPI.addNodesFromJson(nodesJson)
-        GraphAPI.addEdgesFromJson(edgesJson)
+    private def getEngineOrEmpty: js.Dynamic =
+      engine.now().getOrElse {
+        console.error("Engine not loaded")
+        js.Dynamic.literal()
+      }
 
-  def start(): Unit =
-    def loop(): Unit =
-      if running.signal.now() then
-        val batchValue = batch.signal.now()
-        for _ <- 0 until batchValue - 1 do
+    override def processNextBatch(): JsonNetwork =
+      val currentEngine = getEngineOrEmpty
+      currentEngine.executeIterations()
+      (currentEngine.getNodes(), currentEngine.getEdges())
+
+    override def handleNewData(net: JsonNetwork): Unit = net match
+      case (nodes, edges) =>
+        for
+          nodesJson <- Option(JSON.stringify(nodes))
+          edgesJson <- Option(JSON.stringify(edges))
+        do
+          GraphAPI.addNodesFromJson(nodesJson)
+          GraphAPI.addEdgesFromJson(edgesJson)
+
+    override def start(): Unit =
+      def loop(): Unit =
+        if running.signal.now() then
+          val batchCount = batch.signal.now()
+
+          (1 until batchCount).foreach { _ =>
+            animationObserver.onNext(NextTick())
+            getEngineOrEmpty.executeIterations()
+          }
+
           animationObserver.onNext(NextTick())
-          engine.now().getOrElse(js.Dynamic.literal()).executeIterations()
-        animationObserver.onNext(NextTick())
-        val result = processNextBatch()
-        handleNewData(result)
-        setTimeout(0)(loop())
+          handleNewData(processNextBatch())
 
-    loop()
+          setTimeout(0)(loop())
+
+      loop()
+
+  given EngineController[js.Dynamic, js.Dynamic] = Impl()

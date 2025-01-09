@@ -1,110 +1,191 @@
 package view.graph
 
-import com.raquo.laminar.api.L.{*, given}
-import domain.{Edge, Node}
+import com.raquo.laminar.api.L.*
+import domain.{Edge, Node, Position}
 import org.scalajs.dom
+import org.scalajs.dom.window.requestAnimationFrame
+import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import view.adapter.SceneWrapper
 import view.adapter.ThreeJsAdapter.*
 import view.graph.component.{Edge3D, Node3D}
 
-extension (edge: Edge)
-  def canonicalEdgeName: String =
-    val n1             = edge.nodes._1.id
-    val n2             = edge.nodes._2.id
-    val (minId, maxId) = if n1 < n2 then (n1, n2) else (n2, n1)
-    s"edge-$minId-$maxId"
+/** Extension methods for domain objects */
+object DomainExtensions:
+  extension (edge: Edge)
+    def canonicalEdgeName: String =
+      val (n1, n2) = edge.nodes
+      val (minId, maxId) =
+        if n1.id < n2.id then (n1.id, n2.id) else (n2.id, n1.id)
+      s"edge-$minId-$maxId"
 
-extension (node: Node)
-  def object3dName: String = s"node-${node.id}"
+  extension (node: Node)
+    def object3dName: String = s"node-${node.id}"
 
+/** Configuration for Three.js scene */
+case class SceneConfig(
+    width: Int,
+    height: Int,
+    zPointOfView: Int,
+    fov: Int = 75,
+    near: Double = 0.1,
+    far: Double = 1600
+)
+
+/** Represents a Three.js scene with nodes and edges */
+trait ThreeScene:
+  def setNodes(newNodes: Set[Node]): Unit
+  def setEdges(newEdges: Set[Edge]): Unit
+  def renderScene(elementId: String): Element
+
+/** Implementation of ThreeScene using Three.js */
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-case class ThreeSceneImpl(width: Int, height: Int, zPointOfView: Int):
+final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
+  import DomainExtensions.*
+
+  private case class SceneState(
+      currentNodes: Set[Node] = Set.empty,
+      currentEdges: Set[Edge] = Set.empty,
+      nodeObjects: Map[String, Object3DType] = Map.empty,
+      edgeObjects: Map[String, Object3DType] = Map.empty
+  )
+
+  private var state = SceneState()
+
   private val sceneWrapper = SceneWrapper()
   private val scene        = sceneWrapper.underlying
-  private val camera = CameraFactory.createPerspectiveCamera(
-    fov = 75,
-    aspect = width.toDouble / height.toDouble,
-    near = 0.1,
-    far = 1600
-  )
-  VectorUtils.setPosition(camera, width / 2.0, height / 2.0, zPointOfView)
-  private val renderer = RendererFactory.createWebGLRenderer()
-  renderer.setSize(width, height)
-  private val controls = ControlsFactory.createOrbitControls(
-    camera = camera,
-    domElement = renderer.domElement.asInstanceOf[dom.HTMLElement]
-  )
-  controls.enableZoom = true
-  controls.enablePan = true
-  controls.enableRotate = true
-  VectorUtils.setTarget(controls, width / 2.0, height / 2.0, 0)
-  controls.update()
-  private var currentNodes: Set[Node]                = Set.empty
-  private var currentEdges: Set[Edge]                = Set.empty
-  private var nodeObjects: Map[String, Object3DType] = Map.empty
-  private var edgeObjects: Map[String, Object3DType] = Map.empty
 
-  def setNodes(newNodes: Set[Node]): Unit =
-    val nodesToAdd    = newNodes.diff(currentNodes)
-    val nodesToRemove = currentNodes.diff(newNodes)
-    println(s"nodesToAdd: ${nodesToAdd.size}")
-    println(s"nodesToRemove: ${nodesToRemove.size}")
+  private val camera   = initCamera(config)
+  private val renderer = initRenderer(config)
+  private val controls = initControls(config)
+
+  private def initCamera(config: SceneConfig): PerspectiveCamera =
+    val camera = CameraFactory.createPerspectiveCamera(
+      fov = config.fov,
+      aspect = config.width.toDouble / config.height.toDouble,
+      near = config.near,
+      far = config.far
+    )
+    VectorUtils.setPosition(
+      camera,
+      config.width / 2.0,
+      config.height / 2.0,
+      config.zPointOfView
+    )
+    camera
+
+  private def initRenderer(config: SceneConfig): WebGLRenderer =
+    val renderer = RendererFactory.createWebGLRenderer()
+    renderer.setSize(config.width, config.height)
+    renderer
+
+  private def initControls(config: SceneConfig): OrbitControls =
+    val controls = ControlsFactory.createOrbitControls(
+      camera = camera,
+      domElement = renderer.domElement
+    )
+    controls.enableZoom = true
+    controls.enablePan = true
+    controls.enableRotate = true
+    VectorUtils.setTarget(controls, config.width / 2.0, config.height / 2.0, 0)
+    controls.update()
+    controls
+
+  override def setNodes(newNodes: Set[Node]): Unit =
+    val (nodesToAdd, nodesToRemove) = calculateNodeDiff(newNodes)
+
+    removeNodes(nodesToRemove)
+    addNodes(nodesToAdd)
+
+    state = state.copy(currentNodes = newNodes)
+
+  override def setEdges(newEdges: Set[Edge]): Unit =
+    val (edgesToAdd, edgesToRemove) = calculateEdgeDiff(newEdges)
+
+    removeEdges(edgesToRemove)
+    addEdges(edgesToAdd)
+
+    state = state.copy(currentEdges = newEdges)
+
+  private def calculateNodeDiff(newNodes: Set[Node]): (Set[Node], Set[Node]) =
+    val nodesToAdd    = newNodes.diff(state.currentNodes)
+    val nodesToRemove = state.currentNodes.diff(newNodes)
+    (nodesToAdd, nodesToRemove)
+
+  private def calculateEdgeDiff(newEdges: Set[Edge]): (Set[Edge], Set[Edge]) =
+    val edgesToAdd    = newEdges.diff(state.currentEdges)
+    val edgesToRemove = state.currentEdges.diff(newEdges)
+    (edgesToAdd, edgesToRemove)
+
+  private def removeNodes(nodesToRemove: Set[Node]): Unit =
     nodesToRemove.foreach { oldNode =>
-      nodeObjects.get(oldNode.object3dName).foreach(sceneWrapper.removeObject)
-      nodeObjects -= oldNode.object3dName
-    }
-    nodesToAdd.foreach { node =>
-      val node3D = Node3D(
-        id = node.id.toString,
-        textLabel = node.label,
-        x = node.position.x,
-        y = node.position.y,
-        z = node.position.z,
-        nodeColor = node.color,
-        name = node.object3dName
+      state.nodeObjects.get(oldNode.object3dName).foreach(
+        sceneWrapper.removeObject
       )
-      nodeObjects = nodeObjects + (node.object3dName -> node3D)
+      state = state.copy(nodeObjects = state.nodeObjects - oldNode.object3dName)
+    }
+
+  private def addNodes(nodesToAdd: Set[Node]): Unit =
+    nodesToAdd.foreach { node =>
+      val node3D = createNode3D(node)
+      state = state.copy(nodeObjects =
+        state.nodeObjects + (node.object3dName -> node3D)
+      )
       sceneWrapper.addObject(node3D)
     }
-    currentNodes = newNodes
 
-  def setEdges(newEdges: Set[Edge]): Unit =
-    val edgesToAdd    = newEdges.diff(currentEdges)
-    val edgesToRemove = currentEdges.diff(newEdges)
-    println(s"edgesToAdd: ${edgesToAdd.size}")
-    println(s"edgesToRemove: ${edgesToRemove.size}")
+  private def createNode3D(node: Node): Object3DType =
+    Node3D(
+      id = node.id.toString,
+      textLabel = node.label,
+      x = node.position.x,
+      y = node.position.y,
+      z = node.position.z,
+      nodeColor = node.color,
+      name = node.object3dName
+    )
+
+  private def removeEdges(edgesToRemove: Set[Edge]): Unit =
     edgesToRemove.foreach { oldEdge =>
       val edgeName = oldEdge.canonicalEdgeName
-      edgeObjects.get(edgeName).foreach(sceneWrapper.removeObject)
-      edgeObjects -= edgeName
+      state.edgeObjects.get(edgeName).foreach(sceneWrapper.removeObject)
+      state = state.copy(edgeObjects = state.edgeObjects - edgeName)
     }
+
+  private def addEdges(edgesToAdd: Set[Edge]): Unit =
     edgesToAdd.foreach { edge =>
       val edgeName = edge.canonicalEdgeName
-      if !edgeObjects.contains(edgeName) then
-        val edge3D = Edge3D(
-          edge.nodes._1.position.x,
-          edge.nodes._2.position.x,
-          edge.nodes._1.position.y,
-          edge.nodes._2.position.y,
-          edge.nodes._1.position.z,
-          edge.nodes._2.position.z,
-          edgeName
-        )
-        edgeObjects = edgeObjects + (edgeName -> edge3D)
+      if !state.edgeObjects.contains(edgeName) then
+        val edge3D = createEdge3D(edge)
+        state =
+          state.copy(edgeObjects = state.edgeObjects + (edgeName -> edge3D))
         sceneWrapper.addObject(edge3D)
     }
-    currentEdges = newEdges
+
+  private def createEdge3D(edge: Edge): Object3DType =
+    val (node1, node2) = edge.nodes
+    Edge3D(
+      node1.position.x,
+      node2.position.x,
+      node1.position.y,
+      node2.position.y,
+      node1.position.z,
+      node2.position.z,
+      edge.canonicalEdgeName
+    )
 
   private def renderLoop(): Unit =
-    dom.window.requestAnimationFrame((_: Double) => renderLoop())
+    requestAnimationFrame((_: Double) => renderLoop())
     controls.update()
     renderer.render(scene, camera)
 
-  def renderScene(elementId: String): Element =
+  override def renderScene(elementId: String): Element =
     div(
       onMountCallback { _ =>
         dom.document.getElementById(elementId).appendChild(renderer.domElement)
         renderLoop()
       }
     )
+
+object ThreeSceneImpl:
+  def apply(config: SceneConfig): ThreeScene = new ThreeSceneImpl(config)
