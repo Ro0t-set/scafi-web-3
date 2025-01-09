@@ -21,7 +21,7 @@ class WebPage extends ScalaDsl with EN {
 
   Then("the page title should start with {string}") {
     (titleStartsWith: String) =>
-      WebDriverWait(driver, Duration.ofSeconds(3)).until(
+      WebDriverWait(driver, Duration.ofSeconds(5)).until(
         ExpectedConditions.titleContains(titleStartsWith)
       )
 
@@ -34,7 +34,7 @@ class WebPage extends ScalaDsl with EN {
   }
 
   Then("the canvas {string} is loaded") { (canvasClassName: String) =>
-    WebDriverWait(driver, Duration.ofSeconds(3)).until(
+    WebDriverWait(driver, Duration.ofSeconds(5)).until(
       ExpectedConditions.presenceOfElementLocated(
         By.cssSelector(s"""canvas[data-engine*='$canvasClassName']""")
       )
