@@ -64,7 +64,7 @@ jobs:
           path: ./site
 
       - name: Upload site artifact for testing
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: ./site
