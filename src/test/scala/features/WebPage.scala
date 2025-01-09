@@ -41,7 +41,6 @@ class WebPage extends ScalaDsl with EN {
     )
   }
 
-
   After {
     driver.quit()
   }

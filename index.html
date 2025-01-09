@@ -1,28 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <script src="https://scastie.scala-lang.org/embedded.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ScaFi Web 3</title>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <script src="https://scastie.scala-lang.org/embedded.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScaFi Web 3</title>
+</head>
+<body>
 
-  <div id="code"></div>
-  <div>
-    <div id="three_canvas"></div>
-    <div id="app"></div>
+<div id="code"></div>
+
+<div>
+  <div id="three_canvas"></div>
+  <div id = "form-container">
+    <form id="scastieForm">
+      <label for="user">User:</label>
+      <input type="text" id="user" name="user" value="Ro0t-set">
+
+      <label for="base64UUID">Base64 UUID:</label>
+      <input type="text" id="base64UUID" name="base64UUID" value="9koe8Gl6RlKE3DKNheZvnw">
+
+      <label for="update">Update:</label>
+      <input type="number" id="update" name="update" value="96">
+
+      <button type="submit">Update Scastie</button>
+    </form>
   </div>
-  <script type="module" src="main.js"></script>
+  <div id="app"></div>
+</div>
 
-  <script>
+
+<script type="module" src="main.js"></script>
+
+<script>
+  function loadScastie(user, base64UUID, update) {
+    document.getElementById('code').innerHTML = '';
     scastie.Embedded('#code', {
-      user: "Ro0t-set",
-      base64UUID: "9koe8Gl6RlKE3DKNheZvnw",
-      update: 96,
+      user: user,
+      base64UUID: base64UUID,
+      update: parseInt(update)
     });
-  </script>
+  }
 
-  </body>
+  document.getElementById('scastieForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const user = document.getElementById('user').value;
+    const base64UUID = document.getElementById('base64UUID').value;
+    const update = document.getElementById('update').value;
+    document.querySelector("body > div.scastie.embedded").remove()
+    EngineImpl = null
+    loadScastie(user, base64UUID, update);
+  });
+
+  // Load the default widget on page load
+  loadScastie('Ro0t-set', '9koe8Gl6RlKE3DKNheZvnw', 96);
+</script>
+
+</body>
 </html>
