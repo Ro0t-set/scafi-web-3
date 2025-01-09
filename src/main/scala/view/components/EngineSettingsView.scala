@@ -23,9 +23,12 @@ final class EngineSettingsView(controller: EngineController):
       )
     )
 
-  private def renderNumberInput(label: String, variable: Var[Int]): Element =
+  private def renderNumberInput(
+      inputLabel: String,
+      variable: Var[Int]
+  ): Element =
     div(
-      // label(s"$label: "),
+      label(s"$inputLabel: "),
       input(
         typ   := "number",
         value := variable.now().toString,

@@ -13,8 +13,8 @@
 
 <div>
   <div id="three_canvas"></div>
-  <div id = "form-container">
-    <form id="scastieForm">
+  <div id = "form-container"  class="scastie-form-container">
+    <form id="scastie-form" >
       <label for="user">User:</label>
       <input type="text" id="user" name="user" value="Ro0t-set">
 
@@ -43,7 +43,7 @@
     });
   }
 
-  document.getElementById('scastieForm').addEventListener('submit', function(event) {
+  document.getElementById('scastie-form').addEventListener('submit', function(event) {
     event.preventDefault();
     const user = document.getElementById('user').value;
     const base64UUID = document.getElementById('base64UUID').value;

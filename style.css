@@ -1,22 +1,18 @@
 :root {
-  /* Schema Colori */
+  /* Color Scheme */
   --primary-color: #00a6fb;
   --primary-color-hover: #0582ca;
-
   --secondary-color: #006494;
   --secondary-color-hover: #003554;
-
   --neutral-color: #051923;
 
-  /* Font e Altri Stili */
+  /* Font and Other Styles */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: var(--primary-color);
   background-color: var(--neutral-color);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -24,20 +20,13 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.scastie {
-  margin: 1rem;
-  height: 800px;
-  width: 100%;
-  overflow-y: auto;
-  position: relative;
-}
-
-.console-container {
-  /* Eventuali stili aggiuntivi */
-}
-
-canvas {
-  padding: 1rem;
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: var(--neutral-color);
+  color: var(--primary-color);
 }
 
 a {
@@ -48,15 +37,6 @@ a {
 
 a:hover {
   color: var(--secondary-color-hover);
-}
-
-body {
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
-  background-color: var(--neutral-color);
-  color: var(--primary-color);
 }
 
 h1 {
@@ -73,12 +53,12 @@ h1 {
 }
 
 .logo:hover {
-  /* Utilizzo di rgba per aggiungere trasparenza */
-  filter: drop-shadow(0 0 2em rgba(255, 107, 107, 0.67)); /* Arancione Corallo con trasparenza */
+  /* Using rgba for transparency */
+  filter: drop-shadow(0 0 2em rgba(255, 107, 107, 0.67)); /* Coral Orange with transparency */
 }
 
 .logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em rgba(247, 223, 30, 0.67)); /* Se necessario, mantenuto il colore originale */
+  filter: drop-shadow(0 0 2em rgba(247, 223, 30, 0.67)); /* Original color if needed */
 }
 
 .card {
@@ -120,12 +100,30 @@ button:focus-visible {
     color: var(--primary-color);
     background-color: var(--neutral-color);
   }
+
   a:hover {
     color: var(--secondary-color-hover);
   }
+
   button {
     background-color: var(--primary-color);
   }
+}
+
+.scastie {
+  margin: 1rem;
+  height: 1200px;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.console-container {
+  /* Additional styles if needed */
+}
+
+canvas {
+  padding: 1rem;
 }
 
 .animation-controller {
@@ -190,23 +188,135 @@ button:focus-visible {
   flex: 1;
 }
 
+.form-container {
+  display: contents;
+}
 
+/* Engine Form Layout */
 .engine-form-layout {
-  display: inline-grid;
-  width: 700px;
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "x distX edgeDist"
+    "y distY engineSettingsButton"
+    "z distZ engineSettingsButton";
+  grid-gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.engine-form-layout label {
-  text-align: right;
-  font-weight: bold;
+.engine-form-layout h3 {
+  grid-area: header;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.engine-form-layout input {
-  padding: 0.25rem;
-  width: 80px;
-  margin: 1rem;
+.engine-form-layout > div {
+  display: contents;
 }
 
-.engine-settings h3 {
-  margin-bottom: 0.5rem;
+.engine-form-layout > div > div:nth-child(1) {
+  grid-area: x;
 }
+
+.engine-form-layout > div > div:nth-child(2) {
+  grid-area: y;
+}
+
+.engine-form-layout > div > div:nth-child(3) {
+  grid-area: z;
+}
+
+.engine-form-layout > div > div:nth-child(4) {
+  grid-area: distX;
+}
+
+.engine-form-layout > div > div:nth-child(5) {
+  grid-area: distY;
+}
+
+.engine-form-layout > div > div:nth-child(6) {
+  grid-area: distZ;
+}
+
+.engine-form-layout > div > div:nth-child(7) {
+  grid-area: edgeDist;
+}
+
+.engine-form-layout > button {
+  grid-area: engineSettingsButton;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.engine-form-layout input[type="number"] {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Scastie Form 2x2 Grid Layout */
+#scastie-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  grid-template-rows: auto auto auto auto; /* Four rows to accommodate labels and inputs */
+  grid-gap: 15px; /* Space between grid items */
+  max-width: 500px;
+  margin: 0 auto; /* Center the form horizontally */
+}
+
+#scastie-form label {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+/* Positioning Labels Above Inputs */
+#scastie-form label:nth-of-type(1) { /* Label for User */
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+#scastie-form input:nth-of-type(1) { /* Input for User */
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+#scastie-form label:nth-of-type(2) { /* Label for Base64 UUID */
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+#scastie-form input:nth-of-type(2) { /* Input for Base64 UUID */
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+#scastie-form label:nth-of-type(3) { /* Label for Update */
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+#scastie-form input:nth-of-type(3) { /* Input for Update */
+  grid-column: 1 / 2;
+  grid-row: 4 / 5;
+}
+
+#scastie-form button { /* Update Scastie Button */
+  grid-column: 2 / 3;
+  grid-row: 3 / 5; /* Span from row 3 to 5 to align with Update input */
+  padding: 10px 20px;
+  cursor: pointer;
+  justify-self: start; /* Align the button to the start of its grid cell */
+}
+
+/* Styling Inputs */
+#scastie-form input[type="text"],
+#scastie-form input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
