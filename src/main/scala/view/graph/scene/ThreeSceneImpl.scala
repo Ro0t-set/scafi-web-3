@@ -1,4 +1,4 @@
-package view.graph
+package view.graph.scene
 
 import com.raquo.laminar.api.L.*
 import domain.{Edge, Node}
@@ -9,64 +9,27 @@ import typings.three.mod.*
 import view.adapter.SceneWrapper
 import view.adapter.ThreeJsAdapter.*
 import view.graph.component.{Edge3D, Node3D}
+import view.graph.config.{SceneConfig, ViewMode}
+import view.graph.extensions.DomainExtensions.*
 
-/** Extension methods for domain objects */
-object DomainExtensions:
-  extension (edge: Edge)
-    def canonicalEdgeName: String =
-      val (n1, n2) = edge.nodes
-      val (minId, maxId) =
-        if n1.id < n2.id then (n1.id, n2.id) else (n2.id, n1.id)
-      s"edge-$minId-$maxId"
-
-  extension (node: Node)
-    def object3dName: String = s"node-${node.id}"
-
-/** Configuration for Three.js scene */
-case class SceneConfig(
-    width: Int,
-    height: Int,
-    fov: Int = 65,
-    near: Double = 0.1,
-    far: Double = 1600
-)
-
-/** Represents a Three.js scene with nodes and edges */
-trait ThreeScene:
-  def setNodes(newNodes: Set[Node]): Unit
-  def setEdges(newEdges: Set[Edge]): Unit
-  def renderScene(elementId: String): Element
-  def centerView(): Unit
-
-/** Implementation of ThreeScene using Three.js */
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
-  import DomainExtensions.*
-
-  private case class SceneState(
-      currentNodes: Set[Node] = Set.empty,
-      currentEdges: Set[Edge] = Set.empty,
-      nodeObjects: Map[String, Object3DType] = Map.empty,
-      edgeObjects: Map[String, Object3DType] = Map.empty
-  )
-
-  private var state = SceneState()
+final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
+  private var state    = SceneState()
+  private var viewMode = ViewMode()
 
   private val sceneWrapper = SceneWrapper()
   private val scene        = sceneWrapper.underlying
-
-  private val camera   = initCamera(config)
-  private val renderer = initRenderer(config)
-  private val controls = initControls(config)
+  private val camera       = initCamera(config)
+  private val renderer     = initRenderer(config)
+  private val controls     = initControls(config)
 
   private def initCamera(config: SceneConfig): PerspectiveCamera =
-    val camera = CameraFactory.createPerspectiveCamera(
+    CameraFactory.createPerspectiveCamera(
       fov = config.fov,
       aspect = config.width.toDouble / config.height.toDouble,
       near = config.near,
       far = config.far
     )
-    camera
 
   private def initRenderer(config: SceneConfig): WebGLRenderer =
     val renderer = RendererFactory.createWebGLRenderer()
@@ -78,27 +41,47 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
       camera = camera,
       domElement = renderer.domElement
     )
+    configureControls(controls, viewMode.is2D)
+    controls
+
+  private def configureControls(controls: OrbitControls, is2D: Boolean): Unit =
     controls.enableZoom = true
     controls.enablePan = true
-    controls.enableRotate = true
+    controls.enableRotate = !is2D
+    if is2D then
+      controls.minPolarAngle = 0
+      controls.maxPolarAngle = 0
+    else
+      controls.minPolarAngle = 0
+      controls.maxPolarAngle = Math.PI
     controls.update()
-    controls
+
+  override def set2DMode(): Unit =
+    state = state.copy(viewMode = Mode2D())
+    state.viewMode.configureControls(controls)
+    centerView()
+
+  override def set3DMode(): Unit =
+    state = state.copy(viewMode = Mode3D())
+    state.viewMode.configureControls(controls)
+    centerView()
 
   override def setNodes(newNodes: Set[Node]): Unit =
     val (nodesToAdd, nodesToRemove) = calculateNodeDiff(newNodes)
-
     removeNodes(nodesToRemove)
     addNodes(nodesToAdd)
-
     state = state.copy(currentNodes = newNodes)
 
   override def setEdges(newEdges: Set[Edge]): Unit =
     val (edgesToAdd, edgesToRemove) = calculateEdgeDiff(newEdges)
-
     removeEdges(edgesToRemove)
     addEdges(edgesToAdd)
-
     state = state.copy(currentEdges = newEdges)
+
+  override def clearView(): Unit =
+    state.nodeObjects.values.foreach(sceneWrapper.removeObject)
+    state.edgeObjects.values.foreach(sceneWrapper.removeObject)
+    state = SceneState()
 
   private def calculateNodeDiff(newNodes: Set[Node]): (Set[Node], Set[Node]) =
     val nodesToAdd    = newNodes.diff(state.currentNodes)
@@ -127,17 +110,6 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
       sceneWrapper.addObject(node3D)
     }
 
-  private def createNode3D(node: Node): Object3DType =
-    Node3D(
-      id = node.id.toString,
-      textLabel = node.label,
-      x = node.position.x,
-      y = node.position.y,
-      z = node.position.z,
-      nodeColor = node.color,
-      name = node.object3dName
-    )
-
   private def removeEdges(edgesToRemove: Set[Edge]): Unit =
     edgesToRemove.foreach { oldEdge =>
       val edgeName = oldEdge.canonicalEdgeName
@@ -155,6 +127,17 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
         sceneWrapper.addObject(edge3D)
     }
 
+  private def createNode3D(node: Node): Object3DType =
+    Node3D(
+      id = node.id.toString,
+      textLabel = node.label,
+      x = node.position.x,
+      y = node.position.y,
+      z = node.position.z,
+      nodeColor = node.color,
+      name = node.object3dName
+    )
+
   private def createEdge3D(edge: Edge): Object3DType =
     val (node1, node2) = edge.nodes
     Edge3D(
@@ -167,8 +150,22 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
       edge.canonicalEdgeName
     )
 
+  override def centerView(): Unit =
+    if state.currentNodes.nonEmpty then
+      state.viewMode.calculateCameraPosition(state.currentNodes).foreach {
+        newPosition =>
+          VectorUtils.setPosition(
+            camera,
+            newPosition.x,
+            newPosition.y,
+            newPosition.z
+          )
+          VectorUtils.setTarget(controls, newPosition.x, newPosition.y, 0)
+          controls.update()
+      }
+
   private def renderLoop(): Unit =
-    requestAnimationFrame((_: Double) => renderLoop())
+    requestAnimationFrame(_ => renderLoop())
     controls.update()
     renderer.render(scene, camera)
 
@@ -179,22 +176,3 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
         renderLoop()
       }
     )
-
-  override def centerView(): Unit =
-    val bottomLeft = state.currentNodes.minBy(n => n.position.x + n.position.y)
-    val topRight   = state.currentNodes.maxBy(n => n.position.x + n.position.y)
-    val deep       = state.currentNodes.maxBy(_.position.z)
-
-    println("bottomLeft: " + bottomLeft.position)
-    println("topRight: " + topRight.position)
-    println("deep: " + deep.position)
-    val x = (bottomLeft.position.x + topRight.position.x) / 2
-    val y = (bottomLeft.position.y + topRight.position.y) / 2
-    val z = deep.position.z + (Math.max(x, y) * 2)
-    VectorUtils.setPosition(camera, x, y, z)
-    VectorUtils.setTarget(controls, x, y, 0)
-
-    controls.update()
-
-object ThreeSceneImpl:
-  def apply(config: SceneConfig): ThreeScene = new ThreeSceneImpl(config)

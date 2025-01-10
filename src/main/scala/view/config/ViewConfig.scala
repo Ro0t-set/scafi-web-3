@@ -1,5 +1,6 @@
 package view.config
-import view.graph.SceneConfig
+
+import view.graph.config.SceneConfig
 
 final case class ViewConfig(
     sceneConfig: SceneConfig = SceneConfig(

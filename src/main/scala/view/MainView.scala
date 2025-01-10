@@ -10,7 +10,7 @@ import view.components.{
 }
 import view.config.ViewConfig
 import view.controller.EngineController
-import view.graph.ThreeSceneImpl
+import view.graph.scene.ThreeSceneImpl
 
 final class MainView(config: ViewConfig):
   private val scene               = ThreeSceneImpl(config.sceneConfig)
