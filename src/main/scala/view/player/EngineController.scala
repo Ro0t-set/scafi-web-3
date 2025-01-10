@@ -3,7 +3,7 @@ package view.player
 import API.GraphAPI
 import domain.NextTick
 import com.raquo.laminar.api.L.*
-import org.scalajs.dom.window.console
+import org.scalajs.dom.console
 import state.AnimationState
 
 import scala.scalajs.js
@@ -55,7 +55,10 @@ object EngineController:
     }(unsafeWindowOwner)
 
     private def getEngineOrEmpty: js.Dynamic =
-      engine.now().getOrElse(js.Dynamic.literal())
+      engine.now().getOrElse {
+        console.error("Engine not found")
+        js.Dynamic.literal()
+      }
 
     override def loadNextFrame(): Unit =
       handleNewData((getEngineOrEmpty.getNodes(), getEngineOrEmpty.getEdges()))

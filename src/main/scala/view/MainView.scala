@@ -39,10 +39,11 @@ final class MainView(config: ViewConfig):
       engineSettings.render,
       onMountCallback { _ =>
         initialize()
-        nodes.signal.combineWith(edges.signal).foreach {
-          case (currentNodes, currentEdges) =>
-            scene.setNodes(currentNodes)
-            scene.setEdges(currentEdges)
+        nodes.signal.foreach { currentNodes =>
+          scene.setNodes(currentNodes)
+        }(unsafeWindowOwner)
+        edges.signal.foreach { currentEdges =>
+          scene.setEdges(currentEdges)
         }(unsafeWindowOwner)
 
       }

@@ -8,31 +8,49 @@ object GraphState:
   val nodes: Var[Set[Node]] = Var(Set.empty[Node])
   val edges: Var[Set[Edge]] = Var(Set.empty[Edge])
 
-  private def foundNode(id: Id): Option[Node] = nodes.now().find(_.id == id)
+  private def foundNodeStream(id: Id): EventStream[Node] =
+    nodes.signal
+      .changes
+      .map(_.find(_.id == id))
+      .collect { case Some(node) => node }
+      .take(1)
+
+  def addEdgeWhenNodesFound(id1: Id, id2: Id): Unit =
+    val combinedStream: EventStream[(Node, Node)] =
+      foundNodeStream(id1).combineWith(foundNodeStream(id2))
+
+    combinedStream.foreach { case (n1, n2) =>
+      edges.update(_ + Edge((n1, n2)))
+    }(unsafeWindowOwner)
 
   val commandObserver: Observer[GraphCommand] = Observer[GraphCommand] {
-    case SetNodes(newNodes) => nodes.set(newNodes)
-    case SetEdges(newEdges) => edges.set(newEdges)
-    case SetEdgesByIds(edgesIds) =>
-      val foundEdges = edgesIds.flatMap {
-        case (id1, id2) =>
-          val foundNode1 = foundNode(id1)
-          val foundNode2 = foundNode(id2)
-          (foundNode1, foundNode2) match
-            case (Some(n1), Some(n2)) => Some(Edge((n1, n2)))
-            case _                    => None
+    case SetNodes(newNodes) =>
+      nodes.set(newNodes)
+      edges.update { currentEdges =>
+        currentEdges.filter { edge =>
+          val (n1, n2) = edge.nodes
+          newNodes.contains(n1) && newNodes.contains(n2)
+        }
       }
-      edges.set(foundEdges)
-    case AddNode(node) => nodes.update(_ + node)
-    case AddEdge(edge) => edges.update(_ + edge)
-    case AddEdgeByNodeId(node1, node2) =>
-      val foundNode1 = foundNode(node1)
-      val foundNode2 = foundNode(node2)
-      (foundNode1, foundNode2) match
-        case (Some(n1), Some(n2)) => edges.update(_ + Edge((n1, n2)))
-        case _                    => ()
-    case RemoveNode(node) => nodes.update(_ - node)
-    case RemoveEdge(edge) => edges.update(_ - edge)
+
+    case SetEdges(newEdges) =>
+      val filtered = newEdges.filter { edge =>
+        val (n1, n2) = edge.nodes
+        nodes.now().contains(n1) && nodes.now().contains(n2)
+      }
+      edges.set(filtered)
+
+    case SetEdgesByIds(edgesIds) =>
+      edges.update { currentEdges =>
+        val newEdges = edgesIds.flatMap { case (id1, id2) =>
+          for
+            n1 <- nodes.now().find(_.id == id1)
+            n2 <- nodes.now().find(_.id == id2)
+          yield Edge((n1, n2))
+        }
+        currentEdges ++ newEdges
+      }
+
   }
 
 object AnimationState:
