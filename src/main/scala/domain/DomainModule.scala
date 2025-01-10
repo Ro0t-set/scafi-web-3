@@ -25,9 +25,14 @@ case class RemoveNode(node: Node)                 extends GraphCommand
 case class RemoveEdge(edge: Edge)                 extends GraphCommand
 
 sealed trait AnimationCommand
-case class setEngine(engine: js.Dynamic) extends AnimationCommand
+case class SetEngine(engine: js.Dynamic) extends AnimationCommand
 case class StartAnimation()              extends AnimationCommand
 case class PauseAnimation()              extends AnimationCommand
 case class NextTick()                    extends AnimationCommand
 case class AnimationBatch(batch: Int)    extends AnimationCommand
 case class Reset()                       extends AnimationCommand
+
+
+sealed trait GridViewCommand
+case class Set2dMode()   extends GridViewCommand
+case class Set3dMode()   extends GridViewCommand

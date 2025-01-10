@@ -3,8 +3,8 @@ package view.components
 import com.raquo.laminar.api.L.*
 import view.controller.EngineController
 
-final class EngineSettingsView(controller: EngineController):
-  def render: Element =
+final class EngineSettingsView(controller: EngineController) extends ViewComponent:
+  override def render: Element =
     div(
       cls := "engine-form-layout",
       h3("Engine Settings"),

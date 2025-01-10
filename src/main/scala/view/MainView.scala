@@ -2,7 +2,8 @@ package view
 
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom
-import state.GraphState.{edges, nodes}
+import state.GraphState.{edges, edgesSignal, nodes, nodesSignal}
+import state.GridViewState
 import view.components.{AnimationControllerView, EngineSettingsView}
 import view.config.ViewConfig
 import view.controller.EngineController
@@ -22,7 +23,7 @@ final class MainView(config: ViewConfig):
         scastieId: scala.scalajs.js.Any
     ): Unit =
       engineController.loadEngine()
-      originalSignal(result, attachedElements, scastieId)
+      scene.centerView()
 
     scala.scalajs.js.Dynamic.global.scastie.ClientMain.signal = newSignal
 
@@ -33,11 +34,12 @@ final class MainView(config: ViewConfig):
       engineSettings.render,
       onMountCallback { _ =>
         initialize()
-        nodes.signal.combineWith(edges.signal).foreach {
+        nodesSignal.combineWith(edgesSignal).foreach {
           case (currentNodes, currentEdges) =>
             scene.setNodes(currentNodes)
             scene.setEdges(currentEdges)
         }(unsafeWindowOwner)
+
       }
     )
 

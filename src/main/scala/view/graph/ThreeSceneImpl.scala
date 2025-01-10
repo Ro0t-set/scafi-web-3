@@ -26,8 +26,7 @@ object DomainExtensions:
 case class SceneConfig(
     width: Int,
     height: Int,
-    zPointOfView: Int,
-    fov: Int = 75,
+    fov: Int = 65,
     near: Double = 0.1,
     far: Double = 1600
 )
@@ -37,6 +36,7 @@ trait ThreeScene:
   def setNodes(newNodes: Set[Node]): Unit
   def setEdges(newEdges: Set[Edge]): Unit
   def renderScene(elementId: String): Element
+  def centerView(): Unit
 
 /** Implementation of ThreeScene using Three.js */
 @SuppressWarnings(Array("org.wartremover.warts.All"))
@@ -66,12 +66,6 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
       near = config.near,
       far = config.far
     )
-    VectorUtils.setPosition(
-      camera,
-      config.width / 2.0,
-      config.height / 2.0,
-      config.zPointOfView
-    )
     camera
 
   private def initRenderer(config: SceneConfig): WebGLRenderer =
@@ -87,7 +81,6 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
     controls.enableZoom = true
     controls.enablePan = true
     controls.enableRotate = true
-    VectorUtils.setTarget(controls, config.width / 2.0, config.height / 2.0, 0)
     controls.update()
     controls
 
@@ -186,6 +179,22 @@ final class ThreeSceneImpl private (config: SceneConfig) extends ThreeScene:
         renderLoop()
       }
     )
+
+  override def centerView(): Unit =
+    val bottomLeft = state.currentNodes.minBy(n => n.position.x + n.position.y)
+    val topRight   = state.currentNodes.maxBy(n => n.position.x + n.position.y)
+    val deep       = state.currentNodes.maxBy(_.position.z)
+
+    println("bottomLeft: " + bottomLeft.position)
+    println("topRight: " + topRight.position)
+    println("deep: " + deep.position)
+    val x = (bottomLeft.position.x + topRight.position.x) / 2
+    val y = (bottomLeft.position.y + topRight.position.y) / 2
+    val z = deep.position.z + (Math.max(x, y) * 2)
+    VectorUtils.setPosition(camera, x, y, z)
+    VectorUtils.setTarget(controls, x, y, 0)
+
+    controls.update()
 
 object ThreeSceneImpl:
   def apply(config: SceneConfig): ThreeScene = new ThreeSceneImpl(config)

@@ -4,11 +4,12 @@ import API.GraphAPI
 import domain.NextTick
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom.window.console
+import state.AnimationState
 
 import scala.scalajs.js
 import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
-import state.AnimationState.{animationObserver, batch, engine, running}
+import state.AnimationState.{animationObserver, batch, engine, engineSignal, running, runningSignal}
 
 /** Represents an engine controller for handling network data and animations.
   * @tparam N
@@ -43,21 +44,18 @@ object EngineController:
   opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
   class Impl extends EngineController[js.Dynamic, js.Dynamic]:
-    running.signal.foreach {
+    runningSignal.foreach {
       case true  => start()
       case false => ()
     }(unsafeWindowOwner)
 
-    engine.signal.foreach {
+    engineSignal.foreach {
       case Some(_) => loadNextFrame()
       case None    => ()
     }(unsafeWindowOwner)
 
     private def getEngineOrEmpty: js.Dynamic =
-      engine.now().getOrElse {
-        console.error("Engine not loaded")
-        js.Dynamic.literal()
-      }
+      engine.now().getOrElse(js.Dynamic.literal())
 
     override def loadNextFrame(): Unit =
       handleNewData((getEngineOrEmpty.getNodes(), getEngineOrEmpty.getEdges()))

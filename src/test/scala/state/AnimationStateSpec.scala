@@ -20,7 +20,7 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.currentTick.set(5)
 
     val dummyEngine = js.Dynamic.literal("name" -> "TestEngine")
-    val cmd         = setEngine(dummyEngine)
+    val cmd         = SetEngine(dummyEngine)
     AnimationState.animationObserver.onNext(cmd)
 
     assertEquals(

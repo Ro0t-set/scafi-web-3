@@ -1,7 +1,7 @@
 package view.controller
 
 import com.raquo.laminar.api.L.*
-import domain.{setEngine, PauseAnimation}
+import domain.{SetEngine, PauseAnimation}
 import state.AnimationState.animationObserver
 import scala.scalajs.js
 
@@ -28,4 +28,4 @@ class EngineController(
       edgeDistVar.now()
     )
 
-    animationObserver.onNext(setEngine(newEngine))
+    animationObserver.onNext(SetEngine(newEngine))
