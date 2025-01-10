@@ -27,7 +27,9 @@ lazy val scafiWeb3 = project.in(file("."))
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= {
       _.withModuleKind(ModuleKind.ESModule)
-        .withOptimizer(false)
+        .withOptimizer(true)
+        .withClosureCompiler(false)
+        .withSourceMap(false)
     },
 
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",

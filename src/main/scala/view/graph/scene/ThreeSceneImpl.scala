@@ -67,8 +67,6 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   override def setEdges(newEdges: Set[Edge]): Unit =
     val (edgesToAdd, edgesToRemove) = calculateEdgeDiff(newEdges)
-    println(s"Edges to add: ${edgesToAdd.size}")
-    println(s"Edges to remove: ${edgesToRemove.size}")
     removeEdges(edgesToRemove)
     addEdges(edgesToAdd)
     state = state.copy(currentEdges = newEdges)
