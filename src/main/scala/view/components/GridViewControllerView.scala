@@ -1,11 +1,10 @@
 package view.components
 
 import com.raquo.laminar.api.L.*
+import view.graph.ThreeScene
 
-class GridViewControllerView extends ViewComponent:
+class GridViewControllerView(scene: ThreeScene) extends ViewComponent:
   override def render: Element =
-    div (
-      button("Center View",
-        onClick --> { _ => println("Centering view") }
-      )
+    div(
+      button("Center View", onClick --> (_ => scene.centerView()))
     )

@@ -2,15 +2,19 @@ package view
 
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom
-import state.GraphState.{edges, edgesSignal, nodes, nodesSignal}
-import state.GridViewState
-import view.components.{AnimationControllerView, EngineSettingsView}
+import state.GraphState.{edges, nodes}
+import view.components.{
+  AnimationControllerView,
+  EngineSettingsView,
+  GridViewControllerView
+}
 import view.config.ViewConfig
 import view.controller.EngineController
 import view.graph.ThreeSceneImpl
 
 final class MainView(config: ViewConfig):
   private val scene               = ThreeSceneImpl(config.sceneConfig)
+  private val sceneController     = new GridViewControllerView(scene)
   private val engineController    = new EngineController()()()
   private val engineSettings      = new EngineSettingsView(engineController)
   private val animationController = new AnimationControllerView
@@ -30,11 +34,12 @@ final class MainView(config: ViewConfig):
   def render(): Unit =
     val rootElement = div(
       scene.renderScene("three_canvas"),
+      sceneController.render,
       animationController.render,
       engineSettings.render,
       onMountCallback { _ =>
         initialize()
-        nodesSignal.combineWith(edgesSignal).foreach {
+        nodes.signal.combineWith(edges.signal).foreach {
           case (currentNodes, currentEdges) =>
             scene.setNodes(currentNodes)
             scene.setEdges(currentEdges)

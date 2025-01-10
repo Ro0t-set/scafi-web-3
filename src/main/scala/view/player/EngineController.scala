@@ -9,7 +9,7 @@ import state.AnimationState
 import scala.scalajs.js
 import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
-import state.AnimationState.{animationObserver, batch, engine, engineSignal, running, runningSignal}
+import state.AnimationState.{animationObserver, batch, engine, running}
 
 /** Represents an engine controller for handling network data and animations.
   * @tparam N
@@ -44,12 +44,12 @@ object EngineController:
   opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
   class Impl extends EngineController[js.Dynamic, js.Dynamic]:
-    runningSignal.foreach {
+    running.signal.foreach {
       case true  => start()
       case false => ()
     }(unsafeWindowOwner)
 
-    engineSignal.foreach {
+    engine.signal.foreach {
       case Some(_) => loadNextFrame()
       case None    => ()
     }(unsafeWindowOwner)

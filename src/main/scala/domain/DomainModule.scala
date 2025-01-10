@@ -31,8 +31,3 @@ case class PauseAnimation()              extends AnimationCommand
 case class NextTick()                    extends AnimationCommand
 case class AnimationBatch(batch: Int)    extends AnimationCommand
 case class Reset()                       extends AnimationCommand
-
-
-sealed trait GridViewCommand
-case class Set2dMode()   extends GridViewCommand
-case class Set3dMode()   extends GridViewCommand

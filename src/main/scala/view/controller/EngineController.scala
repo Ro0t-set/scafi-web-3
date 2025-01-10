@@ -1,7 +1,7 @@
 package view.controller
 
 import com.raquo.laminar.api.L.*
-import domain.{SetEngine, PauseAnimation}
+import domain.{PauseAnimation, SetEngine}
 import state.AnimationState.animationObserver
 import scala.scalajs.js
 

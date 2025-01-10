@@ -7,8 +7,6 @@ import scala.scalajs.js
 object GraphState:
   val nodes: Var[Set[Node]] = Var(Set.empty[Node])
   val edges: Var[Set[Edge]] = Var(Set.empty[Edge])
-  val nodesSignal: Signal[Set[Node]] = nodes.signal
-  val edgesSignal: Signal[Set[Edge]] = edges.signal
 
   private def foundNode(id: Id): Option[Node] = nodes.now().find(_.id == id)
 
@@ -42,10 +40,6 @@ object AnimationState:
   val batch: Var[Int]                 = Var[Int](1)
   val currentTick: Var[Int]           = Var[Int](0)
   val engine: Var[Option[js.Dynamic]] = Var[Option[js.Dynamic]](None)
-  val runningSignal: Signal[Boolean]          = running.signal
-  val batchSignal: Signal[Int]                = batch.signal
-  val currentTickSignal: Signal[Int]          = currentTick.signal
-  val engineSignal: Signal[Option[js.Dynamic]] = engine.signal
   private def reset(): Unit =
     running.set(false)
     currentTick.set(0)
@@ -61,12 +55,3 @@ object AnimationState:
       case AnimationBatch(batch) => this.batch.set(batch)
       case Reset()               => reset()
     }
-
-object GridViewState:
-  private val is3dMode: Var[Boolean] = Var[Boolean](true)
-  val is3dModeSignal: Signal[Boolean] = is3dMode.signal
-  val gridViewObserver: Observer[GridViewCommand] =
-  Observer[GridViewCommand] {
-    case Set2dMode()  => is3dMode.set(false)
-    case Set3dMode()  => is3dMode.set(true)
-  }
