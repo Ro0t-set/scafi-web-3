@@ -19,10 +19,10 @@ final class AnimationControllerView extends ViewComponent:
       cls := "info-section",
       p(
         strong("Batch: "),
-        child.text <-- batch.signal.map(_.toString),
+        child.text <-- batch.map(_.toString),
         " | ",
         strong("Counter: "),
-        child.text <-- currentTick.signal.map(_.toString)
+        child.text <-- currentTick.map(_.toString)
       )
     )
 

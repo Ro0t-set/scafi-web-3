@@ -43,19 +43,18 @@ trait EngineController[N, E]:
 object EngineController:
   opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
-  class Impl extends EngineController[js.Dynamic, js.Dynamic]:
+  class Player(owner: Owner) extends EngineController[js.Dynamic, js.Dynamic]:
     running.signal.foreach {
       case true  => start()
       case false => ()
-    }(unsafeWindowOwner)
-
+    }(owner)
     engine.signal.foreach {
       case Some(_) => loadNextFrame()
       case None    => ()
-    }(unsafeWindowOwner)
+    }(owner)
 
     private def getEngineOrEmpty: js.Dynamic =
-      engine.now().getOrElse {
+      engine.observe(owner).now().getOrElse {
         console.error("Engine not found")
         js.Dynamic.literal()
       }
@@ -79,16 +78,13 @@ object EngineController:
 
     override def start(): Unit =
       def loop(): Unit =
-        if running.signal.now() then
-          val batchCount = batch.signal.now()
+        if running.observe(owner).now() then
+          val batchCount = batch.observe(owner).now()
           (1 until batchCount).foreach { _ =>
             animationObserver.onNext(NextTick())
             getEngineOrEmpty.executeIterations()
           }
           animationObserver.onNext(NextTick())
           handleNewData(processNextBatch())
-          setTimeout(0)(loop())
-
+          setTimeout(16)(loop())
       loop()
-
-  given EngineController[js.Dynamic, js.Dynamic] = Impl()

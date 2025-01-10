@@ -6,7 +6,7 @@ import state.AnimationState
 import view.graph.scene.GraphThreeScene
 
 class GridViewControllerView(scene: GraphThreeScene) extends ViewComponent:
-  private val switchLabel: Signal[String] = AnimationState.mode.signal.map {
+  private val switchLabel: Signal[String] = AnimationState.mode.map {
     case ViewMode.Mode2D =>
       scene.set2DMode()
       "Switch to 3D"

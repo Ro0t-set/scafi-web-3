@@ -16,10 +16,6 @@ class GraphStateSpec extends FunSuite:
   ): Node =
     Node(id, Position(x, y, z), label, color)
 
-  override def beforeEach(context: BeforeEach): Unit =
-    GraphState.nodes.set(Set.empty)
-    GraphState.edges.set(Set.empty)
-
   test("SetNodes sets the nodes Var to the given nodes") {
     val nodeA = makeNode(1, 0.0, 0.0, 0.0, "A", 0x123456)
     val nodeB = makeNode(2, 1.0, 1.0, 1.0, "B", 0x654321)

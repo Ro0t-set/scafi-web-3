@@ -44,8 +44,8 @@
       const currentWidth = window.innerWidth;
       let zoom = currentWidth / designedWidth;
 
-      const minZoom = 0.1; // 50%
-      const maxZoom = 5;   // 100%
+      const minZoom = 0.5;
+      const maxZoom = 5;
       zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
 
       document.body.style.transform = `scale(${zoom})`;

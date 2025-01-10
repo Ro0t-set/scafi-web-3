@@ -8,6 +8,7 @@ import view.components.{
   EngineSettingsView,
   GridViewControllerView
 }
+import view.player.EngineController as EngineControllerPlayer
 import view.config.ViewConfig
 import view.controller.EngineController
 import view.graph.scene.ThreeSceneImpl
@@ -37,14 +38,13 @@ final class MainView(config: ViewConfig):
       sceneController.render,
       animationController.render,
       engineSettings.render,
-      onMountCallback { _ =>
+      onMountCallback { ctx =>
         initialize()
-        nodes.signal.foreach { currentNodes =>
-          scene.setNodes(currentNodes)
-        }(unsafeWindowOwner)
-        edges.signal.foreach { currentEdges =>
-          scene.setEdges(currentEdges)
-        }(unsafeWindowOwner)
+        EngineControllerPlayer.Player(ctx.owner)
+        edges.combineWith(nodes).foreach { case (e, n) =>
+          scene.setNodes(n)
+          scene.setEdges(e)
+        }(ctx.owner)
 
       }
     )
