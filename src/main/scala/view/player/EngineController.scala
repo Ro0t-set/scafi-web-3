@@ -86,5 +86,5 @@ object EngineController:
           }
           animationObserver.onNext(NextTick())
           handleNewData(processNextBatch())
-          setTimeout(16)(loop())
+          setTimeout(8)(loop())
       loop()

@@ -16,15 +16,8 @@ object GraphState:
       .collect { case Some(node) => node }
       .take(1)
 
-  def addEdgeWhenNodesFound(id1: Id, id2: Id): Unit =
-    val combinedStream: EventStream[(Node, Node)] =
-      foundNodeStream(id1).combineWith(foundNodeStream(id2))
-
-    combinedStream.foreach { case (n1, n2) =>
-      edgesVar.update(_ + Edge((n1, n2)))
-    }(unsafeWindowOwner)
-
   val commandObserver: Observer[GraphCommand] = Observer[GraphCommand] {
+
     case SetNodes(newNodes) =>
       nodesVar.set(newNodes)
       edgesVar.update { currentEdges =>
