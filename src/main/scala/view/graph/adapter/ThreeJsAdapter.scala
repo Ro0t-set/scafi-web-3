@@ -1,4 +1,4 @@
-package view.adapter
+package view.graph.adapter
 
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
@@ -6,7 +6,7 @@ import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
-import view.adapter.ThreeJsAdapter.SceneWrapper
+import ThreeJsAdapter.SceneWrapper
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:

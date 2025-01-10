@@ -57,8 +57,6 @@ final case class Mode3D() extends ViewMode:
 final case class Mode2D() extends ViewMode:
   override def configureControls(controls: OrbitControls): Unit =
     controls.enableRotate = false
-    controls.minPolarAngle = 0
-    controls.maxPolarAngle = 0
     controls.update()
 
   override def calculateCameraPosition(nodes: Set[Node]): Option[Vector3] =

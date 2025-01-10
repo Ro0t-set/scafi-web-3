@@ -40,6 +40,7 @@ object AnimationState:
   val batch: Var[Int]                 = Var[Int](1)
   val currentTick: Var[Int]           = Var[Int](0)
   val engine: Var[Option[js.Dynamic]] = Var[Option[js.Dynamic]](None)
+  val mode: Var[ViewMode]             = Var[ViewMode](ViewMode.Mode3D)
   private def reset(): Unit =
     running.set(false)
     currentTick.set(0)
@@ -54,4 +55,8 @@ object AnimationState:
       case NextTick()            => currentTick.update(_ + 1)
       case AnimationBatch(batch) => this.batch.set(batch)
       case Reset()               => reset()
+      case SwitchMode() => mode.update {
+          case ViewMode.Mode2D => ViewMode.Mode3D
+          case ViewMode.Mode3D => ViewMode.Mode2D
+        }
     }

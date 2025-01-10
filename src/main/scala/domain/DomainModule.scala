@@ -6,12 +6,20 @@ type Id    = Int
 type Color = Int
 type Label = String
 
+enum ViewMode:
+  case Mode2D, Mode3D
+
 final case class Position(x: Double, y: Double, z: Double)
-final case class Node(id: Id, position: Position, label: Label, color: Color)
+final case class Node(id: Id, position: Position, label: Label, color: Color):
+  override def equals(obj: Any): Boolean = obj match
+    case that: Node =>
+      this.id == that.id && this.position == that.position && this.color == that.color
+    case _ => false
 final case class Edge(nodes: (Node, Node)):
   override def equals(obj: Any): Boolean = obj match
-    case that: Edge => this.nodes == that.nodes || this.nodes == that.nodes.swap
-    case _          => false
+    case that: Edge =>
+      this.nodes == that.nodes || this.nodes == that.nodes.swap
+    case _ => false
 
 sealed trait GraphCommand
 
@@ -31,3 +39,4 @@ case class PauseAnimation()              extends AnimationCommand
 case class NextTick()                    extends AnimationCommand
 case class AnimationBatch(batch: Int)    extends AnimationCommand
 case class Reset()                       extends AnimationCommand
+case class SwitchMode()                  extends AnimationCommand

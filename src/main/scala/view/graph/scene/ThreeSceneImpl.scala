@@ -6,8 +6,14 @@ import org.scalajs.dom
 import org.scalajs.dom.window.requestAnimationFrame
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
-import view.adapter.SceneWrapper
-import view.adapter.ThreeJsAdapter.*
+import view.graph.adapter.SceneWrapper
+import view.graph.adapter.ThreeJsAdapter.{
+  CameraFactory,
+  ControlsFactory,
+  Object3DType,
+  RendererFactory,
+  VectorUtils
+}
 import view.graph.component.{Edge3D, Node3D}
 import view.graph.config.{SceneConfig, ViewMode}
 import view.graph.extensions.DomainExtensions.*
@@ -41,20 +47,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
       camera = camera,
       domElement = renderer.domElement
     )
-    configureControls(controls, viewMode.is2D)
     controls
-
-  private def configureControls(controls: OrbitControls, is2D: Boolean): Unit =
-    controls.enableZoom = true
-    controls.enablePan = true
-    controls.enableRotate = !is2D
-    if is2D then
-      controls.minPolarAngle = 0
-      controls.maxPolarAngle = 0
-    else
-      controls.minPolarAngle = 0
-      controls.maxPolarAngle = Math.PI
-    controls.update()
 
   override def set2DMode(): Unit =
     state = state.copy(viewMode = Mode2D())
@@ -112,14 +105,14 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def removeEdges(edgesToRemove: Set[Edge]): Unit =
     edgesToRemove.foreach { oldEdge =>
-      val edgeName = oldEdge.canonicalEdgeName
+      val edgeName = oldEdge.object3dName
       state.edgeObjects.get(edgeName).foreach(sceneWrapper.removeObject)
       state = state.copy(edgeObjects = state.edgeObjects - edgeName)
     }
 
   private def addEdges(edgesToAdd: Set[Edge]): Unit =
     edgesToAdd.foreach { edge =>
-      val edgeName = edge.canonicalEdgeName
+      val edgeName = edge.object3dName
       if !state.edgeObjects.contains(edgeName) then
         val edge3D = createEdge3D(edge)
         state =
@@ -147,7 +140,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
       node2.position.y,
       node1.position.z,
       node2.position.z,
-      edge.canonicalEdgeName
+      edge.object3dName
     )
 
   override def centerView(): Unit =
