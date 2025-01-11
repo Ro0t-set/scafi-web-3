@@ -182,8 +182,8 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
-    if state.viewMode == Mode2D() then
-      dom.document.getElementsByClassName("node-label").foreach(_.remove())
+
+    dom.document.getElementsByClassName("node-label").foreach(_.remove())
     controls.update()
     labelsRenderer.render(scene, camera.asInstanceOf[Camera])
     renderer.render(scene, camera)
