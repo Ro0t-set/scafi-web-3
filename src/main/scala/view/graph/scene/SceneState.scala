@@ -8,5 +8,5 @@ private[scene] case class SceneState(
     currentEdges: Set[Edge] = Set.empty,
     nodeObjects: Map[String, Object3DType] = Map.empty,
     edgeObjects: Map[String, Object3DType] = Map.empty,
-    viewMode: ViewMode = Mode3D()
+    viewMode: ViewModeOptions = Mode3D()
 )

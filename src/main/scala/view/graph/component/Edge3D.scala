@@ -3,11 +3,12 @@ package view.graph.component
 import typings.three.mod.*
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsLineBasicMaterialMod.LineBasicMaterialParameters
+import view.graph.adapter.ThreeJsAdapter.Object3DType
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-object Edge3D extends Object3D[Object3DEventMap]:
+object Edge3D extends Object3DType:
   @JSName("apply")
   def apply(
       x1: Double,
@@ -28,5 +29,5 @@ object Edge3D extends Object3D[Object3DEventMap]:
     })
     val line = new Line(lineGeometry, lineMaterial)
     line.name = name
-    group.add(line.asInstanceOf[Object3D[Object3DEventMap]])
-    group.asInstanceOf[Object3D[Object3DEventMap]]
+    group.add(line.asInstanceOf[Object3DType])
+    group.asInstanceOf[Object3DType]

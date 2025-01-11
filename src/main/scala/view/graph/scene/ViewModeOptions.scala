@@ -1,8 +1,11 @@
 package view.graph.scene
 
-import domain.Node
+import domain.{Node, ViewMode}
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.Vector3
+import view.graph.adapter.ThreeJsAdapter.Object3DType
+import view.graph.component.NodeFactory
+import view.graph.extensions.DomainExtensions.*
 
 object ViewModeCalculations:
 
@@ -38,11 +41,12 @@ object ViewModeCalculations:
 
   def maxDepth(nodes: Set[Node]): Double = maxDepthNodePosition(nodes)
 
-sealed trait ViewMode:
+sealed trait ViewModeOptions:
   def configureControls(controls: OrbitControls): Unit
   def calculateCameraPosition(nodes: Set[Node]): Option[Vector3]
+  def createNodeObj(node: Node): Object3DType
 
-final case class Mode3D() extends ViewMode:
+final case class Mode3D() extends ViewModeOptions:
   override def configureControls(controls: OrbitControls): Unit =
     controls.enableRotate = true
     controls.minPolarAngle = 0
@@ -54,10 +58,32 @@ final case class Mode3D() extends ViewMode:
       Vector3(v.x, v.y, v.z + ViewModeCalculations.maxDepth(nodes))
     )
 
-final case class Mode2D() extends ViewMode:
+  override def createNodeObj(node: Node): Object3DType =
+    NodeFactory(ViewMode.Mode3D)(
+      node.id,
+      node.label,
+      node.position.x,
+      node.position.y,
+      node.position.z,
+      node.color,
+      node.object3dName
+    )
+
+final case class Mode2D() extends ViewModeOptions:
   override def configureControls(controls: OrbitControls): Unit =
     controls.enableRotate = false
     controls.update()
 
   override def calculateCameraPosition(nodes: Set[Node]): Option[Vector3] =
     ViewModeCalculations.calculateCameraPosition(nodes)
+
+  override def createNodeObj(node: Node): Object3DType =
+    NodeFactory(ViewMode.Mode2D)(
+      node.id,
+      node.label,
+      node.position.x,
+      node.position.y,
+      node.position.z,
+      node.color,
+      node.object3dName
+    )

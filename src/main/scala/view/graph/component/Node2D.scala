@@ -3,6 +3,7 @@ package view.graph.component
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.mod.*
 import com.raquo.laminar.api.L.*
+
 import typings.three.examplesJsmAddonsMod.CSS2DObject
 import org.scalajs.dom
 
@@ -10,7 +11,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-object Node2D extends Object3D[Object3DEventMap]:
+protected object Node2D extends ThreeNode:
   @JSName("apply")
   def apply(
       id: String,
@@ -20,7 +21,7 @@ object Node2D extends Object3D[Object3DEventMap]:
       z: Double,
       nodeColor: Int,
       name: String
-  ): Object3D[Object3DEventMap] =
+  ): ThreeNode =
     val group = new Group()
     group.name = name
 
@@ -31,7 +32,7 @@ object Node2D extends Object3D[Object3DEventMap]:
 
     val pointDiv = div(
       idAttr          := node2dId,
-      cls             := "node-ojb",
+      cls             := name,
       width           := "5px",
       height          := "5px",
       backgroundColor := s"red"
@@ -39,7 +40,7 @@ object Node2D extends Object3D[Object3DEventMap]:
 
     val textDiv = div(
       idAttr := labelId,
-      cls    := "node-ojb",
+      cls    := name,
       textLabel,
       color    := "white",
       fontSize := "16px"
@@ -50,6 +51,6 @@ object Node2D extends Object3D[Object3DEventMap]:
     point.position.set(x, y, z)
     label.position.set(x + 10, y - 10, z)
 
-    group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
-    group.add(label.asInstanceOf[Object3D[Object3DEventMap]])
-    group.asInstanceOf[Object3D[Object3DEventMap]]
+    group.add(point.asInstanceOf[ThreeNode])
+    group.add(label.asInstanceOf[ThreeNode])
+    group.asInstanceOf[ThreeNode]

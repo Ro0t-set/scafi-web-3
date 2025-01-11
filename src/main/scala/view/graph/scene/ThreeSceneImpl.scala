@@ -22,8 +22,9 @@ import view.graph.extensions.DomainExtensions.*
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
-  private var state          = SceneState()
-  private val viewMode       = ViewMode()
+  private var state    = SceneState()
+  private var viewMode = ViewMode()
+
   private val sceneWrapper   = SceneWrapper()
   private val scene          = sceneWrapper.underlying
   private val camera         = initCamera(config)
@@ -83,7 +84,6 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     state = state.copy(currentEdges = newEdges)
 
   override def clearView(): Unit =
-    dom.document.getElementsByClassName("node-obj").foreach(_.remove())
     state.nodeObjects.values.foreach(sceneWrapper.removeObject)
     state.edgeObjects.values.foreach(sceneWrapper.removeObject)
     state = SceneState()
@@ -108,7 +108,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def addNodes(nodesToAdd: Set[Node]): Unit =
     nodesToAdd.foreach { node =>
-      val nodeObject = createNodeObj(node)
+      val nodeObject = state.viewMode.createNodeObj(node)
       state = state.copy(nodeObjects =
         state.nodeObjects + (node.object3dName -> nodeObject)
       )
@@ -131,28 +131,6 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
           state.copy(edgeObjects = state.edgeObjects + (edgeName -> edge3D))
         sceneWrapper.addObject(edge3D)
     }
-
-  private def createNodeObj(node: Node): Object3DType =
-    if state.viewMode == Mode3D() then
-      Node3D(
-        id = node.id.toString,
-        textLabel = node.label,
-        x = node.position.x,
-        y = node.position.y,
-        z = node.position.z,
-        nodeColor = node.color,
-        name = node.object3dName
-      )
-    else
-      Node2D(
-        id = node.id.toString,
-        textLabel = node.label,
-        x = node.position.x,
-        y = node.position.y,
-        z = node.position.z,
-        nodeColor = node.color,
-        name = node.object3dName
-      )
 
   private def createEdge3D(edge: Edge): Object3DType =
     val (node1, node2) = edge.nodes
@@ -182,7 +160,8 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
-    dom.document.getElementsByClassName("node-obj").foreach(_.remove())
+    if state.viewMode == Mode2D() then
+      dom.document.getElementsByClassName("node-label").foreach(_.remove())
     controls.update()
     labelsRenderer.render(scene, camera.asInstanceOf[Camera])
     renderer.render(scene, camera)

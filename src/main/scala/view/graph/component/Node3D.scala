@@ -5,14 +5,13 @@ import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
 import typings.three.mod.*
 import org.scalajs.dom
 import typings.three.srcMaterialsPointsMaterialMod.PointsMaterialParameters
-
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-object Node3D extends Object3D[Object3DEventMap]:
+protected object Node3D extends ThreeNode:
   @JSName("apply")
-  def apply(
+  override def apply(
       id: String,
       textLabel: String,
       x: Double,
@@ -20,7 +19,7 @@ object Node3D extends Object3D[Object3DEventMap]:
       z: Double,
       nodeColor: Int,
       name: String
-  ): Object3D[Object3DEventMap] =
+  ): ThreeNode =
     val group = new Group()
     group.name = name
 
@@ -75,6 +74,6 @@ object Node3D extends Object3D[Object3DEventMap]:
     val sprite = new Sprite(spriteMaterial)
     sprite.scale.set(100, 25, 1)
     sprite.position.set(x, y - 20, z)
-    group.add(sprite.asInstanceOf[Object3D[Object3DEventMap]])
+    group.add(sprite.asInstanceOf[ThreeNode])
 
-    group.asInstanceOf[Object3D[Object3DEventMap]]
+    group.asInstanceOf[ThreeNode]
