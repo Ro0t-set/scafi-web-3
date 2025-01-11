@@ -3,7 +3,9 @@ package view.graph.scene
 import com.raquo.laminar.api.L.*
 import domain.{Edge, Node}
 import org.scalajs.dom
+import org.scalajs.dom.{document, window}
 import org.scalajs.dom.window.requestAnimationFrame
+import typings.three.examplesJsmAddonsMod.CSS2DRenderer
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import view.graph.adapter.SceneWrapper
@@ -14,20 +16,20 @@ import view.graph.adapter.ThreeJsAdapter.{
   RendererFactory,
   VectorUtils
 }
-import view.graph.component.{Edge3D, Node3D}
+import view.graph.component.{Edge3D, Node2D, Node3D}
 import view.graph.config.{SceneConfig, ViewMode}
 import view.graph.extensions.DomainExtensions.*
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
-  private var state    = SceneState()
-  private var viewMode = ViewMode()
-
-  private val sceneWrapper = SceneWrapper()
-  private val scene        = sceneWrapper.underlying
-  private val camera       = initCamera(config)
-  private val renderer     = initRenderer(config)
-  private val controls     = initControls(config)
+  private var state          = SceneState()
+  private val viewMode       = ViewMode()
+  private val sceneWrapper   = SceneWrapper()
+  private val scene          = sceneWrapper.underlying
+  private val camera         = initCamera(config)
+  private val renderer       = initRenderer(config)
+  private val labelsRenderer = initCSS2dRenderer(config)
+  private val controls       = initControls(config)
 
   private def initCamera(config: SceneConfig): PerspectiveCamera =
     CameraFactory.createPerspectiveCamera(
@@ -39,8 +41,17 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def initRenderer(config: SceneConfig): WebGLRenderer =
     val renderer = RendererFactory.createWebGLRenderer()
+    renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(config.width, config.height)
     renderer
+
+  private def initCSS2dRenderer(config: SceneConfig): CSS2DRenderer =
+    val labelRenderer = new CSS2DRenderer()
+    labelRenderer.setSize(config.width, config.height)
+    labelRenderer.domElement.style.position = "absolute"
+    labelRenderer.domElement.style.top = "0"
+    labelRenderer.domElement.style.pointerEvents = "none"
+    labelRenderer
 
   private def initControls(config: SceneConfig): OrbitControls =
     val controls = ControlsFactory.createOrbitControls(
@@ -72,6 +83,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     state = state.copy(currentEdges = newEdges)
 
   override def clearView(): Unit =
+    dom.document.getElementsByClassName("node-label").foreach(_.remove())
     state.nodeObjects.values.foreach(sceneWrapper.removeObject)
     state.edgeObjects.values.foreach(sceneWrapper.removeObject)
     state = SceneState()
@@ -96,11 +108,11 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def addNodes(nodesToAdd: Set[Node]): Unit =
     nodesToAdd.foreach { node =>
-      val node3D = createNode3D(node)
+      val nodeObject = createNodeObj(node)
       state = state.copy(nodeObjects =
-        state.nodeObjects + (node.object3dName -> node3D)
+        state.nodeObjects + (node.object3dName -> nodeObject)
       )
-      sceneWrapper.addObject(node3D)
+      sceneWrapper.addObject(nodeObject)
     }
 
   private def removeEdges(edgesToRemove: Set[Edge]): Unit =
@@ -120,16 +132,27 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
         sceneWrapper.addObject(edge3D)
     }
 
-  private def createNode3D(node: Node): Object3DType =
-    Node3D(
-      id = node.id.toString,
-      textLabel = node.label,
-      x = node.position.x,
-      y = node.position.y,
-      z = node.position.z,
-      nodeColor = node.color,
-      name = node.object3dName
-    )
+  private def createNodeObj(node: Node): Object3DType =
+    if state.viewMode == Mode3D() then
+      Node3D(
+        id = node.id.toString,
+        textLabel = node.label,
+        x = node.position.x,
+        y = node.position.y,
+        z = node.position.z,
+        nodeColor = node.color,
+        name = node.object3dName
+      )
+    else
+      Node2D(
+        id = node.id.toString,
+        textLabel = node.label,
+        x = node.position.x,
+        y = node.position.y,
+        z = node.position.z,
+        nodeColor = node.color,
+        name = node.object3dName
+      )
 
   private def createEdge3D(edge: Edge): Object3DType =
     val (node1, node2) = edge.nodes
@@ -159,13 +182,21 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
+    if state.viewMode == Mode2D() then
+      dom.document.getElementsByClassName("node-label").foreach(_.remove())
     controls.update()
+    labelsRenderer.render(scene, camera.asInstanceOf[Camera])
     renderer.render(scene, camera)
 
   override def renderScene(elementId: String): Element =
     div(
       onMountCallback { _ =>
-        dom.document.getElementById(elementId).appendChild(renderer.domElement)
+        dom.document.getElementById(elementId).appendChild(
+          renderer.domElement
+        )
+        dom.document.getElementById(
+          elementId
+        ) append labelsRenderer.domElement
         renderLoop()
       }
     )
