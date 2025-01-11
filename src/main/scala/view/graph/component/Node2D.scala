@@ -1,7 +1,6 @@
 package view.graph.component
 
 import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcMaterialsPointsMaterialMod.PointsMaterialParameters
 import typings.three.mod.*
 import com.raquo.laminar.api.L.*
 import typings.three.examplesJsmAddonsMod.CSS2DObject
@@ -33,8 +32,8 @@ object Node2D extends Object3D[Object3DEventMap]:
     val pointDiv = div(
       idAttr          := node2dId,
       cls             := "node-ojb",
-      width           := "10px",
-      height          := "10px",
+      width           := "5px",
+      height          := "5px",
       backgroundColor := s"red"
     )
 

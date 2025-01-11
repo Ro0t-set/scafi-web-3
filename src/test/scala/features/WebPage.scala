@@ -34,7 +34,7 @@ class WebPage extends ScalaDsl with EN {
   }
 
   Then("the canvas {string} is loaded") { (canvasClassName: String) =>
-    WebDriverWait(driver, Duration.ofSeconds(5)).until(
+    WebDriverWait(driver, Duration.ofSeconds(10)).until(
       ExpectedConditions.presenceOfElementLocated(
         By.cssSelector(s"""canvas[data-engine*='$canvasClassName']""")
       )

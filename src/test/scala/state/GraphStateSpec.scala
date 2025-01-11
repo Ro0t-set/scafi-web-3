@@ -1,71 +1,106 @@
-//package state
-//
-//import munit.FunSuite
-//import com.raquo.laminar.api.L._
-//import domain.{Node, *}
-//
-//class GraphStateSpec extends FunSuite:
-//
-//  private def makeNode(
-//      id: Int,
-//      x: Double,
-//      y: Double,
-//      z: Double,
-//      label: String,
-//      color: Int
-//  ): Node =
-//    Node(id, Position(x, y, z), label, color)
-//
-//  test("SetNodes sets the nodes Var to the given nodes") {
-//    val nodeA = makeNode(1, 0.0, 0.0, 0.0, "A", 0x123456)
-//    val nodeB = makeNode(2, 1.0, 1.0, 1.0, "B", 0x654321)
-//    val cmd   = SetNodes(Set(nodeA, nodeB))
-//
-//    GraphState.commandObserver.onNext(cmd)
-//
-//    assertEquals(
-//      GraphState.nodes.now(),
-//      Set(nodeA, nodeB),
-//      "GraphState.nodes should contain the two nodes we just set"
-//    )
-//  }
-//
-//  test("SetEdges sets the edges Var to the given edges") {
-//    val nodeA = makeNode(1, 0.0, 0.0, 0.0, "A", 0x123456)
-//    val nodeB = makeNode(2, 1.0, 1.0, 1.0, "B", 0x654321)
-//    val nodeC = makeNode(3, 2.0, 2.0, 2.0, "C", 0xff0000)
-//    GraphState.commandObserver.onNext(SetNodes(Set(nodeA, nodeB, nodeC)))
-//    val edge1 = Edge((nodeA, nodeB))
-//    val edge2 = Edge((nodeB, nodeC))
-//    val cmd   = SetEdges(Set(edge1, edge2))
-//
-//    GraphState.commandObserver.onNext(cmd)
-//
-//    assertEquals(
-//      GraphState.edges.now(),
-//      Set(edge1, edge2),
-//      "GraphState.edges should contain the two edges we just set"
-//    )
-//  }
-//
-//  test("SetEdgesByIds replaces edges based on existing node IDs") {
-//    val nodeA = makeNode(1, 0.0, 0.0, 0.0, "A", 0x111111)
-//    val nodeB = makeNode(2, 1.0, 1.0, 1.0, "B", 0x222222)
-//    val nodeC = makeNode(3, 2.0, 2.0, 2.0, "C", 0x333333)
-//    GraphState.commandObserver.onNext(SetNodes(Set(nodeA, nodeB, nodeC)))
-//
-//    // Now set edges by IDs
-//    val cmd = SetEdgesByIds(Set((1, 2), (1, 3)))
-//    GraphState.commandObserver.onNext(cmd)
-//
-//    val expectedEdges = Set(
-//      Edge((nodeA, nodeB)),
-//      Edge((nodeA, nodeC))
-//    )
-//
-//    assertEquals(
-//      GraphState.edges.signal.now(),
-//      expectedEdges,
-//      "GraphState.edges should be replaced with edges computed from existing nodes"
-//    )
-//  }
+package state
+
+import munit.FunSuite
+import com.raquo.laminar.api.L._
+import domain.{Edge, Id, Node, *}
+
+class GraphStateSpec extends FunSuite:
+  val node1: Node  = Node(1, Position(1, 1, 1), "Node1", 111111)
+  val node2: Node  = Node(2, Position(2, 2, 2), "Node2", 222222)
+  val node3: Node  = Node(3, Position(3, 3, 3), "Node3", 333333)
+  val edge12: Edge = Edge((node1, node2))
+  val edge23: Edge = Edge((node2, node3))
+  val edge13: Edge = Edge((node1, node3))
+
+  test("initial state should be empty") {
+    assertEquals(
+      GraphState.nodes.observe(unsafeWindowOwner).now(),
+      Set.empty[Node]
+    )
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set.empty[Edge]
+    )
+  }
+
+  test("SetNodes should update nodes and remove invalid edges") {
+    val initialNodes = Set(node1, node2, node3)
+    val initialEdges = Set(edge12, edge23)
+    GraphState.commandObserver.onNext(SetNodes(initialNodes))
+    GraphState.commandObserver.onNext(SetEdges(initialEdges))
+
+    // Update nodes to remove node3
+    val newNodes = Set(node1, node2)
+    GraphState.commandObserver.onNext(SetNodes(newNodes))
+
+    assertEquals(GraphState.nodes.observe(unsafeWindowOwner).now(), newNodes)
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set(edge12),
+      "Edges containing removed nodes should be removed"
+    )
+  }
+
+  test("SetEdges should only add edges between existing nodes") {
+    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2)))
+    val proposedEdges = Set(edge12, edge23, edge13)
+    GraphState.commandObserver.onNext(SetEdges(proposedEdges))
+
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set(edge12),
+      "Only edges between existing nodes should be added"
+    )
+  }
+
+  test("SetEdgesByIds should create edges between existing nodes") {
+    // Setup nodes
+    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2, node3)))
+
+    val edgeIds = Set(
+      (1, 2),
+      (2, 3),
+      (1, 4)
+    )
+
+    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
+
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set(edge12, edge23),
+      "Only edges between existing nodes should be created"
+    )
+  }
+
+  test("SetEdgesByIds should append to existing edges") {
+    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2, node3)))
+    GraphState.commandObserver.onNext(SetEdges(Set(edge12)))
+
+    val edgeIds = Set((2, 3))
+    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
+
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set(edge12, edge23),
+      "New edges should be added to existing ones"
+    )
+  }
+
+  test("SetEdgesByIds should handle duplicate edges") {
+    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2)))
+
+    // Add same edge twice
+    val edgeIds = Set((1, 2))
+    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
+    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
+
+    assertEquals(
+      GraphState.edges.observe(unsafeWindowOwner).now(),
+      Set(edge12),
+      "Duplicate edges should not be added"
+    )
+  }
+
+  override def beforeEach(context: BeforeEach): Unit =
+    GraphState.commandObserver.onNext(SetNodes(Set.empty))
+    GraphState.commandObserver.onNext(SetEdges(Set.empty))
