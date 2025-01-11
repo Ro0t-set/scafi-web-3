@@ -27,6 +27,7 @@ case class SetEngine(engine: js.Dynamic) extends AnimationCommand
 case class StartAnimation()              extends AnimationCommand
 case class PauseAnimation()              extends AnimationCommand
 case class NextTick()                    extends AnimationCommand
+case class NextTickAdd(tick: Int)        extends AnimationCommand
 case class AnimationBatch(batch: Int)    extends AnimationCommand
 case class Reset()                       extends AnimationCommand
 case class SwitchMode()                  extends AnimationCommand

@@ -4,7 +4,7 @@ import com.raquo.laminar.api.L.*
 import domain.{Edge, Node, ViewMode}
 import org.scalajs.dom
 import org.scalajs.dom.window
-import org.scalajs.dom.window.requestAnimationFrame
+import typings.std.global.requestAnimationFrame
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.*
 import view.graph.adapter.SceneWrapper
@@ -74,11 +74,13 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
   private def calculateNodeDiff(newNodes: Set[Node]): (Set[Node], Set[Node]) =
     val nodesToAdd    = newNodes.diff(state.currentNodes)
     val nodesToRemove = state.currentNodes.diff(newNodes)
+
     (nodesToAdd, nodesToRemove)
 
   private def calculateEdgeDiff(newEdges: Set[Edge]): (Set[Edge], Set[Edge]) =
     val edgesToAdd    = newEdges.diff(state.currentEdges)
     val edgesToRemove = state.currentEdges.diff(newEdges)
+
     (edgesToAdd, edgesToRemove)
 
   private def removeNodes(nodesToRemove: Set[Node]): Unit =

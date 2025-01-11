@@ -36,33 +36,7 @@
 
 <script type="module" src="main.js"></script>
 
-<script>
-  (function() {
 
-    function updateZoom() {
-      const designedWidth = 1450;
-      const currentWidth = window.innerWidth;
-      let zoom = currentWidth / designedWidth;
-
-      const minZoom = 0.5;
-      const maxZoom = 5;
-      zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
-
-      document.body.style.transform = `scale(${zoom})`;
-      document.body.style.transformOrigin = 'top left';
-      document.body.style.width = `${designedWidth * zoom}px`;
-    }
-    function debounce(func, wait) {
-      let timeout;
-      return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
-    }
-    window.addEventListener('load', updateZoom);
-    window.addEventListener('resize', debounce(updateZoom, 100));
-  })();
-</script>
 
 <script>
   function loadScastie(user, base64UUID, update) {

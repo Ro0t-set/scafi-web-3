@@ -3,7 +3,7 @@ package view.graph.scene
 import domain.{Edge, Node}
 import view.graph.adapter.ThreeJsAdapter.Object3DType
 
-private[scene] case class SceneState(
+private case class SceneState(
     currentNodes: Set[Node] = Set.empty,
     currentEdges: Set[Edge] = Set.empty,
     nodeObjects: Map[String, Object3DType] = Map.empty,

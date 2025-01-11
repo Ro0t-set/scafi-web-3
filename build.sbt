@@ -36,7 +36,7 @@ lazy val scafiWeb3 = project.in(file("."))
       _.withModuleKind(ModuleKind.ESModule)
         .withOptimizer(true)
         .withClosureCompiler(false)
-        .withSourceMap(false)
+        .withSourceMap(true)
     },
 
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",

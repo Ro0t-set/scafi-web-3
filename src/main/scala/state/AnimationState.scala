@@ -5,6 +5,7 @@ import domain.{
   AnimationBatch,
   AnimationCommand,
   NextTick,
+  NextTickAdd,
   PauseAnimation,
   Reset,
   SetEngine,
@@ -40,8 +41,9 @@ object AnimationState:
       case StartAnimation() => if !runningVar.now() then runningVar.set(true)
       case PauseAnimation() => runningVar.set(false)
       case NextTick()       => currentTickVar.update(_ + 1)
-      case AnimationBatch(batch) => batchVar.set(batch)
-      case Reset()               => reset()
+      case NextTickAdd(tick: Int) => currentTickVar.update(_ + tick)
+      case AnimationBatch(batch)  => batchVar.set(batch)
+      case Reset()                => reset()
       case SwitchMode() => modeVar.update {
           case ViewMode.Mode2D => ViewMode.Mode3D
           case ViewMode.Mode3D => ViewMode.Mode2D

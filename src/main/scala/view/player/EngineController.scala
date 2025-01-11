@@ -1,15 +1,18 @@
 package view.player
 
 import API.GraphAPI
-import domain.NextTick
+import domain.{NextTick, NextTickAdd}
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom.console
 import state.AnimationState
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
 import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
 import state.AnimationState.{animationObserver, batch, engine, running}
+
+import scala.concurrent.Future
 
 /** Represents an engine controller for handling network data and animations.
   * @tparam N
@@ -80,11 +83,14 @@ object EngineController:
       def loop(): Unit =
         if running.observe(owner).now() then
           val batchCount = batch.observe(owner).now()
-          (1 until batchCount).foreach { _ =>
-            animationObserver.onNext(NextTick())
-            getEngineOrEmpty.executeIterations()
-          }
-          animationObserver.onNext(NextTick())
-          handleNewData(processNextBatch())
-          setTimeout(8)(loop())
+          Future {
+            (1 until batchCount).foreach { _ =>
+              getEngineOrEmpty.executeIterations()
+            }
+          }.onComplete(_ =>
+            animationObserver.onNext(NextTickAdd(batchCount + 1))
+            handleNewData(processNextBatch())
+            setTimeout(16)(loop())
+          )
+
       loop()
