@@ -1,3 +1,5 @@
+import sbt.Keys.javaOptions
+
 val scafiVersion = "1.3.0"
 scalafmtOnCompile := true
 wartremoverErrors ++= Warts.unsafe
@@ -5,11 +7,16 @@ wartremoverErrors --= Seq(
   Wart.DefaultArguments
 )
 
+
 enablePlugins(CucumberPlugin)
 
 CucumberPlugin.glues := List("features")
 CucumberPlugin.features := List("src/test/resources/features")
 CucumberPlugin.mainClass := "io.cucumber.core.cli.Main"
+CucumberPlugin.javaOptions := Seq(
+  s"-DtestEnv=${System.getProperty("testEnv", "ci")}",
+          s"-Dbrowser=${System.getProperty("browser", "firefox")}"
+)
 CucumberPlugin.plugin := {
   import com.waioeka.sbt.Plugin._
   val cucumberDir = CucumberPlugin.cucumberTestReports.value
