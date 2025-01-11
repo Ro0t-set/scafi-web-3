@@ -3,7 +3,7 @@ package view.graph.component
 import domain.ViewMode
 import domain.ViewMode.{Mode2D, Mode3D}
 import view.graph.adapter.ThreeJsAdapter.Object3DType
-
+import view.graph.extensions.DomainExtensions.*
 import scala.scalajs.js.annotation.JSName
 
 protected trait ThreeNode extends Object3DType:
@@ -20,15 +20,25 @@ protected trait ThreeNode extends Object3DType:
 
 object NodeFactory {
   def apply(nodeType: ViewMode)(
-      id: Int,
-      textLabel: String,
-      x: Double,
-      y: Double,
-      z: Double,
-      nodeColor: Int,
-      name: String
+      node: domain.Node
   ): ThreeNode = nodeType match {
-    case Mode2D => Node3D(id.toString, textLabel, x, y, z, nodeColor, name)
-    case Mode3D => Node2D(id.toString, textLabel, x, y, z, nodeColor, name)
+    case Mode3D => Node3D(
+        node.id.toString,
+        node.label,
+        node.position.x,
+        node.position.y,
+        node.position.z,
+        node.color,
+        node.object3dName
+      )
+    case Mode2D => Node2D(
+        node.id.toString,
+        node.label,
+        node.position.x,
+        node.position.y,
+        node.position.z,
+        node.color,
+        node.object3dName
+      )
   }
 }

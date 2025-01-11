@@ -7,6 +7,7 @@ import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
 import ThreeJsAdapter.SceneWrapper
+import typings.three.examplesJsmAddonsMod.CSS2DRenderer
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:
@@ -50,6 +51,8 @@ object ThreeJsAdapter:
       val params = WebGLRendererParameters()
       params.precision = "lowp"
       WebGLRenderer(params)
+
+    def createCSS2DRenderer(): CSS2DRenderer = CSS2DRenderer()
 
   object ControlsFactory:
     def createOrbitControls(

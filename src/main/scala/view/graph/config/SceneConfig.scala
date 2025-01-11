@@ -7,5 +7,3 @@ case class SceneConfig(
     near: Double = 0.1,
     far: Double = 1600
 )
-
-case class ViewMode(is2D: Boolean = false)

@@ -46,7 +46,7 @@ final class MainView(config: ViewConfig):
           scene.setNodes(n)
           scene.setEdges(e)
         }(ctx.owner)
-        mode.foreach(_ => scene.clearView())(ctx.owner)
+
       }
     )
 
