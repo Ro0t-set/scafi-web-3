@@ -1,7 +1,7 @@
 package view.player
 
 import API.GraphAPI
-import domain.{NextTick, NextTickAdd}
+import domain.NextTickAdd
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom.console
 import state.AnimationState
@@ -11,6 +11,7 @@ import scala.scalajs.js
 import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
 import state.AnimationState.{animationObserver, batch, engine, running}
+import typings.std.global.requestAnimationFrame
 
 import scala.concurrent.Future
 
@@ -90,7 +91,7 @@ object EngineController:
           }.onComplete(_ =>
             animationObserver.onNext(NextTickAdd(batchCount + 1))
             handleNewData(processNextBatch())
-            setTimeout(16)(loop())
+            requestAnimationFrame(_ => loop())
           )
 
       loop()
