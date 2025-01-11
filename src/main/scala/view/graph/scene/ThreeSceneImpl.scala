@@ -83,7 +83,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     state = state.copy(currentEdges = newEdges)
 
   override def clearView(): Unit =
-    dom.document.getElementsByClassName("node-label").foreach(_.remove())
+    dom.document.getElementsByClassName("node-obj").foreach(_.remove())
     state.nodeObjects.values.foreach(sceneWrapper.removeObject)
     state.edgeObjects.values.foreach(sceneWrapper.removeObject)
     state = SceneState()
@@ -182,8 +182,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
-
-    dom.document.getElementsByClassName("node-label").foreach(_.remove())
+    dom.document.getElementsByClassName("node-obj").foreach(_.remove())
     controls.update()
     labelsRenderer.render(scene, camera.asInstanceOf[Camera])
     renderer.render(scene, camera)

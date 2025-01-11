@@ -25,32 +25,32 @@ object Node2D extends Object3D[Object3DEventMap]:
     val group = new Group()
     group.name = name
 
-    val pointGeometry = new BufferGeometry()
-    pointGeometry.setAttribute(
-      "position",
-      new Float32BufferAttribute(js.Array(x, y, z), 3)
-    )
-    val pointMaterial = new PointsMaterial(
-      new PointsMaterialParameters {
-        size = 15
-        color = nodeColor
-      }
-    )
-    val point = new Points(pointGeometry, pointMaterial)
-    group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
-
-    val labelId = s"label-$id"
+    val node2dId = s"node2d-$id"
+    val labelId  = s"label-$id"
+    Option(dom.document.getElementById(node2dId)).foreach(_.remove())
     Option(dom.document.getElementById(labelId)).foreach(_.remove())
+
+    val pointDiv = div(
+      idAttr          := node2dId,
+      cls             := "node-ojb",
+      width           := "10px",
+      height          := "10px",
+      backgroundColor := s"red"
+    )
+
     val textDiv = div(
       idAttr := labelId,
-      cls    := "node-label",
+      cls    := "node-ojb",
       textLabel,
       color    := "white",
       fontSize := "16px"
     )
 
     val label = new CSS2DObject(textDiv.ref)
-    label.position.set(x + 10, y - 50, z)
+    val point = new CSS2DObject(pointDiv.ref)
+    point.position.set(x, y, z)
+    label.position.set(x + 10, y - 10, z)
 
+    group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
     group.add(label.asInstanceOf[Object3D[Object3DEventMap]])
     group.asInstanceOf[Object3D[Object3DEventMap]]

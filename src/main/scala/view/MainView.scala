@@ -2,6 +2,7 @@ package view
 
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom
+import state.AnimationState.mode
 import state.GraphState.{edges, nodes}
 import view.components.{
   AnimationControllerView,
@@ -45,7 +46,7 @@ final class MainView(config: ViewConfig):
           scene.setNodes(n)
           scene.setEdges(e)
         }(ctx.owner)
-
+        mode.foreach(_ => scene.clearView())(ctx.owner)
       }
     )
 
