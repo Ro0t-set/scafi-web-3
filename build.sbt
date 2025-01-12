@@ -32,9 +32,11 @@ lazy val scafiWeb3 = project.in(file("."))
   .settings(
     scalaVersion                    := "3.3.4",
     scalaJSUseMainModuleInitializer := true,
+    scalaJSLinkerConfig ~= { _.withBatchMode(false) },
     scalaJSLinkerConfig ~= {
+
       _.withModuleKind(ModuleKind.ESModule)
-        .withOptimizer(true)
+        .withOptimizer(false)
         .withClosureCompiler(false)
         .withSourceMap(true)
     },

@@ -13,6 +13,7 @@ object GraphState:
 
     case SetNodes(newNodes) =>
       nodesVar.set(newNodes)
+      edgesVar.set(Set.empty[Edge])
 
     case SetEdges(newEdges) =>
       val filtered = newEdges.filter { edge =>
@@ -22,14 +23,11 @@ object GraphState:
       edgesVar.set(filtered)
 
     case SetEdgesByIds(edgesIds) =>
-      edgesVar.set(Set.empty[Edge])
-      edgesVar.update { currentEdges =>
-        val newEdges = edgesIds.flatMap { case (id1, id2) =>
-          for
-            n1 <- nodesVar.now().find(_.id == id1)
-            n2 <- nodesVar.now().find(_.id == id2)
-          yield Edge((n1, n2))
-        }
-        currentEdges ++ newEdges
+      val newEdges = edgesIds.flatMap { case (id1, id2) =>
+        for
+          n1 <- nodesVar.now().find(_.id == id1)
+          n2 <- nodesVar.now().find(_.id == id2)
+        yield Edge((n1, n2))
       }
+      edgesVar.set(newEdges)
   }

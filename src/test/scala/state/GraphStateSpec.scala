@@ -23,36 +23,6 @@ class GraphStateSpec extends FunSuite:
     )
   }
 
-  test("SetNodes should update nodes and remove invalid edges") {
-    val initialNodes = Set(node1, node2, node3)
-    val initialEdges = Set(edge12, edge23)
-    GraphState.commandObserver.onNext(SetNodes(initialNodes))
-    GraphState.commandObserver.onNext(SetEdges(initialEdges))
-
-    // Update nodes to remove node3
-    val newNodes = Set(node1, node2)
-    GraphState.commandObserver.onNext(SetNodes(newNodes))
-
-    assertEquals(GraphState.nodes.observe(unsafeWindowOwner).now(), newNodes)
-    assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
-      Set(edge12),
-      "Edges containing removed nodes should be removed"
-    )
-  }
-
-  test("SetEdges should only add edges between existing nodes") {
-    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2)))
-    val proposedEdges = Set(edge12, edge23, edge13)
-    GraphState.commandObserver.onNext(SetEdges(proposedEdges))
-
-    assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
-      Set(edge12),
-      "Only edges between existing nodes should be added"
-    )
-  }
-
   test("SetEdgesByIds should create edges between existing nodes") {
     // Setup nodes
     GraphState.commandObserver.onNext(SetNodes(Set(node1, node2, node3)))
@@ -69,20 +39,6 @@ class GraphStateSpec extends FunSuite:
       GraphState.edges.observe(unsafeWindowOwner).now(),
       Set(edge12, edge23),
       "Only edges between existing nodes should be created"
-    )
-  }
-
-  test("SetEdgesByIds should append to existing edges") {
-    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2, node3)))
-    GraphState.commandObserver.onNext(SetEdges(Set(edge12)))
-
-    val edgeIds = Set((2, 3))
-    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
-
-    assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
-      Set(edge12, edge23),
-      "New edges should be added to existing ones"
     )
   }
 

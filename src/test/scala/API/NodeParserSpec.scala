@@ -63,6 +63,7 @@ class NodeParserSpec extends FunSuite:
   }
 
   test("parse valid JSON with single Node") {
+
     val jsonString =
       """
         |[
