@@ -9,7 +9,6 @@ import state.AnimationState
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
 import scala.scalajs.js.JSON
-import scala.scalajs.js.timers.setTimeout
 import state.AnimationState.{animationObserver, batch, engine, running}
 import typings.std.global.requestAnimationFrame
 
@@ -47,7 +46,8 @@ trait EngineController[N, E]:
 object EngineController:
   opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
-  class Player(owner: Owner) extends EngineController[js.Dynamic, js.Dynamic]:
+  class Player(owner: Owner, dynOwner: DynamicOwner)
+      extends EngineController[js.Dynamic, js.Dynamic]:
     running.signal.foreach {
       case true  => start()
       case false => ()
@@ -84,12 +84,14 @@ object EngineController:
       def loop(): Unit =
         if running.observe(owner).now() then
           val batchCount = batch.observe(owner).now()
+          dynOwner.deactivate()
           Future {
             (1 until batchCount).foreach { _ =>
               getEngineOrEmpty.executeIterations()
             }
           }.onComplete(_ =>
             animationObserver.onNext(NextTickAdd(batchCount + 1))
+            dynOwner.activate()
             handleNewData(processNextBatch())
             requestAnimationFrame(_ => loop())
           )

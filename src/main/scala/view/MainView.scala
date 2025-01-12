@@ -1,13 +1,12 @@
 package view
 
+import com.raquo.airstream.ownership.TransferableSubscription
 import com.raquo.laminar.api.L.*
+import domain.{Edge, Node}
 import org.scalajs.dom
+import org.scalajs.dom.console
 import state.GraphState.{edges, nodes}
-import view.components.{
-  AnimationControllerView,
-  EngineSettingsView,
-  GridViewControllerView
-}
+import view.components.{AnimationControllerView, EngineSettingsView, GridViewControllerView}
 import view.player.EngineController as EngineControllerPlayer
 import view.config.ViewConfig
 import view.controller.EngineController
@@ -40,12 +39,21 @@ final class MainView(config: ViewConfig):
       engineSettings.render,
       onMountCallback { ctx =>
         initialize()
-        EngineControllerPlayer.Player(ctx.owner)
-        edges.combineWith(nodes).foreach { case (e, n) =>
-          scene.setNodes(n)
-          scene.setEdges(e)
-        }(ctx.owner)
+        
 
+        val dynOwner = new DynamicOwner(() => console.warn("Owner destroyed"))
+        val observerGraph: Observer[(Set[Edge], Set[Node])] =
+          Observer[(Set[Edge], Set[Node])](graph => {
+            scene.setNodes(graph._2)
+            scene.setEdges(graph._1)
+          })
+        val dynSub = DynamicSubscription.unsafe(
+          dynOwner,
+          activate = (owner: Owner) =>
+            edges.combineWith(nodes).addObserver(observerGraph)(owner)
+        )
+        dynOwner.activate()
+        EngineControllerPlayer.Player(ctx.owner, dynOwner)
       }
     )
 
