@@ -23,11 +23,11 @@ object AnimationState:
   private val engineVar: Var[Option[js.Dynamic]] = Var[Option[js.Dynamic]](None)
   private val modeVar: Var[ViewMode] = Var[ViewMode](ViewMode.Mode3D)
 
-  val running: Signal[Boolean]           = runningVar.signal
-  val batch: Signal[Int]                 = batchVar.signal
-  val currentTick: Signal[Int]           = currentTickVar.signal
-  val engine: Signal[Option[js.Dynamic]] = engineVar.signal
-  val mode: Signal[ViewMode]             = modeVar.signal
+  val running: StrictSignal[Boolean]           = runningVar.signal
+  val batch: StrictSignal[Int]                 = batchVar.signal
+  val currentTick: StrictSignal[Int]           = currentTickVar.signal
+  val engine: StrictSignal[Option[js.Dynamic]] = engineVar.signal
+  val mode: StrictSignal[ViewMode]             = modeVar.signal
 
   private def reset(): Unit =
     runningVar.set(false)

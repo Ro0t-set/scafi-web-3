@@ -6,8 +6,8 @@ import domain.{Edge, GraphCommand, Node, SetEdges, SetEdgesByIds, SetNodes}
 object GraphState:
   private val nodesVar: Var[Set[Node]] = Var(Set.empty[Node])
   private val edgesVar: Var[Set[Edge]] = Var(Set.empty[Edge])
-  val nodes: Signal[Set[Node]]         = nodesVar.signal
-  val edges: Signal[Set[Edge]]         = edgesVar.signal
+  val nodes: StrictSignal[Set[Node]]   = nodesVar.signal
+  val edges: StrictSignal[Set[Edge]]   = edgesVar.signal
 
   val commandObserver: Observer[GraphCommand] = Observer[GraphCommand] {
 

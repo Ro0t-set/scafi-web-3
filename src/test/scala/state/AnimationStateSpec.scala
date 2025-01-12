@@ -7,12 +7,12 @@ import scala.scalajs.js
 
 class AnimationStateSpec extends FunSuite:
   test("initial state should have expected default values") {
-    assertEquals(AnimationState.running.observe(unsafeWindowOwner).now(), false)
-    assertEquals(AnimationState.batch.observe(unsafeWindowOwner).now(), 1)
-    assertEquals(AnimationState.currentTick.observe(unsafeWindowOwner).now(), 0)
-    assertEquals(AnimationState.engine.observe(unsafeWindowOwner).now(), None)
+    assertEquals(AnimationState.running.now(), false)
+    assertEquals(AnimationState.batch.now(), 1)
+    assertEquals(AnimationState.currentTick.now(), 0)
+    assertEquals(AnimationState.engine.now(), None)
     assertEquals(
-      AnimationState.mode.observe(unsafeWindowOwner).now(),
+      AnimationState.mode.now(),
       ViewMode.Mode3D
     )
   }
@@ -22,25 +22,25 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.animationObserver.onNext(SetEngine(mockEngine))
 
     assertEquals(
-      AnimationState.engine.observe(unsafeWindowOwner).now(),
+      AnimationState.engine.now(),
       Some(mockEngine)
     )
-    assertEquals(AnimationState.running.observe(unsafeWindowOwner).now(), false)
-    assertEquals(AnimationState.currentTick.observe(unsafeWindowOwner).now(), 0)
+    assertEquals(AnimationState.running.now(), false)
+    assertEquals(AnimationState.currentTick.now(), 0)
   }
 
   test("StartAnimation should set running to true") {
     AnimationState.animationObserver.onNext(StartAnimation())
-    assertEquals(AnimationState.running.observe(unsafeWindowOwner).now(), true)
+    assertEquals(AnimationState.running.now(), true)
   }
 
   test("StartAnimation should not affect running state if already running") {
     AnimationState.animationObserver.onNext(StartAnimation())
     val initialRunningState =
-      AnimationState.running.observe(unsafeWindowOwner).now()
+      AnimationState.running.now()
     AnimationState.animationObserver.onNext(StartAnimation())
     assertEquals(
-      AnimationState.running.observe(unsafeWindowOwner).now(),
+      AnimationState.running.now(),
       initialRunningState
     )
   }
@@ -48,15 +48,15 @@ class AnimationStateSpec extends FunSuite:
   test("PauseAnimation should set running to false") {
     AnimationState.animationObserver.onNext(StartAnimation())
     AnimationState.animationObserver.onNext(PauseAnimation())
-    assertEquals(AnimationState.running.observe(unsafeWindowOwner).now(), false)
+    assertEquals(AnimationState.running.now(), false)
   }
 
   test("NextTick should increment currentTick") {
     val initialTick =
-      AnimationState.currentTick.observe(unsafeWindowOwner).now()
+      AnimationState.currentTick.now()
     AnimationState.animationObserver.onNext(NextTick())
     assertEquals(
-      AnimationState.currentTick.observe(unsafeWindowOwner).now(),
+      AnimationState.currentTick.now(),
       initialTick + 1
     )
   }
@@ -65,7 +65,7 @@ class AnimationStateSpec extends FunSuite:
     val newBatchValue = 5
     AnimationState.animationObserver.onNext(AnimationBatch(newBatchValue))
     assertEquals(
-      AnimationState.batch.observe(unsafeWindowOwner).now(),
+      AnimationState.batch.now(),
       newBatchValue
     )
   }
@@ -75,33 +75,31 @@ class AnimationStateSpec extends FunSuite:
     AnimationState.animationObserver.onNext(NextTick())
     AnimationState.animationObserver.onNext(Reset())
 
-    assertEquals(AnimationState.running.observe(unsafeWindowOwner).now(), false)
-    assertEquals(AnimationState.currentTick.observe(unsafeWindowOwner).now(), 0)
+    assertEquals(AnimationState.running.now(), false)
+    assertEquals(AnimationState.currentTick.now(), 0)
   }
 
   test("SwitchMode should toggle between 2D and 3D modes") {
     assertEquals(
-      AnimationState.mode.observe(unsafeWindowOwner).now(),
+      AnimationState.mode.now(),
       ViewMode.Mode3D
     )
 
     AnimationState.animationObserver.onNext(SwitchMode())
     assertEquals(
-      AnimationState.mode.observe(unsafeWindowOwner).now(),
+      AnimationState.mode.now(),
       ViewMode.Mode2D
     )
 
     AnimationState.animationObserver.onNext(SwitchMode())
     assertEquals(
-      AnimationState.mode.observe(unsafeWindowOwner).now(),
+      AnimationState.mode.now(),
       ViewMode.Mode3D
     )
   }
 
   override def beforeEach(context: BeforeEach): Unit =
     AnimationState.animationObserver.onNext(Reset())
-    while AnimationState.mode.observe(
-        unsafeWindowOwner
-      ).now() != ViewMode.Mode3D
+    while AnimationState.mode.now() != ViewMode.Mode3D
     do
       AnimationState.animationObserver.onNext(SwitchMode())

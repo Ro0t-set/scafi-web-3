@@ -14,11 +14,11 @@ class GraphStateSpec extends FunSuite:
 
   test("initial state should be empty") {
     assertEquals(
-      GraphState.nodes.observe(unsafeWindowOwner).now(),
+      GraphState.nodes.now(),
       Set.empty[Node]
     )
     assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
+      GraphState.edges.now(),
       Set.empty[Edge]
     )
   }
@@ -36,7 +36,7 @@ class GraphStateSpec extends FunSuite:
     GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
 
     assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
+      GraphState.edges.now(),
       Set(edge12, edge23),
       "Only edges between existing nodes should be created"
     )
@@ -51,7 +51,7 @@ class GraphStateSpec extends FunSuite:
     GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
 
     assertEquals(
-      GraphState.edges.observe(unsafeWindowOwner).now(),
+      GraphState.edges.now(),
       Set(edge12),
       "Duplicate edges should not be added"
     )

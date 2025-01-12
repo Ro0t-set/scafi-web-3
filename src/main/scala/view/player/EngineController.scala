@@ -12,6 +12,7 @@ import scala.scalajs.js.JSON
 import scala.scalajs.js.timers.setTimeout
 import state.AnimationState.{animationObserver, batch, engine, running}
 import typings.std.global.requestAnimationFrame
+import view.graph.scene.ThreeSceneImpl
 
 import scala.concurrent.Future
 
@@ -47,18 +48,10 @@ trait EngineController[N, E]:
 object EngineController:
   opaque type DynamicNetwork = (js.Dynamic, js.Dynamic)
 
-  class Player(owner: Owner) extends EngineController[js.Dynamic, js.Dynamic]:
-    running.signal.foreach {
-      case true  => start()
-      case false => ()
-    }(owner)
-    engine.signal.foreach {
-      case Some(_) => loadNextFrame()
-      case None    => ()
-    }(owner)
-
+  class Player extends EngineController[js.Dynamic, js.Dynamic]:
+    
     private def getEngineOrEmpty: js.Dynamic =
-      engine.observe(owner).now().getOrElse {
+      engine.now().getOrElse {
         console.error("Engine not found")
         js.Dynamic.literal()
       }
@@ -79,11 +72,12 @@ object EngineController:
         do
           GraphAPI.addNodesFromJson(nodesJson)
           GraphAPI.addEdgesFromJson(edgesJson)
+          
 
     override def start(): Unit =
       def loop(): Unit =
-        if running.observe(owner).now() then
-          val batchCount = batch.observe(owner).now()
+        if running.now() then
+          val batchCount = batch.now()
           Future {
             (1 until batchCount).foreach { _ =>
               getEngineOrEmpty.executeIterations()

@@ -2,6 +2,7 @@ package view
 
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom
+import state.AnimationState.{engine, running}
 import state.GraphState.{edges, nodes}
 import view.components.{
   AnimationControllerView,
@@ -15,9 +16,9 @@ import view.graph.scene.ThreeSceneImpl
 
 final class MainView(config: ViewConfig):
   private val scene               = ThreeSceneImpl(config.sceneConfig)
-  private val sceneController     = new GridViewControllerView(scene)
-  private val engineController    = new EngineController()()()
-  private val engineSettings      = new EngineSettingsView(engineController)
+  private val sceneController     = GridViewControllerView(scene)
+  private val engineController    = EngineController()()()
+  private val engineSettings      = EngineSettingsView(engineController)
   private val animationController = new AnimationControllerView
 
   private def initialize(): Unit =
@@ -40,10 +41,20 @@ final class MainView(config: ViewConfig):
       engineSettings.render,
       onMountCallback { ctx =>
         initialize()
-        EngineControllerPlayer.Player(ctx.owner)
+        val player = EngineControllerPlayer.Player()
         edges.combineWith(nodes).foreach { case (e, n) =>
           scene.setNodes(n)
           scene.setEdges(e)
+        }(ctx.owner)
+
+        running.foreach {
+          case true  => player.start()
+          case _ => ()
+        }(ctx.owner)
+
+        engine.foreach {
+          case Some(_) => player.loadNextFrame()
+          case None    => ()
         }(ctx.owner)
 
       }
