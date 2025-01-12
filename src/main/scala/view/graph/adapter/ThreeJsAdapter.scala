@@ -8,6 +8,7 @@ import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
 import ThreeJsAdapter.SceneWrapper
 import typings.three.examplesJsmAddonsMod.CSS2DRenderer
+import typings.three.srcCoreBufferGeometryMod.NormalOrGLBufferAttributes
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:
@@ -30,6 +31,13 @@ object ThreeJsAdapter:
       underlying.add(obj.asThreeObject)
 
     def removeObject(obj: Object3D[?]): Unit =
+      obj.asInstanceOf[Group[Object3DEventMap]].children.foreach { child =>
+        val typedChild = child.asInstanceOf[Sprite[Object3DEventMap]]
+        typedChild.geometry.dispose()
+        if typedChild.material.map != null then
+          typedChild.material.map.dispose()
+        typedChild.material.dispose()
+      }
       underlying.remove(obj.asThreeObject)
 
     def findByName(name: String): Option[Object3DType] =

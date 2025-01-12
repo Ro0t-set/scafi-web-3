@@ -28,6 +28,7 @@ object Edge3D extends Object3DType:
       color = 0xffff00
     })
     val line = new Line(lineGeometry, lineMaterial)
-    line.name = name
+
     group.add(line.asInstanceOf[Object3DType])
+    group.name = name
     group.asInstanceOf[Object3DType]

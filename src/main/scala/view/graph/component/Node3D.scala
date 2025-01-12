@@ -21,7 +21,6 @@ protected object Node3D extends ThreeNode:
       name: String
   ): ThreeNode =
     val group = new Group()
-    group.name = name
 
     val pointGeometry = new BufferGeometry()
     pointGeometry.setAttribute(
@@ -35,6 +34,7 @@ protected object Node3D extends ThreeNode:
       }
     )
     val point = new Points(pointGeometry, pointMaterial)
+
     group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
 
     val canvas =
@@ -65,7 +65,6 @@ protected object Node3D extends ThreeNode:
       js.undefined,
       js.undefined
     )
-    texture.needsUpdate_=(true)
 
     val spriteMaterial = new SpriteMaterial(new SpriteMaterialParameters {
       map = texture
@@ -74,6 +73,8 @@ protected object Node3D extends ThreeNode:
     val sprite = new Sprite(spriteMaterial)
     sprite.scale.set(100, 25, 1)
     sprite.position.set(x, y - 20, z)
+
+    group.name = name
     group.add(sprite.asInstanceOf[ThreeNode])
 
     group.asInstanceOf[ThreeNode]

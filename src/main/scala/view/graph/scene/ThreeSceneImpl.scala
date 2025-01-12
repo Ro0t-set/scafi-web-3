@@ -42,6 +42,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     val renderer = RendererFactory.createWebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(config.width, config.height)
+    renderer.info.autoReset = false
     renderer
 
   private def initControls(config: SceneConfig): OrbitControls =
@@ -145,7 +146,6 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
-    controls.update()
     renderer.render(scene, camera)
 
   override def renderScene(elementId: String): Element =

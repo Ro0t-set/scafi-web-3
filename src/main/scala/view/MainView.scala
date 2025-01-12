@@ -48,8 +48,8 @@ final class MainView(config: ViewConfig):
         }(ctx.owner)
 
         running.foreach {
-          case true  => player.start()
-          case _ => ()
+          case true => player.start()
+          case _    => ()
         }(ctx.owner)
 
         engine.foreach {
