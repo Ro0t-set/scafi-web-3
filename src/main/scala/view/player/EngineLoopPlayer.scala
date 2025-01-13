@@ -2,16 +2,13 @@ package view.player
 
 import API.GraphAPI
 import domain.NextTickAdd
-import com.raquo.laminar.api.L.*
 import org.scalajs.dom.console
 import state.AnimationState
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
 import scala.scalajs.js.JSON
-import state.AnimationState.{animationObserver, batch, engine, running}
+import state.AnimationState.{animationObserver, batch, engine, mode, running}
 import typings.std.global.setTimeout
-import view.graph.scene.ThreeSceneImpl
 
 trait EngineLoopPlayer[N, E]:
   private type JsonNetwork = (N, E)

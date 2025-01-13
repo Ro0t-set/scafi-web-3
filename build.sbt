@@ -1,12 +1,15 @@
 import sbt.Keys.javaOptions
-
-val scafiVersion = "1.3.0"
 scalafmtOnCompile := true
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
   Wart.DefaultArguments
 )
 
+enablePlugins(ScalafixPlugin)
+ThisBuild / semanticdbEnabled          := true
+ThisBuild / semanticdbVersion          := scalafixSemanticdb.revision
+ThisBuild / scalacOptions  ++= List("-Wunused:all")
+ThisBuild / scalafixOnCompile := true
 
 enablePlugins(CucumberPlugin)
 
@@ -26,6 +29,7 @@ CucumberPlugin.plugin := {
   )
 }
 
+
 lazy val scafiWeb3 = project.in(file("."))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
@@ -40,6 +44,7 @@ lazy val scafiWeb3 = project.in(file("."))
         .withClosureCompiler(false)
         .withSourceMap(true)
     },
+
 
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",

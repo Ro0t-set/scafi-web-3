@@ -23,7 +23,7 @@ final class MainView(config: ViewConfig):
   private val player              = EngineControllerPlayer
 
   private def initialize(): Unit =
-    val originalSignal = ClientMain.signal
+    ClientMain.signal
     def newScastieLoadingSignal(
         result: scala.scalajs.js.Any,
         attachedElements: scala.scalajs.js.Any,

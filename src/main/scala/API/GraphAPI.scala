@@ -1,6 +1,6 @@
 package API
 
-import domain.{Edge, Id, Node, Position, SetEdges, SetEdgesByIds, SetNodes}
+import domain.{Id, Node, SetEdgesByIds, SetNodes}
 import state.GraphState.*
 
 import scala.scalajs.js.annotation.*

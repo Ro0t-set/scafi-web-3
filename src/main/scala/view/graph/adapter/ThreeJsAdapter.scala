@@ -8,7 +8,6 @@ import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
 import ThreeJsAdapter.SceneWrapper
 import typings.three.examplesJsmAddonsMod.CSS2DRenderer
-import typings.three.srcCoreBufferGeometryMod.NormalOrGLBufferAttributes
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:
