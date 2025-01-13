@@ -20,18 +20,19 @@ final class MainView(config: ViewConfig):
   private val engineController    = EngineController()()()
   private val engineSettings      = EngineSettingsView(engineController)
   private val animationController = new AnimationControllerView
+  private val player              = EngineControllerPlayer.Player()
 
   private def initialize(): Unit =
     val originalSignal = ClientMain.signal
-    def newSignal(
+    def newScastieLoadingSignal(
         result: scala.scalajs.js.Any,
         attachedElements: scala.scalajs.js.Any,
         scastieId: scala.scalajs.js.Any
     ): Unit =
       engineController.loadEngine()
       scene.centerView()
-
-    scala.scalajs.js.Dynamic.global.scastie.ClientMain.signal = newSignal
+    scala.scalajs.js.Dynamic.global.scastie.ClientMain.signal =
+      newScastieLoadingSignal
 
   def render(): Unit =
     val rootElement = div(
@@ -39,25 +40,20 @@ final class MainView(config: ViewConfig):
       sceneController.render,
       animationController.render,
       engineSettings.render,
-      onMountCallback { ctx =>
-        initialize()
-        val player = EngineControllerPlayer.Player()
-        edges.combineWith(nodes).foreach { case (e, n) =>
-          scene.setNodes(n)
-          scene.setEdges(e)
-        }(ctx.owner)
-
-        running.foreach {
-          case true => player.start()
-          case _    => ()
-        }(ctx.owner)
-
-        engine.foreach {
-          case Some(_) => player.loadNextFrame()
-          case None    => ()
-        }(ctx.owner)
-
-      }
+      running --> {
+        case true => player.start()
+        case _    => ()
+      },
+      engine --> {
+        case Some(engine) => player.loadNextFrame()
+        case _            => ()
+      },
+      edges.combineWith(nodes) --> {
+        case (edges, nodes) =>
+          scene.setNodes(nodes)
+          scene.setEdges(edges)
+      },
+      onMountCallback(_ => initialize())
     )
 
     renderOnDomContentLoaded(
