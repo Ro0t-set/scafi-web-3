@@ -4,7 +4,7 @@ import com.raquo.laminar.api.L.*
 import domain.{AnimationBatch, PauseAnimation, StartAnimation}
 import state.AnimationState.{animationObserver, batch, currentTick}
 
-final class AnimationControllerView extends ViewComponent:
+case class AnimationControllerView() extends ViewComponent:
   override def render: Element =
     div(
       cls := "animation-controller",

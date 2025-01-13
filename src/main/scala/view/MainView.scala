@@ -9,7 +9,7 @@ import view.components.{
   EngineSettingsView,
   GridViewControllerView
 }
-import view.player.EngineController as EngineControllerPlayer
+import view.player.EngineLoopPlayer as EngineControllerPlayer
 import view.config.ViewConfig
 import view.controller.EngineController
 import view.graph.scene.ThreeSceneImpl
@@ -19,8 +19,8 @@ final class MainView(config: ViewConfig):
   private val sceneController     = GridViewControllerView(scene)
   private val engineController    = EngineController()()()
   private val engineSettings      = EngineSettingsView(engineController)
-  private val animationController = new AnimationControllerView
-  private val player              = EngineControllerPlayer.Player()
+  private val animationController = AnimationControllerView()
+  private val player              = EngineControllerPlayer
 
   private def initialize(): Unit =
     val originalSignal = ClientMain.signal
