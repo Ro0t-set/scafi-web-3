@@ -7,7 +7,7 @@ import state.AnimationState
 
 import scala.scalajs.js
 import scala.scalajs.js.JSON
-import state.AnimationState.{animationObserver, batch, engine, mode, running}
+import state.AnimationState.{animationObserver, batch, engine, running}
 import typings.std.global.setTimeout
 
 trait EngineLoopPlayer[N, E]:

@@ -5,12 +5,15 @@ wartremoverErrors --= Seq(
   Wart.DefaultArguments
 )
 
+
+
 enablePlugins(ScalafixPlugin)
 ThisBuild / semanticdbEnabled          := true
 ThisBuild / semanticdbVersion          := scalafixSemanticdb.revision
 ThisBuild / scalacOptions  ++= List("-Wunused:all")
 ThisBuild / scalafixOnCompile := true
 ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.5.1"
+
 
 enablePlugins(CucumberPlugin)
 

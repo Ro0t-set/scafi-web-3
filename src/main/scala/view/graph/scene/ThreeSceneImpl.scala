@@ -28,7 +28,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
   private val camera       = initCamera(config)
 
   private val renderer = initRenderer(config)
-  private val controls = initControls(config)
+  private val controls = initControls
 
   private def initCamera(config: SceneConfig): PerspectiveCamera =
     CameraFactory.createPerspectiveCamera(
@@ -45,7 +45,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     renderer.info.autoReset = false
     renderer
 
-  private def initControls(config: SceneConfig): OrbitControls =
+  private def initControls: OrbitControls =
     val controls = ControlsFactory.createOrbitControls(
       camera = camera,
       domElement = renderer.domElement
