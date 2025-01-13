@@ -1,7 +1,8 @@
 import view.MainView
 import view.config.ViewConfig
-import scala.scalajs.js.annotation.*
+
 import scala.scalajs.js
+import scala.scalajs.js.annotation._
 
 object ViewModule:
   def apply(): MainView =

@@ -4,11 +4,14 @@ import API.GraphAPI
 import domain.NextTickAdd
 import org.scalajs.dom.console
 import state.AnimationState
+import state.AnimationState.animationObserver
+import state.AnimationState.batch
+import state.AnimationState.engine
+import state.AnimationState.running
+import typings.std.global.setTimeout
 
 import scala.scalajs.js
 import scala.scalajs.js.JSON
-import state.AnimationState.{animationObserver, batch, engine, running}
-import typings.std.global.setTimeout
 
 trait EngineLoopPlayer[N, E]:
   private type JsonNetwork = (N, E)

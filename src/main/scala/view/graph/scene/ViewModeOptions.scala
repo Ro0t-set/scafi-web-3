@@ -3,7 +3,7 @@ package view.graph.scene
 import domain.Node
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.Vector3
-import view.graph.extensions.DomainExtensions.*
+import view.graph.extensions.DomainExtensions._
 
 sealed trait ViewModeOptions:
   def configureControls(controls: OrbitControls): Unit

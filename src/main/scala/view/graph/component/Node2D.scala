@@ -1,11 +1,10 @@
 package view.graph.component
 
-import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.mod.*
-import com.raquo.laminar.api.L.*
-
-import typings.three.examplesJsmAddonsMod.CSS2DObject
+import com.raquo.laminar.api.L._
 import org.scalajs.dom
+import typings.three.examplesJsmAddonsMod.CSS2DObject
+import typings.three.mod._
+import typings.three.srcCoreObject3DMod.Object3DEventMap
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -35,7 +34,7 @@ protected object Node2D extends ThreeNode:
       cls             := name,
       width           := "5px",
       height          := "5px",
-      backgroundColor := s"red"
+      backgroundColor := "red"
     )
 
     val textDiv = div(

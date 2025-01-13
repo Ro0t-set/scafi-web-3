@@ -1,18 +1,18 @@
 package view
 
-import com.raquo.laminar.api.L.*
+import com.raquo.laminar.api.L._
 import org.scalajs.dom
-import state.AnimationState.{engine, running}
-import state.GraphState.{edges, nodes}
-import view.components.{
-  AnimationControllerView,
-  EngineSettingsView,
-  GridViewControllerView
-}
-import view.player.EngineLoopPlayer as EngineControllerPlayer
+import state.AnimationState.engine
+import state.AnimationState.running
+import state.GraphState.edges
+import state.GraphState.nodes
+import view.components.AnimationControllerView
+import view.components.EngineSettingsView
+import view.components.GridViewControllerView
 import view.config.ViewConfig
 import view.controller.EngineController
 import view.graph.scene.ThreeSceneImpl
+import view.player.EngineLoopPlayer
 
 final class MainView(config: ViewConfig):
   private val scene               = ThreeSceneImpl(config.sceneConfig)
@@ -20,7 +20,7 @@ final class MainView(config: ViewConfig):
   private val engineController    = EngineController()()()
   private val engineSettings      = EngineSettingsView(engineController)
   private val animationController = AnimationControllerView()
-  private val player              = EngineControllerPlayer
+  private val player              = EngineLoopPlayer
 
   private def initialize(): Unit =
     ClientMain.signal

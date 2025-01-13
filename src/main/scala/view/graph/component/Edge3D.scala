@@ -1,9 +1,10 @@
 package view.graph.component
 
-import typings.three.mod.*
+import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsLineBasicMaterialMod.LineBasicMaterialParameters
 import view.graph.adapter.ThreeJsAdapter.Object3DType
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 

@@ -1,6 +1,7 @@
 package view.graph.scene
 
-import domain.{Edge, Node}
+import domain.Edge
+import domain.Node
 import view.graph.adapter.ThreeJsAdapter.Object3DType
 
 private[scene] case class SceneState(

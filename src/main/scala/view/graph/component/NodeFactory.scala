@@ -1,9 +1,11 @@
 package view.graph.component
 
 import domain.ViewMode
-import domain.ViewMode.{Mode2D, Mode3D}
+import domain.ViewMode.Mode2D
+import domain.ViewMode.Mode3D
 import view.graph.adapter.ThreeJsAdapter.Object3DType
-import view.graph.extensions.DomainExtensions.*
+import view.graph.extensions.DomainExtensions._
+
 import scala.scalajs.js.annotation.JSName
 
 protected trait ThreeNode extends Object3DType:

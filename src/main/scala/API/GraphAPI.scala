@@ -1,9 +1,12 @@
 package API
 
-import domain.{Id, Node, SetEdgesByIds, SetNodes}
-import state.GraphState.*
+import domain.Id
+import domain.Node
+import domain.SetEdgesByIds
+import domain.SetNodes
+import state.GraphState._
 
-import scala.scalajs.js.annotation.*
+import scala.scalajs.js.annotation._
 
 sealed trait GraphApiError:
   def message: String

@@ -1,18 +1,16 @@
 package state
 
-import com.raquo.laminar.api.L.*
-import domain.{
-  AnimationBatch,
-  AnimationCommand,
-  NextTick,
-  NextTickAdd,
-  PauseAnimation,
-  Reset,
-  SetEngine,
-  StartAnimation,
-  SwitchMode,
-  ViewMode
-}
+import com.raquo.laminar.api.L._
+import domain.AnimationBatch
+import domain.AnimationCommand
+import domain.NextTick
+import domain.NextTickAdd
+import domain.PauseAnimation
+import domain.Reset
+import domain.SetEngine
+import domain.StartAnimation
+import domain.SwitchMode
+import domain.ViewMode
 
 import scala.scalajs.js
 

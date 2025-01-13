@@ -1,23 +1,24 @@
 package view.graph.scene
 
-import com.raquo.laminar.api.L.*
-import domain.{Edge, Node, ViewMode}
+import com.raquo.laminar.api.L._
+import domain.Edge
+import domain.Node
+import domain.ViewMode
 import org.scalajs.dom
 import org.scalajs.dom.window
 import typings.std.global.requestAnimationFrame
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
-import typings.three.mod.*
+import typings.three.mod._
 import view.graph.adapter.SceneWrapper
-import view.graph.adapter.ThreeJsAdapter.{
-  CameraFactory,
-  ControlsFactory,
-  Object3DType,
-  RendererFactory,
-  VectorUtils
-}
-import view.graph.component.{Edge3D, NodeFactory}
+import view.graph.adapter.ThreeJsAdapter.CameraFactory
+import view.graph.adapter.ThreeJsAdapter.ControlsFactory
+import view.graph.adapter.ThreeJsAdapter.Object3DType
+import view.graph.adapter.ThreeJsAdapter.RendererFactory
+import view.graph.adapter.ThreeJsAdapter.VectorUtils
+import view.graph.component.Edge3D
+import view.graph.component.NodeFactory
 import view.graph.config.SceneConfig
-import view.graph.extensions.DomainExtensions.*
+import view.graph.extensions.DomainExtensions._
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:

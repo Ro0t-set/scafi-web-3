@@ -1,10 +1,11 @@
 package view.graph.component
 
-import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
-import typings.three.mod.*
 import org.scalajs.dom
+import typings.three.mod._
+import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsPointsMaterialMod.PointsMaterialParameters
+import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 

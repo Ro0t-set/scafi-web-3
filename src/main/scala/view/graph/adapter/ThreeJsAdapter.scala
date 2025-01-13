@@ -1,13 +1,14 @@
 package view.graph.adapter
 
-import typings.three.mod.*
-import typings.three.srcCoreObject3DMod.Object3DEventMap
-import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
-import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import org.scalajs.dom
 import org.scalajs.dom.HTMLElement
-import ThreeJsAdapter.SceneWrapper
 import typings.three.examplesJsmAddonsMod.CSS2DRenderer
+import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
+import typings.three.mod._
+import typings.three.srcCoreObject3DMod.Object3DEventMap
+import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
+
+import ThreeJsAdapter.SceneWrapper
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:

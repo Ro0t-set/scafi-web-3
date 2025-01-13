@@ -1,6 +1,8 @@
 package API
 
-import domain.{Id, Node, Position}
+import domain.Id
+import domain.Node
+import domain.Position
 
 import scala.util.Try
 

@@ -1,8 +1,12 @@
 package view.components
 
-import com.raquo.laminar.api.L.*
-import domain.{AnimationBatch, PauseAnimation, StartAnimation}
-import state.AnimationState.{animationObserver, batch, currentTick}
+import com.raquo.laminar.api.L._
+import domain.AnimationBatch
+import domain.PauseAnimation
+import domain.StartAnimation
+import state.AnimationState.animationObserver
+import state.AnimationState.batch
+import state.AnimationState.currentTick
 
 case class AnimationControllerView() extends ViewComponent:
   override def render: Element =

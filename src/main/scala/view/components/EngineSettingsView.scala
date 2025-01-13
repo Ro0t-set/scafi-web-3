@@ -1,6 +1,6 @@
 package view.components
 
-import com.raquo.laminar.api.L.*
+import com.raquo.laminar.api.L._
 import view.controller.EngineController
 
 final class EngineSettingsView(controller: EngineController)

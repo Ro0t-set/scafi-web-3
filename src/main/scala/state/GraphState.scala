@@ -1,7 +1,12 @@
 package state
 
-import com.raquo.laminar.api.L.*
-import domain.{Edge, GraphCommand, Node, SetEdges, SetEdgesByIds, SetNodes}
+import com.raquo.laminar.api.L._
+import domain.Edge
+import domain.GraphCommand
+import domain.Node
+import domain.SetEdges
+import domain.SetEdgesByIds
+import domain.SetNodes
 
 object GraphState:
   private val nodesVar: Var[Set[Node]] = Var(Set.empty[Node])
