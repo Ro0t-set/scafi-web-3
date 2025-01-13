@@ -60,7 +60,7 @@ case class AnimationControllerView() extends ViewComponent:
         idAttr  := "batch-slider",
         `type`  := "range",
         minAttr := "1",
-        maxAttr := "512",
+        maxAttr := "2048",
         value   := "1",
         onInput.mapToValue.map(_.toInt) --> (batchSize =>
           animationObserver.onNext(AnimationBatch(batchSize))
