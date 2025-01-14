@@ -21,20 +21,20 @@ protected object Node3D extends ThreeNode:
       nodeColor: Int,
       name: String
   ): ThreeNode =
-    val group = new Group()
+    val group: Group[Nothing] = Group()
 
-    val pointGeometry = new BufferGeometry()
+    val pointGeometry: BufferGeometry[Nothing] = BufferGeometry()
     pointGeometry.setAttribute(
       "position",
-      new Float32BufferAttribute(js.Array(x, y, z), 3)
+      Float32BufferAttribute(js.Array(x, y, z), 3)
     )
-    val pointMaterial = new PointsMaterial(
+    val pointMaterial: PointsMaterial = PointsMaterial(
       new PointsMaterialParameters {
         size = 15
         color = nodeColor
       }
     )
-    val point = new Points(pointGeometry, pointMaterial)
+    val point: Points[?, ?, ?] = Points(pointGeometry, pointMaterial)
 
     group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
 
@@ -67,15 +67,14 @@ protected object Node3D extends ThreeNode:
       js.undefined
     )
 
-    val spriteMaterial = new SpriteMaterial(new SpriteMaterialParameters {
-      map = texture
-      transparent = true
-    })
-    val sprite = new Sprite(spriteMaterial)
+    val spriteMaterial: SpriteMaterial =
+      SpriteMaterial(new SpriteMaterialParameters {
+        map = texture
+        transparent = true
+      })
+    val sprite: Sprite[Nothing] = Sprite(spriteMaterial)
     sprite.scale.set(100, 25, 1)
     sprite.position.set(x, y - 20, z)
-
     group.name = name
     group.add(sprite.asInstanceOf[ThreeNode])
-
     group.asInstanceOf[ThreeNode]
