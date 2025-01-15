@@ -7,7 +7,6 @@ import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
-import view.graph.adapter.ThreeType.ThreeCamera
 
 object ThreeJsAdapter:
   class SceneWrapper(val underlying: Scene):
@@ -16,6 +15,7 @@ object ThreeJsAdapter:
 
     def removeObject(obj: GenericObject3D): Unit =
       import ThreeType._
+
       obj match
         case Group(group) =>
           group.children.foreach {
@@ -51,10 +51,7 @@ object ThreeJsAdapter:
         far: Double
     ): Camera =
       val cam = PerspectiveCamera(fov, aspect, near, far)
-      println("iscamera: " + cam.`type`)
-
-      cam match
-        case ThreeCamera(cam) => cam
+      ThreeType.unsafeCast[ThreeCamera](cam)
 
   object RendererFactory:
     def createWebGLRenderer(): WebGLRenderer =

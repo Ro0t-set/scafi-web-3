@@ -15,13 +15,13 @@ import view.graph.adapter.ThreeJsAdapter.CameraFactory
 import view.graph.adapter.ThreeJsAdapter.ControlsFactory
 import view.graph.adapter.ThreeJsAdapter.RendererFactory
 import view.graph.adapter.ThreeJsAdapter.VectorUtils
-import view.graph.component.Edge3D
-import view.graph.component.NodeFactory
+import view.graph.component.ComponentFactory.EdgeFactory
+import view.graph.component.ComponentFactory.NodeFactory
 import view.graph.config.SceneConfig
 import view.graph.extensions.DomainExtensions._
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
+final class ThreeScene(config: SceneConfig) extends GraphThreeScene:
   private var state = SceneState()
 
   private val sceneWrapper        = SceneWrapper()
@@ -96,7 +96,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
 
   private def addNodes(nodesToAdd: Set[Node]): Unit =
     nodesToAdd.foreach { node =>
-      val nodeObject = NodeFactory(domain.ViewMode.Mode3D)(node)
+      val nodeObject = NodeFactory(node)
       state = state.copy(nodeObjects =
         state.nodeObjects + (node.object3dName -> nodeObject)
       )
@@ -114,23 +114,11 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
     edgesToAdd.foreach { edge =>
       val edgeName = edge.object3dName
       if !state.edgeObjects.contains(edgeName) then
-        val edge3D = createEdge3D(edge)
+        val edge3D = EdgeFactory(edge)
         state =
           state.copy(edgeObjects = state.edgeObjects + (edgeName -> edge3D))
         sceneWrapper.addObject(edge3D)
     }
-
-  private def createEdge3D(edge: Edge): Edge3D =
-    val (node1, node2) = edge.nodes
-    Edge3D(
-      node1.position.x,
-      node2.position.x,
-      node1.position.y,
-      node2.position.y,
-      node1.position.z,
-      node2.position.z,
-      edge.object3dName
-    )
 
   override def centerView(): Unit =
     if state.currentNodes.nonEmpty then

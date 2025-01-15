@@ -3,6 +3,8 @@ import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3D
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 
+import scala.scalajs.js
+
 type GenericObject3D = Object3D[Object3DEventMap]
 type ThreeGroup      = Group[Object3DEventMap]
 type ThreePoints =
@@ -16,34 +18,38 @@ type ThreeCamera = Camera
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeType:
 
-  object TypePatterns:
-    def unapply(obj: Object3D[?]): Option[String] = Some(obj.`type`)
+  def unsafeCast[T](obj: js.Any): T = obj.asInstanceOf[T]
 
   object ThreeCamera:
-    def unapply(cam: PerspectiveCamera): Option[ThreeCamera] =
-      if (cam.`type` == "PerspectiveCamera") Some(cam.asInstanceOf[ThreeCamera])
-      else None
+    def unapply(cam: PerspectiveCamera): Option[ThreeCamera] = cam.`type` match
+      case "PerspectiveCamera" => Some(cam.asInstanceOf[ThreeCamera])
+      case _                   => None
 
   object GenericObject3D:
-    def unapply(obj: { def `type`: String }): Option[GenericObject3D] =
+    def unapply(obj: Object3D[?]): Option[GenericObject3D] =
       Some(obj.asInstanceOf[GenericObject3D])
 
   object Group:
-    def unapply(obj: GenericObject3D): Option[ThreeGroup] =
-      if (obj.`type` == "Group") Some(obj.asInstanceOf[ThreeGroup]) else None
+    def unapply(obj: GenericObject3D): Option[ThreeGroup] = obj.`type` match
+      case "Group" => Some(obj.asInstanceOf[ThreeGroup])
+      case _       => None
 
   object Line:
-    def unapply(obj: GenericObject3D): Option[ThreeLine] =
-      if (obj.`type` == "Line") Some(obj.asInstanceOf[ThreeLine]) else None
+    def unapply(obj: GenericObject3D): Option[ThreeLine] = obj.`type` match
+      case "Line" => Some(obj.asInstanceOf[ThreeLine])
+      case _      => None
 
   object Points:
-    def unapply(obj: GenericObject3D): Option[ThreePoints] =
-      if (obj.`type` == "Points") Some(obj.asInstanceOf[ThreePoints]) else None
+    def unapply(obj: GenericObject3D): Option[ThreePoints] = obj.`type` match
+      case "Points" => Some(obj.asInstanceOf[ThreePoints])
+      case _        => None
 
   object Sprite:
-    def unapply(obj: GenericObject3D): Option[ThreeSprite] =
-      if (obj.`type` == "Sprite") Some(obj.asInstanceOf[ThreeSprite]) else None
+    def unapply(obj: GenericObject3D): Option[ThreeSprite] = obj.`type` match
+      case "Sprite" => Some(obj.asInstanceOf[ThreeSprite])
+      case _        => None
 
   object Mesh:
-    def unapply(obj: GenericObject3D): Option[ThreeMesh] =
-      if (obj.`type` == "Mesh") Some(obj.asInstanceOf[ThreeMesh]) else None
+    def unapply(obj: GenericObject3D): Option[ThreeMesh] = obj.`type` match
+      case "Mesh" => Some(obj.asInstanceOf[ThreeMesh])
+      case _      => None

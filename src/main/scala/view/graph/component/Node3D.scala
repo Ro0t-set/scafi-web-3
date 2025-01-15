@@ -1,18 +1,22 @@
 package view.graph.component
 
 import org.scalajs.dom
+import org.scalajs.dom.HTMLCanvasElement
 import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsPointsMaterialMod.PointsMaterialParameters
 import typings.three.srcMaterialsSpriteMaterialMod.SpriteMaterialParameters
+import view.graph.adapter.ThreeGroup
+import view.graph.adapter.ThreeSprite
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-@SuppressWarnings(Array("org.wartremover.warts.All"))
-protected object Node3D extends ThreeNode:
+type Node3d = ThreeGroup
+
+protected object Node3D extends Node3d:
   @JSName("apply")
-  override def apply(
+  def apply(
       id: String,
       textLabel: String,
       x: Double,
@@ -20,8 +24,8 @@ protected object Node3D extends ThreeNode:
       z: Double,
       nodeColor: Int,
       name: String
-  ): ThreeNode =
-    val group: Group[Nothing] = Group()
+  ): Node3d =
+    val group: ThreeGroup = Group()
 
     val pointGeometry: BufferGeometry[Nothing] = BufferGeometry()
     pointGeometry.setAttribute(
@@ -40,10 +44,10 @@ protected object Node3D extends ThreeNode:
 
     group.add(point)
 
-    val canvas =
-      dom.document.createElement("canvas").asInstanceOf[dom.html.Canvas]
-    val context =
-      canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+    @SuppressWarnings(Array("org.wartremover.warts.All"))
+    val canvas: HTMLCanvasElement =
+      dom.document.createElement("canvas").asInstanceOf[HTMLCanvasElement]
+    val context = canvas.getContext("2d")
     canvas.width = 256
     canvas.height = 64
 
@@ -74,9 +78,9 @@ protected object Node3D extends ThreeNode:
         map = texture
         transparent = true
       })
-    val sprite: Sprite[Nothing] = Sprite(spriteMaterial)
+    val sprite: ThreeSprite = Sprite(spriteMaterial)
     sprite.scale.set(100, 25, 1)
     sprite.position.set(x, y - 20, z)
     group.name = name
-    group.add(sprite.asInstanceOf[ThreeNode])
-    group.asInstanceOf[ThreeNode]
+    group.add(sprite)
+    group
