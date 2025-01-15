@@ -20,8 +20,9 @@ import view.graph.component.ComponentFactory.NodeFactory
 import view.graph.config.SceneConfig
 import view.graph.extensions.DomainExtensions._
 
-@SuppressWarnings(Array("org.wartremover.warts.All"))
 final class ThreeScene(config: SceneConfig) extends GraphThreeScene:
+
+  @SuppressWarnings(Array("org.wartremover.warts.Var"))
   private var state = SceneState()
 
   private val sceneWrapper        = SceneWrapper()
