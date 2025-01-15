@@ -3,13 +3,15 @@ package view.graph.component
 import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcMaterialsLineBasicMaterialMod.LineBasicMaterialParameters
-import view.graph.adapter.ThreeJsAdapter.Object3DType
+import view.graph.adapter.ThreeGroup
+import view.graph.adapter.ThreeLine
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-@SuppressWarnings(Array("org.wartremover.warts.All"))
-object Edge3D extends Object3DType:
+type Edge3D = ThreeGroup
+
+object Edge3D extends Edge3D:
   @JSName("apply")
   def apply(
       x1: Double,
@@ -19,8 +21,8 @@ object Edge3D extends Object3DType:
       z1: Double,
       z2: Double,
       name: String
-  ): Object3D[Object3DEventMap] =
-    val group = new Group()
+  ): Edge3D =
+    val group: ThreeGroup = new Group()
     val lineGeometry = new BufferGeometry().setFromPoints(js.Array(
       new Vector3(x1, y1, z1),
       new Vector3(x2, y2, z2)
@@ -28,8 +30,8 @@ object Edge3D extends Object3DType:
     val lineMaterial = new LineBasicMaterial(new LineBasicMaterialParameters {
       color = 0xffff00
     })
-    val line = new Line(lineGeometry, lineMaterial)
+    val line: ThreeLine = new Line(lineGeometry, lineMaterial)
 
-    group.add(line.asInstanceOf[Object3DType])
+    group.add(line)
     group.name = name
-    group.asInstanceOf[Object3DType]
+    group

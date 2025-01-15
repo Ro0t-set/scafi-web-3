@@ -10,9 +10,9 @@ import typings.std.global.requestAnimationFrame
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod._
 import view.graph.adapter.SceneWrapper
+import view.graph.adapter.ThreeCamera
 import view.graph.adapter.ThreeJsAdapter.CameraFactory
 import view.graph.adapter.ThreeJsAdapter.ControlsFactory
-import view.graph.adapter.ThreeJsAdapter.Object3DType
 import view.graph.adapter.ThreeJsAdapter.RendererFactory
 import view.graph.adapter.ThreeJsAdapter.VectorUtils
 import view.graph.component.Edge3D
@@ -24,20 +24,21 @@ import view.graph.extensions.DomainExtensions._
 final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
   private var state = SceneState()
 
-  private val sceneWrapper = SceneWrapper()
-  private val scene        = sceneWrapper.underlying
-  private val camera       = initCamera(config)
+  private val sceneWrapper        = SceneWrapper()
+  private val scene               = sceneWrapper.underlying
+  private val camera: ThreeCamera = initCamera(config)
 
   private val renderer = initRenderer(config)
   private val controls = initControls
 
-  private def initCamera(config: SceneConfig): PerspectiveCamera =
-    CameraFactory.createPerspectiveCamera(
+  private def initCamera(config: SceneConfig): ThreeCamera =
+    val cam = CameraFactory.createPerspectiveCamera(
       fov = config.fov,
       aspect = config.width.toDouble / config.height.toDouble,
       near = config.near,
       far = config.far
     )
+    cam
 
   private def initRenderer(config: SceneConfig): WebGLRenderer =
     val renderer = RendererFactory.createWebGLRenderer()
@@ -119,7 +120,7 @@ final class ThreeSceneImpl(config: SceneConfig) extends GraphThreeScene:
         sceneWrapper.addObject(edge3D)
     }
 
-  private def createEdge3D(edge: Edge): Object3DType =
+  private def createEdge3D(edge: Edge): Edge3D =
     val (node1, node2) = edge.nodes
     Edge3D(
       node1.position.x,

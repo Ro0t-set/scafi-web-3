@@ -23,7 +23,6 @@ final class MainView(config: ViewConfig):
   private val player              = EngineLoopPlayer
 
   private def initialize(): Unit =
-    ClientMain.signal
     def newScastieLoadingSignal(
         result: scala.scalajs.js.Any,
         attachedElements: scala.scalajs.js.Any,

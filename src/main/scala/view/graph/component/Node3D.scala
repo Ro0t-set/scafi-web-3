@@ -34,9 +34,11 @@ protected object Node3D extends ThreeNode:
         color = nodeColor
       }
     )
-    val point: Points[?, ?, ?] = Points(pointGeometry, pointMaterial)
+    val point
+        : Points[BufferGeometry[Nothing], PointsMaterial, Object3DEventMap] =
+      Points(pointGeometry, pointMaterial)
 
-    group.add(point.asInstanceOf[Object3D[Object3DEventMap]])
+    group.add(point)
 
     val canvas =
       dom.document.createElement("canvas").asInstanceOf[dom.html.Canvas]

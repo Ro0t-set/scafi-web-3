@@ -7,43 +7,41 @@ import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod._
 import typings.three.srcCoreObject3DMod.Object3DEventMap
 import typings.three.srcRenderersWebGLRendererMod.WebGLRendererParameters
+import view.graph.adapter.ThreeType.ThreeCamera
 
-import ThreeJsAdapter.SceneWrapper
-
-@SuppressWarnings(Array("org.wartremover.warts.All"))
 object ThreeJsAdapter:
-  type Object3DType = Object3D[Object3DEventMap]
-
-  extension (obj: Object3D[?])
-    def asThreeObject: Object3DType =
-      obj.asInstanceOf[Object3DType]
-
-  extension (camera: PerspectiveCamera)
-    def asCamera: Camera =
-      camera.asInstanceOf[Camera]
-
-  extension (obj: PerspectiveCamera)
-    def asObject3D: Object3D[?] =
-      obj.asInstanceOf[Object3D[?]]
-
   class SceneWrapper(val underlying: Scene):
-    def addObject(obj: Object3D[?]): Unit =
-      underlying.add(obj.asThreeObject)
+    def addObject(obj: GenericObject3D): Unit =
+      underlying.add(obj)
 
-    def removeObject(obj: Object3D[?]): Unit =
-      obj.asInstanceOf[Group[Object3DEventMap]].children.foreach { child =>
-        val typedChild = child.asInstanceOf[Sprite[Object3DEventMap]]
-        typedChild.geometry.dispose()
-        if typedChild.material.map != null then
-          typedChild.material.map.dispose()
-        typedChild.material.dispose()
-      }
-      underlying.remove(obj.asThreeObject)
+    def removeObject(obj: GenericObject3D): Unit =
+      import ThreeType._
+      obj match
+        case Group(group) =>
+          group.children.foreach {
+            case Line(line) =>
+              line.geometry.dispose()
+              line.material.dispose()
+              underlying.remove(line)
+            case Points(points) =>
+              points.geometry.dispose()
+              points.material.dispose()
+              underlying.remove(points)
+            case Sprite(sprite) =>
+              sprite.geometry.dispose()
+              sprite.material.dispose()
+              sprite.material.map.dispose()
+              underlying.remove(sprite)
+            case _ => ()
+          }
+          underlying.remove(group)
+        case _ => ()
 
-    def findByName(name: String): Option[Object3DType] =
-      Option(underlying.getObjectByName(name)) match
-        case Some(obj: Object3D[?]) => Some(obj.asThreeObject)
-        case _                      => None
+    def findByName(name: String): Option[GenericObject3D] =
+      import ThreeType._
+      underlying.getObjectByName(name) match
+        case GenericObject3D(obj) => Some(obj)
+        case _                    => None
 
   object CameraFactory:
     def createPerspectiveCamera(
@@ -51,8 +49,12 @@ object ThreeJsAdapter:
         aspect: Double,
         near: Double,
         far: Double
-    ): PerspectiveCamera =
-      PerspectiveCamera(fov, aspect, near, far)
+    ): Camera =
+      val cam = PerspectiveCamera(fov, aspect, near, far)
+      println("iscamera: " + cam.`type`)
+
+      cam match
+        case ThreeCamera(cam) => cam
 
   object RendererFactory:
     def createWebGLRenderer(): WebGLRenderer =
@@ -64,14 +66,14 @@ object ThreeJsAdapter:
 
   object ControlsFactory:
     def createOrbitControls(
-        camera: PerspectiveCamera,
+        camera: Camera,
         domElement: HTMLElement
     ): OrbitControls =
-      OrbitControls(camera.asCamera, domElement)
+      OrbitControls(camera, domElement)
 
   object VectorUtils:
     def setPosition(
-        obj: PerspectiveCamera,
+        obj: ThreeCamera,
         x: Double,
         y: Double,
         z: Double
@@ -87,4 +89,5 @@ object ThreeJsAdapter:
       controls.target.set(x, y, z)
 
 object SceneWrapper:
-  def apply(): SceneWrapper = new SceneWrapper(Scene())
+  def apply(): ThreeJsAdapter.SceneWrapper =
+    new ThreeJsAdapter.SceneWrapper(Scene())
