@@ -23,6 +23,7 @@ object ThreeType:
   object ThreeCamera:
     def unapply(cam: PerspectiveCamera): Option[ThreeCamera] = cam.`type` match
       case "PerspectiveCamera" => Some(cam.asInstanceOf[ThreeCamera])
+      case "Camera" => Some(cam.asInstanceOf[ThreeCamera])
       case _                   => None
 
   object GenericObject3D:
