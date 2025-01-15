@@ -58,6 +58,15 @@ jobs:
           mkdir -p ./site/cucumber
           cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
 
+      - name: Build with mdBook
+        run: |
+          mdbook build docs
+          cp -r ./docs/book ./site/docs
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./site
+
       - name: Upload site artifact for deployment
         uses: actions/upload-pages-artifact@v2
         with:

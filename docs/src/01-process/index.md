@@ -1,3 +1,5 @@
+# Processo di Sviluppo
+
 ## Messaggi di Commit
 
 Per la scrittura dei messaggi di commit, è stata adottata la convenzione [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), che fornisce uno standard chiaro e coerente per descrivere le modifiche apportate al progetto. È stato inoltre utilizzato _Open Commit_ per generare automaticamente i messaggi di commit.
