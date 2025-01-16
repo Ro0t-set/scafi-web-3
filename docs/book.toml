@@ -1,0 +1,9 @@
+[book]
+title = "ScafiWeb3"
+authors = ["Tommaso Patriti"]
+language = "it"
+multilingual = true
+src = "src"
+
+[docs.html]
+mathjax-support = true
