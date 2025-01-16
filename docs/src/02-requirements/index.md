@@ -14,18 +14,19 @@
 9. Il grafo supporta più di 30 aggiornamenti al secondo.
 
 ## Non funzionali
+
 1. Affidabilità: l'applicazione deve essere stabile, evitando crash.
 2. Documentazione: l'intero progetto deve essere ben documentato, in modo da facilitare la comprensione del codice.
 3. Performance: l'applicazione deve essere veloce e reattiva, evitando prolungate attese per l'utente nello svolgimento delle azioni.
 4. Portabilità: l'applicazione deve essere disponibile su più piattaforme.
 5. Manutenibilità: il codice deve essere ben strutturato e facilmente manutenibile.
 
-
 ## Requisiti Opzionali
-1. Possibiltià di centrare il grafo.
+
+1. Possibilità di centrare il grafo.
 2. Possibilità di cambiare la grafica del grafo.
 3. Nascondere il boilerplate Scastie.
-4. Cambiare la visualizazione da 3D a 2D.
+4. Cambiare la visualizzazione da 3D a 2D.
 
 ## Implementazione
 
