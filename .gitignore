@@ -1,6 +1,8 @@
 *.class
 *.log
-
+.vscode
+.code
+.metal
 target/*
 target
 .idea
