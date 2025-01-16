@@ -20,7 +20,7 @@ import view.graph.component.ComponentFactory.NodeFactory
 import view.graph.config.SceneConfig
 import view.graph.extensions.DomainExtensions._
 
-final class ThreeScene(config: SceneConfig) extends GraphThreeScene:
+final class ThreeScene(config: SceneConfig) extends GraphScene:
 
   @SuppressWarnings(Array("org.wartremover.warts.Var"))
   private var state = SceneState()

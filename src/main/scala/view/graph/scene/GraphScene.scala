@@ -5,7 +5,7 @@ import domain.Edge
 import domain.Node
 import domain.ViewMode
 
-trait GraphThreeScene:
+trait GraphScene:
   def setNodes(newNodes: Set[Node]): Unit
   def setEdges(newEdges: Set[Edge]): Unit
   def renderScene(elementId: String): Element

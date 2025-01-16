@@ -4,9 +4,9 @@ import com.raquo.laminar.api.L._
 import domain.SwitchMode
 import domain.ViewMode
 import state.AnimationState
-import view.graph.scene.GraphThreeScene
+import view.graph.scene.GraphScene
 
-class GridViewControllerView(scene: GraphThreeScene) extends ViewComponent:
+class GridViewControllerView(scene: GraphScene) extends ViewComponent:
   private val switchLabel: Signal[String] = AnimationState.mode.map {
     case ViewMode.Mode2D =>
       scene.setMode(ViewMode.Mode2D)

@@ -3,7 +3,6 @@ import view.graph.adapter.ThreeGroup
 import view.graph.extensions.DomainExtensions._
 
 object ComponentFactory:
-
   object NodeFactory:
     def apply(
         node: domain.Node
@@ -17,7 +16,6 @@ object ComponentFactory:
         node.color,
         node.object3dName
       )
-
   object EdgeFactory:
     def apply(
         edge: domain.Edge
