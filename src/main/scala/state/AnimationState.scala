@@ -16,8 +16,16 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.annotation.JSExportTopLevel
 
+trait AnimationState:
+  val running: StrictSignal[Boolean]
+  val batch: StrictSignal[Int]
+  val currentTick: StrictSignal[Int]
+  val engine: StrictSignal[Option[js.Dynamic]]
+  val mode: StrictSignal[ViewMode]
+  val animationObserver: Observer[AnimationCommand]
+
 @JSExportTopLevel("AnimationState")
-object AnimationState:
+object AnimationState extends AnimationState:
   private val runningVar: Var[Boolean]           = Var[Boolean](false)
   private val batchVar: Var[Int]                 = Var[Int](1)
   private val currentTickVar: Var[Int]           = Var[Int](0)
@@ -25,21 +33,21 @@ object AnimationState:
   private val modeVar: Var[ViewMode] = Var[ViewMode](ViewMode.Mode3D)
 
   @JSExport
-  val running: StrictSignal[Boolean] = runningVar.signal
+  override val running: StrictSignal[Boolean] = runningVar.signal
   @JSExport
-  val batch: StrictSignal[Int] = batchVar.signal
+  override val batch: StrictSignal[Int] = batchVar.signal
   @JSExport
-  val currentTick: StrictSignal[Int] = currentTickVar.signal
+  override val currentTick: StrictSignal[Int] = currentTickVar.signal
   @JSExport
-  val engine: StrictSignal[Option[js.Dynamic]] = engineVar.signal
+  override val engine: StrictSignal[Option[js.Dynamic]] = engineVar.signal
   @JSExport
-  val mode: StrictSignal[ViewMode] = modeVar.signal
+  override val mode: StrictSignal[ViewMode] = modeVar.signal
 
   private def reset(): Unit =
     runningVar.set(false)
     currentTickVar.set(0)
 
-  val animationObserver: Observer[AnimationCommand] =
+  override val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
       case SetEngine(engine) =>
         engineVar.set(Some(engine))

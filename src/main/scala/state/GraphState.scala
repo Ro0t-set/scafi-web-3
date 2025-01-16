@@ -8,33 +8,39 @@ import domain.SetEdges
 import domain.SetEdgesByIds
 import domain.SetNodes
 
-object GraphState:
-  private val nodesVar: Var[Set[Node]] = Var(Set.empty[Node])
-  private val edgesVar: Var[Set[Edge]] = Var(Set.empty[Edge])
-  val nodes: StrictSignal[Set[Node]]   = nodesVar.signal
-  val edges: StrictSignal[Set[Edge]]   = edgesVar.signal
+trait GraphState:
+  val nodes: StrictSignal[Set[Node]]
+  val edges: StrictSignal[Set[Edge]]
+  val commandObserver: Observer[GraphCommand]
 
-  val commandObserver: Observer[GraphCommand] = Observer[GraphCommand] {
+object GraphState extends GraphState:
+  private val nodesVar: Var[Set[Node]]        = Var(Set.empty[Node])
+  private val edgesVar: Var[Set[Edge]]        = Var(Set.empty[Edge])
+  override val nodes: StrictSignal[Set[Node]] = nodesVar.signal
+  override val edges: StrictSignal[Set[Edge]] = edgesVar.signal
 
-    case SetNodes(newNodes) =>
-      nodesVar.set(newNodes)
+  override val commandObserver: Observer[GraphCommand] =
+    Observer[GraphCommand] {
 
-    case SetEdges(newEdges) =>
-      val filtered = newEdges.filter { edge =>
-        val (n1, n2) = edge.nodes
-        nodesVar.now().contains(n1) && nodesVar.now().contains(n2)
-      }
-      edgesVar.set(filtered)
+      case SetNodes(newNodes) =>
+        nodesVar.set(newNodes)
 
-    case SetEdgesByIds(edgesIds) =>
-      edgesVar.set(Set.empty[Edge])
-      edgesVar.update { currentEdges =>
-        val newEdges = edgesIds.flatMap { case (id1, id2) =>
-          for
-            n1 <- nodesVar.now().find(_.id == id1)
-            n2 <- nodesVar.now().find(_.id == id2)
-          yield Edge((n1, n2))
+      case SetEdges(newEdges) =>
+        val filtered = newEdges.filter { edge =>
+          val (n1, n2) = edge.nodes
+          nodesVar.now().contains(n1) && nodesVar.now().contains(n2)
         }
-        currentEdges ++ newEdges
-      }
-  }
+        edgesVar.set(filtered)
+
+      case SetEdgesByIds(edgesIds) =>
+        edgesVar.set(Set.empty[Edge])
+        edgesVar.update { currentEdges =>
+          val newEdges = edgesIds.flatMap { case (id1, id2) =>
+            for
+              n1 <- nodesVar.now().find(_.id == id1)
+              n2 <- nodesVar.now().find(_.id == id2)
+            yield Edge((n1, n2))
+          }
+          currentEdges ++ newEdges
+        }
+    }

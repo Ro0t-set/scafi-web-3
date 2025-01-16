@@ -3,7 +3,11 @@ package view.graph.scene
 import domain.Node
 import typings.three.mod.Vector3
 
-object ViewModeCalculations:
+trait ViewModeCalculations:
+  def calculateCameraPosition(nodes: Set[Node]): Option[Vector3]
+  def maxDepth(nodes: Set[Node]): Double
+
+object ViewModeCalculations extends ViewModeCalculations:
 
   private def bottomLeftPosition(nodes: Set[Node]): (Double, Double) =
     nodes.foldLeft((Double.MaxValue, Double.MaxValue)) {
