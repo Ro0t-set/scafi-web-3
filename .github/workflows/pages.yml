@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     env:
-      MDBOOK_VERSION: 0.4.21
+      MDBOOK_VERSION: 0.4.43
       SCALA_TARGET: ./target/scala-3.5.2
       JS_COMPILED_TARGET: target/scala-3.5.2/scafiweb3-fastopt
     steps:
@@ -35,6 +35,8 @@ jobs:
           source $HOME/.cargo/env
           rustup update
           cargo install --version ${MDBOOK_VERSION} mdbook
+          cargo install mdbook-mermaid
+          
 
       - name: Setup Pages
         id: pages
@@ -60,6 +62,7 @@ jobs:
 
       - name: Build with mdBook
         run: |
+          mdbook-mermaid install docs
           mdbook build docs
           cp -r ./docs/book ./site/docs
       - name: Upload artifact
