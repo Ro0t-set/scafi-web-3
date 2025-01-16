@@ -13,3 +13,4 @@ Feature: Web Page Is Working
         Given I am on the Scafi Web Page
         Then the engine "EngineImpl" is loaded
         Then the graph 10x10x2 should support more than "30" updates per second
+

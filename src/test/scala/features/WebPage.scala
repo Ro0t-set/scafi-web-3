@@ -27,7 +27,7 @@ object BrowserFactory:
           options.addArguments("--disable-dev-shm-usage")
           options.addArguments("--headless")
         }
-        new FirefoxDriver(options)
+        FirefoxDriver(options)
 
       case "chrome" =>
         val options = new ChromeOptions()
@@ -36,7 +36,7 @@ object BrowserFactory:
           options.addArguments("--disable-dev-shm-usage")
           options.addArguments("--headless")
         }
-        new ChromeDriver(options)
+        ChromeDriver(options)
 
       case "edge" =>
         val options = new EdgeOptions()
@@ -45,7 +45,7 @@ object BrowserFactory:
           options.addArguments("--disable-dev-shm-usage")
           options.addArguments("--headless")
         }
-        new EdgeDriver(options)
+        EdgeDriver(options)
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
 class WebPageSteps extends ScalaDsl with EN {
@@ -75,19 +75,14 @@ class WebPageSteps extends ScalaDsl with EN {
       .until(ExpectedConditions.jsReturnsValue(s"return $engine.name"))
   }
 
-  /** If we are in CI/CD mode, we skip this step entirely. If we are in local
-    * mode, we perform the canvas check.
-    */
   Then("the canvas {string} is loaded") { (canvasClassName: String) =>
-    if !isLocal then
-      println(s"Skipping canvas check in CI/CD mode (env=$env)")
-    else {
+    if !isLocal then println(s"Skipping canvas check in CI/CD mode (env=$env)")
+    else
       WebDriverWait(driver, Duration.ofSeconds(10)).until(
         ExpectedConditions.visibilityOfElementLocated(
           By.xpath(s"//*[@id='$canvasClassName']/canvas")
         )
       )
-    }
   }
 
   Then(
@@ -97,8 +92,7 @@ class WebPageSteps extends ScalaDsl with EN {
       if !isLocal then
         println(s"Skipping canvas check in CI/CD mode (env=$env)")
       else
-
-        new WebDriverWait(driver, Duration.ofSeconds(10))
+        WebDriverWait(driver, Duration.ofSeconds(10))
           .until(ExpectedConditions.elementToBeClickable(
             By.className("fa-play")
           ))
@@ -133,4 +127,3 @@ class WebPageSteps extends ScalaDsl with EN {
     }
   }
 }
-
