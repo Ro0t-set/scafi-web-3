@@ -13,7 +13,10 @@ import domain.SwitchMode
 import domain.ViewMode
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.JSExportTopLevel
 
+@JSExportTopLevel("AnimationState")
 object AnimationState:
   private val runningVar: Var[Boolean]           = Var[Boolean](false)
   private val batchVar: Var[Int]                 = Var[Int](1)
@@ -21,16 +24,22 @@ object AnimationState:
   private val engineVar: Var[Option[js.Dynamic]] = Var[Option[js.Dynamic]](None)
   private val modeVar: Var[ViewMode] = Var[ViewMode](ViewMode.Mode3D)
 
-  val running: StrictSignal[Boolean]           = runningVar.signal
-  val batch: StrictSignal[Int]                 = batchVar.signal
-  val currentTick: StrictSignal[Int]           = currentTickVar.signal
+  @JSExport
+  val running: StrictSignal[Boolean] = runningVar.signal
+  @JSExport
+  val batch: StrictSignal[Int] = batchVar.signal
+  @JSExport
+  val currentTick: StrictSignal[Int] = currentTickVar.signal
+  @JSExport
   val engine: StrictSignal[Option[js.Dynamic]] = engineVar.signal
-  val mode: StrictSignal[ViewMode]             = modeVar.signal
+  @JSExport
+  val mode: StrictSignal[ViewMode] = modeVar.signal
 
   private def reset(): Unit =
     runningVar.set(false)
     currentTickVar.set(0)
 
+  @JSExport
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
       case SetEngine(engine) =>
