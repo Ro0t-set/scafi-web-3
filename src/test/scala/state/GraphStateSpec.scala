@@ -1,8 +1,6 @@
 package state
-
+import domain._
 import munit.FunSuite
-import com.raquo.laminar.api.L._
-import domain.{Edge, Id, Node, *}
 
 class GraphStateSpec extends FunSuite:
   val node1: Node  = Node(1, Position(1, 1, 1), "Node1", 111111)

@@ -39,7 +39,6 @@ object AnimationState:
     runningVar.set(false)
     currentTickVar.set(0)
 
-  @JSExport
   val animationObserver: Observer[AnimationCommand] =
     Observer[AnimationCommand] {
       case SetEngine(engine) =>

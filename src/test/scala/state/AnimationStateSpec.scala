@@ -1,8 +1,8 @@
 package state
 
-import munit.FunSuite
-import com.raquo.laminar.api.L._
 import domain._
+import munit.FunSuite
+
 import scala.scalajs.js
 
 class AnimationStateSpec extends FunSuite:

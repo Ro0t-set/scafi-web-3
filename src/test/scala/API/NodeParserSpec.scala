@@ -1,7 +1,8 @@
 package API
 
+import domain.Node
+import domain.Position
 import munit.FunSuite
-import domain.{Node, Position}
 
 class NodeParserSpec extends FunSuite:
 

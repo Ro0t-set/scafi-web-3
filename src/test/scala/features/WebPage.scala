@@ -1,12 +1,21 @@
 package features
 
+import io.cucumber.scala.EN
+import io.cucumber.scala.ScalaDsl
+import io.cucumber.scala.Scenario
+import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.edge.EdgeDriver
+import org.openqa.selenium.edge.EdgeOptions
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+
 import java.time.Duration
-import io.cucumber.scala.{EN, ScalaDsl, Scenario}
-import org.openqa.selenium.{By, WebDriver}
-import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxOptions}
-import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
-import org.openqa.selenium.edge.{EdgeDriver, EdgeOptions}
-import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
 
 object BrowserFactory:
   def createDriver(browserType: String, isLocal: Boolean): WebDriver =
@@ -70,15 +79,51 @@ class WebPageSteps extends ScalaDsl with EN {
     * mode, we perform the canvas check.
     */
   Then("the canvas {string} is loaded") { (canvasClassName: String) =>
-    if (!isLocal) {
+    if !isLocal then
       println(s"Skipping canvas check in CI/CD mode (env=$env)")
-    } else {
+    else {
       WebDriverWait(driver, Duration.ofSeconds(10)).until(
         ExpectedConditions.visibilityOfElementLocated(
           By.xpath(s"//*[@id='$canvasClassName']/canvas")
         )
       )
     }
+  }
+
+  Then(
+    "the graph 10x10x2 should support more than {string} updates per second"
+  ) {
+    (fps: String) =>
+      if !isLocal then
+        println(s"Skipping canvas check in CI/CD mode (env=$env)")
+      else
+
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+          .until(ExpectedConditions.elementToBeClickable(
+            By.className("fa-play")
+          ))
+
+        driver.findElement(
+          By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/button[1]")
+        ).click()
+
+        Thread.sleep(1000)
+
+        val currentTick: Long = driver
+          .asInstanceOf[JavascriptExecutor]
+          .executeScript(
+            "return AnimationState.currentTick." +
+              "Lcom_raquo_airstream_state_VarSignal__f_maybeLastSeenCurrentValue." +
+              "s_util_Success__f_value"
+          )
+          .asInstanceOf[Long]
+
+        println(s"Current tick: $currentTick")
+
+        assert(
+          currentTick > fps.toInt,
+          s"Expected currentTick to be > $fps but it was $currentTick"
+        )
   }
 
   After("@web") { (scenario: Scenario) =>
@@ -88,3 +133,4 @@ class WebPageSteps extends ScalaDsl with EN {
     }
   }
 }
+
