@@ -17,6 +17,5 @@
 
 ## Pattenr Architetturali
 
-- **Layered Architecture**: Chiara separazione tra logica del dominio, gestione dello stato e presentazione.
 - **Component-Based Design**: La view è composta da piccoli moduli riutilizzabile
 - **Adapter Pattern**: Utilizzato per adattare librerie esterne al contesto del progetto
