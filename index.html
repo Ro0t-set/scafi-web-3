@@ -54,13 +54,13 @@
         const user = document.getElementById('user').value;
         const base64UUID = document.getElementById('base64UUID').value;
         const update = document.getElementById('update').value;
-        document.querySelector("body > div.scastie.embedded").remove()
+        document.querySelector("#form-container > div.scastie.embedded").remove()
         EngineImpl = null
         loadScastie(user, base64UUID, update);
     });
 
     // Load the default widget on page load
-    loadScastie('Ro0t-set', '9koe8Gl6RlKE3DKNheZvnw', 96);
+    loadScastie('Ro0t-set', 'VzinF8GmRCmuxarVIFJT9w', 33);
 </script>
 
 </body>

@@ -1,7 +1,7 @@
 package view.components
 
 import com.raquo.laminar.api.L._
-import view.controller.EngineController
+import view.player.EngineController
 
 final class EngineSettingsView(controller: EngineController)
     extends ViewComponent:

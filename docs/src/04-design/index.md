@@ -34,3 +34,13 @@ A sua volta il package `view` è suddiviso in:
 - `config` : contiene le configurazioni dell'applicazione
 - `player`: contiene il player per la gestione del grafo con funzioni di *Play*, *Pausa* e regolazione della velocità ed il controller per interagire con scastie
 - `graph`: contiene il visualizzatore 3D del grafo
+
+## Domanin
+
+## State
+
+## View
+
+### Graph
+
+## Api

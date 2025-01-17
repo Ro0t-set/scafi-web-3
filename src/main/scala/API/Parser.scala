@@ -6,7 +6,7 @@ import domain.Position
 
 import scala.util.Try
 
-abstract class Parser[T, A]:
+trait Parser[T, A]:
   def parse(t: T): Option[Set[A]]
 
 case object NodeParser extends Parser[String, Node]:

@@ -52,12 +52,8 @@ object EngineLoopPlayer extends EngineLoopPlayer[JsonNode, JsonEdge]:
     def loop(): Unit =
       if running.now() then
         val batchCount = batch.now()
-        (1 until batchCount).foreach { _ =>
-          getEngineOrEmpty.executeIterations()
-        }
-
+        (1 until batchCount).foreach(_ => getEngineOrEmpty.executeIterations())
         animationObserver.onNext(NextTickAdd(batchCount + 1))
         handleNewData(processNextBatch())
-        setTimeout(() => loop(), 16)
-
+        setTimeout(() => loop(), 8)
     loop()

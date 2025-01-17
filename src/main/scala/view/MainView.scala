@@ -10,8 +10,8 @@ import view.components.AnimationControllerView
 import view.components.EngineSettingsView
 import view.components.GridViewControllerView
 import view.config.ViewConfig
-import view.controller.EngineController
 import view.graph.scene.ThreeScene
+import view.player.EngineController
 import view.player.EngineLoopPlayer
 
 final class MainView(config: ViewConfig):

@@ -1,4 +1,4 @@
-package view.controller
+package view.player
 
 import com.raquo.laminar.api.L._
 import domain.PauseAnimation
