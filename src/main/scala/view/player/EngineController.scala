@@ -15,7 +15,7 @@ class EngineController(
     val distXVar: Var[Int] = Var(100),
     val distYVar: Var[Int] = Var(100),
     val distZVar: Var[Int] = Var(100)
-)(val edgeDistVar: Var[Int] = Var(190)):
+)(val edgeDistVar: Var[Int] = Var(130)):
 
   def loadEngine(): Unit =
     animationObserver.onNext(PauseAnimation())

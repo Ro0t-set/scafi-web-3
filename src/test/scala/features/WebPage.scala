@@ -94,7 +94,7 @@ class WebPageSteps extends ScalaDsl with EN {
       else
         WebDriverWait(driver, Duration.ofSeconds(10))
           .until(ExpectedConditions.elementToBeClickable(
-            By.className("fa-play")
+            By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/button[1]")
           ))
 
         driver.findElement(

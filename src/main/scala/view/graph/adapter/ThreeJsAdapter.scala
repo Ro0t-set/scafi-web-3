@@ -18,23 +18,24 @@ object ThreeJsAdapter:
 
       obj match
         case Group(group) =>
-          group.children.foreach {
-            case Line(line) =>
-              line.geometry.dispose()
-              line.material.dispose()
-              underlying.remove(line)
-            case Points(points) =>
-              points.geometry.dispose()
-              points.material.dispose()
-              underlying.remove(points)
-            case Sprite(sprite) =>
-              sprite.geometry.dispose()
-              sprite.material.dispose()
-              sprite.material.map.dispose()
-              underlying.remove(sprite)
-            case _ => ()
-          }
-          underlying.remove(group)
+          for
+            child <- group.children
+            _ <- child match
+              case Line(line) =>
+                line.geometry.dispose()
+                line.material.dispose()
+                underlying.remove(line)
+              case Points(points) =>
+                points.geometry.dispose()
+                points.material.dispose()
+                underlying.remove(points)
+              case Sprite(sprite) =>
+                sprite.geometry.dispose()
+                sprite.material.dispose()
+                sprite.material.map.dispose()
+                underlying.remove(sprite)
+              case _ => ()
+          do underlying.remove(group)
         case _ => ()
 
     def findByName(name: String): Option[GenericObject3D] =
