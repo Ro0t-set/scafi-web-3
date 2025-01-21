@@ -88,43 +88,56 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
     (edgesToAdd, edgesToRemove)
 
   private def removeNodes(nodesToRemove: Set[Node]): Unit =
-    nodesToRemove.foreach { oldNode =>
-      state.nodeObjects.get(oldNode.object3dName).foreach(
-        sceneWrapper.removeObject
-      )
-      state = state.copy(nodeObjects = state.nodeObjects - oldNode.object3dName)
-    }
+    val removedObjects =
+      for
+        oldNode <- nodesToRemove.toSeq
+        obj3d   <- state.nodeObjects.get(oldNode.object3dName)
+      yield
+        sceneWrapper.removeObject(obj3d)
+        oldNode.object3dName
+
+    state = state.copy(nodeObjects = state.nodeObjects -- removedObjects)
 
   private def addNodes(nodesToAdd: Set[Node]): Unit =
-    nodesToAdd.foreach { node =>
-      val nodeObject = NodeFactory(node)
-      state = state.copy(nodeObjects =
-        state.nodeObjects + (node.object3dName -> nodeObject)
-      )
-      sceneWrapper.addObject(nodeObject)
-    }
+    val newObjects =
+      for
+        node <- nodesToAdd.toSeq
+        nodeObject = NodeFactory(node)
+      yield
+        sceneWrapper.addObject(nodeObject)
+        node.object3dName -> nodeObject
+
+    state = state.copy(nodeObjects = state.nodeObjects ++ newObjects)
 
   private def removeEdges(edgesToRemove: Set[Edge]): Unit =
-    edgesToRemove.foreach { oldEdge =>
-      val edgeName = oldEdge.object3dName
-      state.edgeObjects.get(edgeName).foreach(sceneWrapper.removeObject)
-      state = state.copy(edgeObjects = state.edgeObjects - edgeName)
-    }
+    val removedEdges =
+      for
+        oldEdge <- edgesToRemove.toSeq
+        edgeName = oldEdge.object3dName
+        edge3d <- state.edgeObjects.get(edgeName)
+      yield
+        sceneWrapper.removeObject(edge3d)
+        edgeName
+
+    state = state.copy(edgeObjects = state.edgeObjects -- removedEdges)
 
   private def addEdges(edgesToAdd: Set[Edge]): Unit =
-    edgesToAdd.foreach { edge =>
-      val edgeName = edge.object3dName
-      if !state.edgeObjects.contains(edgeName) then
-        val edge3D = EdgeFactory(edge)
-        state =
-          state.copy(edgeObjects = state.edgeObjects + (edgeName -> edge3D))
+    val newEdges =
+      for
+        edge <- edgesToAdd.toSeq
+        edgeName = edge.object3dName
+        if !state.edgeObjects.contains(edgeName)
+        edge3D = EdgeFactory(edge)
+      yield
         sceneWrapper.addObject(edge3D)
-    }
+        edgeName -> edge3D
+
+    state = state.copy(edgeObjects = state.edgeObjects ++ newEdges)
 
   override def centerView(): Unit =
     if state.currentNodes.nonEmpty then
-      state.viewMode.calculateCameraPosition(state.currentNodes).foreach {
-        newPosition =>
+      state.viewMode.calculateCameraPosition(state.currentNodes) match
+        case Some(newPosition) =>
           VectorUtils.setPosition(
             camera,
             newPosition.x,
@@ -133,7 +146,7 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
           )
           VectorUtils.setTarget(controls, newPosition.x, newPosition.y, 0)
           controls.update()
-      }
+        case None => ()
 
   private def renderLoop(): Unit =
     requestAnimationFrame(_ => renderLoop())
