@@ -1,5 +1,10 @@
 Feature: Unit Test Feature
 
-    @unit
-    Scenario: Node Parser
-      Then Must Parse Correctly a set of nodes
+  @unit
+  Scenario Outline: Unit Test Scenario
+    Then The unit tests called "<testName>" should pass
+    Examples:
+      | testName                 |
+      | state.AnimationStateSpec |
+      | state.GraphStateSpec     |
+      | API.NodeParserSpec       |
