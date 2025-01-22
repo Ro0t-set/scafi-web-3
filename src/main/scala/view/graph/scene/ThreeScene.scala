@@ -2,8 +2,8 @@ package view.graph.scene
 
 import com.raquo.laminar.api.L._
 import domain.AnimationDomain.ViewMode
-import domain.GraphDomain.Edge
-import domain.GraphDomain.Node
+import domain.GraphDomain.GraphEdge
+import domain.GraphDomain.GraphNode
 import org.scalajs.dom
 import org.scalajs.dom.window
 import typings.std.global.requestAnimationFrame
@@ -63,31 +63,33 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
     state.viewMode.configureControls(controls)
     centerView()
 
-  override def setNodes(newNodes: Set[Node]): Unit =
+  override def setNodes(newNodes: Set[GraphNode]): Unit =
     val (nodesToAdd, nodesToRemove) = calculateNodeDiff(newNodes)
     removeNodes(nodesToRemove)
     addNodes(nodesToAdd)
     state = state.copy(currentNodes = newNodes)
 
-  override def setEdges(newEdges: Set[Edge]): Unit =
+  override def setEdges(newEdges: Set[GraphEdge]): Unit =
     val (edgesToAdd, edgesToRemove) = calculateEdgeDiff(newEdges)
     removeEdges(edgesToRemove)
     addEdges(edgesToAdd)
     state = state.copy(currentEdges = newEdges)
 
-  private def calculateNodeDiff(newNodes: Set[Node]): (Set[Node], Set[Node]) =
+  private def calculateNodeDiff(newNodes: Set[GraphNode])
+      : (Set[GraphNode], Set[GraphNode]) =
     val nodesToAdd    = newNodes.diff(state.currentNodes)
     val nodesToRemove = state.currentNodes.diff(newNodes)
 
     (nodesToAdd, nodesToRemove)
 
-  private def calculateEdgeDiff(newEdges: Set[Edge]): (Set[Edge], Set[Edge]) =
+  private def calculateEdgeDiff(newEdges: Set[GraphEdge])
+      : (Set[GraphEdge], Set[GraphEdge]) =
     val edgesToAdd    = newEdges.diff(state.currentEdges)
     val edgesToRemove = state.currentEdges.diff(newEdges)
 
     (edgesToAdd, edgesToRemove)
 
-  private def removeNodes(nodesToRemove: Set[Node]): Unit =
+  private def removeNodes(nodesToRemove: Set[GraphNode]): Unit =
     val removedObjects =
       for
         oldNode <- nodesToRemove.toSeq
@@ -98,7 +100,7 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
 
     state = state.copy(nodeObjects = state.nodeObjects -- removedObjects)
 
-  private def addNodes(nodesToAdd: Set[Node]): Unit =
+  private def addNodes(nodesToAdd: Set[GraphNode]): Unit =
     val newObjects =
       for
         node <- nodesToAdd.toSeq
@@ -109,7 +111,7 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
 
     state = state.copy(nodeObjects = state.nodeObjects ++ newObjects)
 
-  private def removeEdges(edgesToRemove: Set[Edge]): Unit =
+  private def removeEdges(edgesToRemove: Set[GraphEdge]): Unit =
     val removedEdges =
       for
         oldEdge <- edgesToRemove.toSeq
@@ -121,7 +123,7 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
 
     state = state.copy(edgeObjects = state.edgeObjects -- removedEdges)
 
-  private def addEdges(edgesToAdd: Set[Edge]): Unit =
+  private def addEdges(edgesToAdd: Set[GraphEdge]): Unit =
     val newEdges =
       for
         edge <- edgesToAdd.toSeq

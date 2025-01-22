@@ -1,23 +1,28 @@
 package state
-import domain._
+import domain.GraphDomain.GraphEdge
+import domain.GraphDomain.GraphNode
+import domain.GraphDomain.Position
+import domain.GraphDomain.SetEdges
+import domain.GraphDomain.SetEdgesByIds
+import domain.GraphDomain.SetNodes
 import munit.FunSuite
 
 class GraphStateSpec extends FunSuite:
-  val node1: Node  = Node(1, Position(1, 1, 1), "Node1", 111111)
-  val node2: Node  = Node(2, Position(2, 2, 2), "Node2", 222222)
-  val node3: Node  = Node(3, Position(3, 3, 3), "Node3", 333333)
-  val edge12: Edge = Edge((node1, node2))
-  val edge23: Edge = Edge((node2, node3))
-  val edge13: Edge = Edge((node1, node3))
+  val node1: GraphNode  = GraphNode(1, Position(1, 1, 1), "Node1", 111111)
+  val node2: GraphNode  = GraphNode(2, Position(2, 2, 2), "Node2", 222222)
+  val node3: GraphNode  = GraphNode(3, Position(3, 3, 3), "Node3", 333333)
+  val edge12: GraphEdge = GraphEdge((node1, node2))
+  val edge23: GraphEdge = GraphEdge((node2, node3))
+  val edge13: GraphEdge = GraphEdge((node1, node3))
 
   test("initial state should be empty") {
     assertEquals(
       GraphState.nodes.now(),
-      Set.empty[Node]
+      Set.empty[GraphNode]
     )
     assertEquals(
       GraphState.edges.now(),
-      Set.empty[Edge]
+      Set.empty[GraphEdge]
     )
   }
 

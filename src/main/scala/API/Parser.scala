@@ -1,7 +1,7 @@
 package API
 
+import domain.GraphDomain.GraphNode
 import domain.GraphDomain.Id
-import domain.GraphDomain.Node
 import domain.GraphDomain.Position
 
 import scala.util.Try
@@ -9,8 +9,8 @@ import scala.util.Try
 trait Parser[T, A]:
   def parse(t: T): Option[Set[A]]
 
-case object NodeParser extends Parser[String, Node]:
-  override def parse(jsonString: String): Option[Set[Node]] =
+case object NodeParser extends Parser[String, GraphNode]:
+  override def parse(jsonString: String): Option[Set[GraphNode]] =
     Try {
       val jsonVal = ujson.read(jsonString)
       jsonVal.arr.map { nodeJson =>
@@ -21,7 +21,7 @@ case object NodeParser extends Parser[String, Node]:
         val x          = posJson("x").num
         val y          = posJson("y").num
         val z          = posJson("z").num
-        Node(
+        GraphNode(
           id = idValue,
           label = labelValue,
           color = colorValue,

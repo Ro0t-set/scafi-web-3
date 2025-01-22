@@ -41,18 +41,14 @@ object EngineLoopPlayer extends EngineLoopPlayer[JsonNode, JsonEdge]:
 
   override def handleNewData(net: (JsonNode, JsonEdge)): Unit = net match
     case (nodes, edges) =>
-      for
-        nodesJson <- Option(JSON.stringify(nodes))
-        edgesJson <- Option(JSON.stringify(edges))
-      do
-        GraphAPI.addNodesFromJson(nodesJson)
-        GraphAPI.addEdgesFromJson(edgesJson)
+      GraphAPI.addNodesFromJson(JSON.stringify(nodes))
+      GraphAPI.addEdgesFromJson(JSON.stringify(edges))
 
   override def start(): Unit =
     def loop(): Unit =
       if running.now() then
         val batchCount = batch.now()
-        for (_ <- 1 to batchCount) getEngineOrEmpty.executeIterations()
+        for _ <- 1 to batchCount do getEngineOrEmpty.executeIterations()
         animationObserver.onNext(NextTickAdd(batchCount + 1))
         handleNewData(processNextBatch())
         setTimeout(() => loop(), 8)

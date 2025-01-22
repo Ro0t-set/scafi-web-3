@@ -1,19 +1,18 @@
 package state
 
 import com.raquo.laminar.api.L._
-import domain.GraphDomain.Node
 import domain.GraphDomain._
 
 trait GraphState:
-  val nodes: StrictSignal[Set[Node]]
-  val edges: StrictSignal[Set[Edge]]
+  val nodes: StrictSignal[Set[GraphNode]]
+  val edges: StrictSignal[Set[GraphEdge]]
   val commandObserver: Observer[GraphCommand]
 
 object GraphState extends GraphState:
-  private val nodesVar: Var[Set[Node]]        = Var(Set.empty[Node])
-  private val edgesVar: Var[Set[Edge]]        = Var(Set.empty[Edge])
-  override val nodes: StrictSignal[Set[Node]] = nodesVar.signal
-  override val edges: StrictSignal[Set[Edge]] = edgesVar.signal
+  private val nodesVar: Var[Set[GraphNode]]        = Var(Set.empty[GraphNode])
+  private val edgesVar: Var[Set[GraphEdge]]        = Var(Set.empty[GraphEdge])
+  override val nodes: StrictSignal[Set[GraphNode]] = nodesVar.signal
+  override val edges: StrictSignal[Set[GraphEdge]] = edgesVar.signal
 
   override val commandObserver: Observer[GraphCommand] =
     Observer[GraphCommand] {
@@ -29,13 +28,13 @@ object GraphState extends GraphState:
         edgesVar.set(filtered)
 
       case SetEdgesByIds(edgesIds) =>
-        edgesVar.set(Set.empty[Edge])
+        edgesVar.set(Set.empty[GraphEdge])
         edgesVar.update { currentEdges =>
           val newEdges = edgesIds.flatMap { case (id1, id2) =>
             for
               n1 <- nodesVar.now().find(_.id == id1)
               n2 <- nodesVar.now().find(_.id == id2)
-            yield Edge((n1, n2))
+            yield GraphEdge((n1, n2))
           }
           currentEdges ++ newEdges
         }

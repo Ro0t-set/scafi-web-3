@@ -1,6 +1,12 @@
 package state
-
-import domain._
+import domain.AnimationDomain.AnimationBatch
+import domain.AnimationDomain.NextTick
+import domain.AnimationDomain.PauseAnimation
+import domain.AnimationDomain.Reset
+import domain.AnimationDomain.SetEngine
+import domain.AnimationDomain.StartAnimation
+import domain.AnimationDomain.SwitchMode
+import domain.AnimationDomain.ViewMode
 import munit.FunSuite
 
 import scala.scalajs.js

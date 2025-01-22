@@ -1,7 +1,7 @@
 package API
 
+import domain.GraphDomain.GraphNode
 import domain.GraphDomain.Id
-import domain.GraphDomain.Node
 import domain.GraphDomain.SetEdgesByIds
 import domain.GraphDomain.SetNodes
 import state.GraphState._
@@ -20,7 +20,7 @@ trait GraphAPIService:
 object GraphAPI extends GraphAPIService:
   @JSExportTopLevel("addNodesFromJson")
   override def addNodesFromJson(input: String): Option[GraphApiError] =
-    val maybeNodes: Option[Set[Node]] = NodeParser.parse(input)
+    val maybeNodes: Option[Set[GraphNode]] = NodeParser.parse(input)
     maybeNodes match
       case Some(nodeSet) =>
         commandObserver.onNext(SetNodes(nodeSet))

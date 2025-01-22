@@ -1,7 +1,7 @@
 package API
 
-import domain.Node
-import domain.Position
+import domain.GraphDomain.GraphNode
+import domain.GraphDomain.Position
 import munit.FunSuite
 
 class NodeParserSpec extends FunSuite:
@@ -45,13 +45,13 @@ class NodeParserSpec extends FunSuite:
         "We should have exactly two Nodes in the result"
       )
 
-      val node1 = Node(
+      val node1 = GraphNode(
         id = 1,
         label = "Node1",
         color = 111111,
         position = Position(1.1, 2.2, 3.3)
       )
-      val node2 = Node(
+      val node2 = GraphNode(
         id = 2,
         label = "Node2",
         color = 222222,

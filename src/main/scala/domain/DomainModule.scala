@@ -1,7 +1,5 @@
 package domain
 
-
-
 sealed trait GraphType:
   type Id    = Int
   type Color = Int
@@ -9,16 +7,21 @@ sealed trait GraphType:
 
 object GraphDomain extends GraphType:
   final case class Position(x: Double, y: Double, z: Double)
-  final case class Node(id: Id, position: Position, label: Label, color: Color)
-  final case class Edge(nodes: (Node, Node)):
+  final case class GraphNode(
+      id: Id,
+      position: Position,
+      label: Label,
+      color: Color
+  )
+  final case class GraphEdge(nodes: (GraphNode, GraphNode)):
     override def equals(obj: Any): Boolean = obj match
-      case that: Edge =>
+      case that: GraphEdge =>
         this.nodes == that.nodes || this.nodes == that.nodes.swap
       case _ => false
 
   sealed trait GraphCommand
-  case class SetNodes(nodes: Set[Node])             extends GraphCommand
-  case class SetEdges(edges: Set[Edge])             extends GraphCommand
+  case class SetNodes(nodes: Set[GraphNode])        extends GraphCommand
+  case class SetEdges(edges: Set[GraphEdge])        extends GraphCommand
   case class SetEdgesByIds(edgesIds: Set[(Id, Id)]) extends GraphCommand
 
 object AnimationDomain:
