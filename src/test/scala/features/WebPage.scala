@@ -48,7 +48,7 @@ object BrowserFactory:
         EdgeDriver(options)
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-class WebPageSteps extends ScalaDsl with EN {
+class WebPageSteps extends ScalaDsl with EN:
 
   println(System.getProperty("testEnv", "ci"))
   println(System.getProperty("browser", "firefox"))
@@ -122,8 +122,7 @@ class WebPageSteps extends ScalaDsl with EN {
 
   After("@web") { (scenario: Scenario) =>
     println(s"[${scenario.getName}] => Tearing down driver. Mode: $env")
-    if (driver != null) {
+    if driver != null then
       driver.quit()
-    }
+
   }
-}

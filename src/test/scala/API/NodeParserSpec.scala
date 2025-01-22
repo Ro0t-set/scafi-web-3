@@ -35,10 +35,9 @@ class NodeParserSpec extends FunSuite:
 
     val resultOpt = NodeParser.parse(jsonString)
 
-    // Use `fold` to handle None vs Some
     resultOpt.fold(
-      fail("Expected Some(Set[Node]) but got None") // If None
-    ) { resultSet =>                                // If Some(resultSet)
+      fail("Expected Some(Set[Node]) but got None")
+    ) { resultSet =>
       assertEquals(
         resultSet.size,
         2,
