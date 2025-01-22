@@ -1,8 +1,8 @@
 package view.components
 
 import com.raquo.laminar.api.L._
-import domain.SwitchMode
-import domain.ViewMode
+import domain.AnimationDomain.SwitchMode
+import domain.AnimationDomain.ViewMode
 import state.AnimationState
 import view.graph.scene.GraphScene
 

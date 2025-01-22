@@ -1,12 +1,15 @@
 package view.components
 
 import com.raquo.laminar.api.L._
-import domain.AnimationBatch
-import domain.PauseAnimation
-import domain.StartAnimation
+import domain.AnimationDomain.AnimationBatch
+import domain.AnimationDomain.AnimationCommand
+import domain.AnimationDomain.PauseAnimation
+import domain.AnimationDomain.StartAnimation
 import state.AnimationState.animationObserver
 import state.AnimationState.batch
 import state.AnimationState.currentTick
+
+import scala.scalajs.js
 
 case class AnimationControllerView() extends ViewComponent:
   override def render: Element =
@@ -40,7 +43,7 @@ case class AnimationControllerView() extends ViewComponent:
   private def renderControlButton(
       icon: String,
       text: String,
-      action: domain.AnimationCommand
+      action: AnimationCommand[js.Dynamic]
   ): Element =
     button(
       cls := "control-button",

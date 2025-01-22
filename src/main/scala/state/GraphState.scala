@@ -1,12 +1,8 @@
 package state
 
 import com.raquo.laminar.api.L._
-import domain.Edge
-import domain.GraphCommand
-import domain.Node
-import domain.SetEdges
-import domain.SetEdgesByIds
-import domain.SetNodes
+import domain.GraphDomain.Node
+import domain.GraphDomain._
 
 trait GraphState:
   val nodes: StrictSignal[Set[Node]]

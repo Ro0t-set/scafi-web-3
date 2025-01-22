@@ -1,9 +1,9 @@
 package API
 
-import domain.Id
-import domain.Node
-import domain.SetEdgesByIds
-import domain.SetNodes
+import domain.GraphDomain.Id
+import domain.GraphDomain.Node
+import domain.GraphDomain.SetEdgesByIds
+import domain.GraphDomain.SetNodes
 import state.GraphState._
 
 import scala.scalajs.js.annotation._

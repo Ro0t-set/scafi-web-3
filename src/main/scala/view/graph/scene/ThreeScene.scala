@@ -1,9 +1,9 @@
 package view.graph.scene
 
 import com.raquo.laminar.api.L._
-import domain.Edge
-import domain.Node
-import domain.ViewMode
+import domain.AnimationDomain.ViewMode
+import domain.GraphDomain.Edge
+import domain.GraphDomain.Node
 import org.scalajs.dom
 import org.scalajs.dom.window
 import typings.std.global.requestAnimationFrame

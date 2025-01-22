@@ -1,7 +1,7 @@
 package view.graph.scene
 
-import domain.Edge
-import domain.Node
+import domain.GraphDomain.Edge
+import domain.GraphDomain.Node
 import view.graph.adapter.GenericObject3D
 
 private[scene] case class SceneState(

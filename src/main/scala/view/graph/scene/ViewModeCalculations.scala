@@ -1,6 +1,6 @@
 package view.graph.scene
 
-import domain.Node
+import domain.GraphDomain.Node
 import typings.three.mod.Vector3
 
 trait ViewModeCalculations:

@@ -1,16 +1,7 @@
 package state
 
 import com.raquo.laminar.api.L._
-import domain.AnimationBatch
-import domain.AnimationCommand
-import domain.NextTick
-import domain.NextTickAdd
-import domain.PauseAnimation
-import domain.Reset
-import domain.SetEngine
-import domain.StartAnimation
-import domain.SwitchMode
-import domain.ViewMode
+import domain.AnimationDomain._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
@@ -22,7 +13,7 @@ trait AnimationState:
   val currentTick: StrictSignal[Int]
   val engine: StrictSignal[Option[js.Dynamic]]
   val mode: StrictSignal[ViewMode]
-  val animationObserver: Observer[AnimationCommand]
+  val animationObserver: Observer[AnimationCommand[js.Dynamic]]
 
 @JSExportTopLevel("AnimationState")
 object AnimationState extends AnimationState:
@@ -47,8 +38,8 @@ object AnimationState extends AnimationState:
     runningVar.set(false)
     currentTickVar.set(0)
 
-  override val animationObserver: Observer[AnimationCommand] =
-    Observer[AnimationCommand] {
+  override val animationObserver: Observer[AnimationCommand[js.Dynamic]] =
+    Observer[AnimationCommand[js.Dynamic]] {
       case SetEngine(engine) =>
         engineVar.set(Some(engine))
         reset()

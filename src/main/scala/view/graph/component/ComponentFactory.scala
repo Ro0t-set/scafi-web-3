@@ -1,11 +1,13 @@
 package view.graph.component
+import domain.GraphDomain.Edge
+import domain.GraphDomain.Node
 import view.graph.adapter.ThreeGroup
 import view.graph.extensions.DomainExtensions._
 
 object ComponentFactory:
   object NodeFactory:
     def apply(
-        node: domain.Node
+        node: Node
     ): ThreeGroup =
       Node3D(
         node.id.toString,
@@ -18,7 +20,7 @@ object ComponentFactory:
       )
   object EdgeFactory:
     def apply(
-        edge: domain.Edge
+        edge: Edge
     ): ThreeGroup =
       val (node1, node2) = edge.nodes
       Edge3D(

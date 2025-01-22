@@ -1,9 +1,9 @@
 package view.graph.scene
 
 import com.raquo.laminar.api.L.Element
-import domain.Edge
-import domain.Node
-import domain.ViewMode
+import domain.AnimationDomain.ViewMode
+import domain.GraphDomain.Edge
+import domain.GraphDomain.Node
 
 trait GraphScene:
   def setNodes(newNodes: Set[Node]): Unit

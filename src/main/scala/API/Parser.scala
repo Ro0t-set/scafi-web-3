@@ -1,8 +1,8 @@
 package API
 
-import domain.Id
-import domain.Node
-import domain.Position
+import domain.GraphDomain.Id
+import domain.GraphDomain.Node
+import domain.GraphDomain.Position
 
 import scala.util.Try
 

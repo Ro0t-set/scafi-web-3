@@ -1,6 +1,6 @@
 package view.graph.scene
 
-import domain.Node
+import domain.GraphDomain.Node
 import typings.three.examplesJsmControlsOrbitControlsMod.OrbitControls
 import typings.three.mod.Vector3
 import view.graph.extensions.DomainExtensions._

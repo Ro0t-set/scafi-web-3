@@ -1,7 +1,7 @@
 package view.graph.extensions
 
-import domain.Edge
-import domain.Node
+import domain.GraphDomain.Edge
+import domain.GraphDomain.Node
 
 object DomainExtensions:
   extension (edge: Edge)
