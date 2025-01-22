@@ -12,19 +12,31 @@ import view.graph.adapter.ThreeSprite
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-type Node3d = ThreeGroup
-
-protected object Node3D extends Node3d:
+private trait Node3d extends ThreeGroup:
   @JSName("apply")
   def apply(
       id: String,
       textLabel: String,
-      x: Double,
-      y: Double,
-      z: Double,
       nodeColor: Int,
       name: String
-  ): Node3d =
+  )(
+      x: Double,
+      y: Double,
+      z: Double
+  ): ThreeGroup
+
+private object Node3dObj extends Node3d:
+  @JSName("apply")
+  override def apply(
+      id: String,
+      textLabel: String,
+      nodeColor: Int,
+      name: String
+  )(
+      x: Double,
+      y: Double,
+      z: Double
+  ): ThreeGroup =
     val group: ThreeGroup = Group()
 
     val pointGeometry: BufferGeometry[Nothing] = BufferGeometry()

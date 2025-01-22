@@ -9,19 +9,19 @@ import view.graph.adapter.ThreeLine
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-type Edge3D = ThreeGroup
-
-object Edge3D extends Edge3D:
+private trait Edge3D extends ThreeGroup:
   @JSName("apply")
-  def apply(
-      x1: Double,
-      x2: Double,
-      y1: Double,
-      y2: Double,
+  def apply(x1: Double, x2: Double)(y1: Double, y2: Double)(
       z1: Double,
-      z2: Double,
-      name: String
-  ): Edge3D =
+      z2: Double
+  )(name: String): ThreeGroup
+
+object Edge3dObj extends Edge3D:
+  @JSName("apply")
+  override def apply(x1: Double, x2: Double)(y1: Double, y2: Double)(
+      z1: Double,
+      z2: Double
+  )(name: String): ThreeGroup =
     val group: ThreeGroup = new Group()
     val lineGeometry = new BufferGeometry().setFromPoints(js.Array(
       new Vector3(x1, y1, z1),
