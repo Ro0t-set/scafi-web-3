@@ -37,6 +37,7 @@ CucumberPlugin.plugin := {
 lazy val scafiWeb3 = project.in(file("."))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
   .settings(
     scalaVersion                    := "3.3.4",
     scalaJSUseMainModuleInitializer := true,
@@ -48,6 +49,7 @@ lazy val scafiWeb3 = project.in(file("."))
         .withClosureCompiler(false)
         .withSourceMap(true)
     },
+
 
     
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
