@@ -288,3 +288,39 @@ classDiagram
 
 ### Graph
 
+```mermaid
+classDiagram
+    class ThreeScene {
+        - SceneState state
+        - SceneWrapper sceneWrapper
+
+        + setNodes(newNodes: Set[GraphNode]): Unit
+        + setEdges(newEdges: Set[GraphEdge]): Unit
+        + renderScene(elementId: String): Element
+    }
+
+    class SceneWrapper {
+        + underlying: Scene
+        + addObject(obj: Object3D): Unit
+        + removeObject(obj: Object3D): Unit
+    }
+
+
+    class OrbitControls {
+        + update(): Unit
+    }
+
+    class SceneConfig {
+        + fov: Double
+        + width: Int
+        + height: Int
+        + near: Double
+        + far: Double
+    }
+
+    ThreeScene --> SceneWrapper : uses
+    ThreeScene --> SceneConfig : configures
+    ThreeScene --> OrbitControls : initializes
+
+```
+
