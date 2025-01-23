@@ -244,5 +244,47 @@ classDiagram
 
 ## View
 
+```mermaid
+classDiagram
+    class MainView {
+        + render() Unit
+    }
+
+    class ThreeScene {
+        + renderScene(canvasId: String): HtmlElement
+        + setNodes(nodes: Nodes): Unit
+        + setEdges(edges: Edges): Unit
+        + centerView(): Unit
+    }
+
+    class GridViewControllerView {
+        + render: HtmlElement
+    }
+
+    class EngineSettingsControllerView {
+        + render: HtmlElement
+    }
+
+    class AnimationControllerView {
+        + render: HtmlElement
+    }
+
+    class ViewComponent {
+        + render: Element
+    }
+
+
+
+    MainView --> ThreeScene : scene
+    MainView --> GridViewControllerView : sceneController
+    MainView --> EngineSettingsControllerView : engineSettings
+    MainView --> AnimationControllerView : animationController
+
+    
+    ViewComponent <|-- GridViewControllerView
+    ViewComponent <|-- EngineSettingsControllerView
+    ViewComponent <|-- AnimationControllerView
+```
+
 ### Graph
 

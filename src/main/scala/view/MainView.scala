@@ -7,7 +7,7 @@ import state.AnimationState.running
 import state.GraphState.edges
 import state.GraphState.nodes
 import view.components.AnimationControllerView
-import view.components.EngineSettingsView
+import view.components.EngineSettingsControllerView
 import view.components.GridViewControllerView
 import view.config.ViewConfig
 import view.graph.scene.ThreeScene
@@ -18,7 +18,7 @@ final class MainView(config: ViewConfig):
   private val scene               = ThreeScene(config.sceneConfig)
   private val sceneController     = GridViewControllerView(scene)
   private val engineController    = EngineController()()()
-  private val engineSettings      = EngineSettingsView(engineController)
+  private val engineSettings      = EngineSettingsControllerView(engineController)
   private val animationController = AnimationControllerView()
   private val player              = EngineLoopPlayer
 
