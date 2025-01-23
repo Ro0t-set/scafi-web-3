@@ -15,10 +15,10 @@ import view.player.EngineController
 import view.player.EngineLoopPlayer
 
 final class MainView(config: ViewConfig):
-  private val scene               = ThreeScene(config.sceneConfig)
-  private val sceneController     = GridViewControllerView(scene)
-  private val engineController    = EngineController()()()
-  private val engineSettings      = EngineSettingsControllerView(engineController)
+  private val scene            = ThreeScene(config.sceneConfig)
+  private val sceneController  = GridViewControllerView(scene)
+  private val engineController = EngineController()()()
+  private val engineSettings   = EngineSettingsControllerView(engineController)
   private val animationController = AnimationControllerView()
   private val player              = EngineLoopPlayer
 

@@ -15,7 +15,6 @@ object ThreeJsAdapter:
 
     def removeObject(obj: GenericObject3D): Unit =
       import ThreeType._
-
       obj match
         case Group(group) =>
           for
