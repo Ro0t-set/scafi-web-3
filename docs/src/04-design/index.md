@@ -145,8 +145,104 @@ classDiagram
 
 ## State
 
+```mermaid
+classDiagram
+    class GraphState {
+        <<trait>>
+        +nodes: StrictSignal[Set[GraphNode]]
+        +edges: StrictSignal[Set[GraphEdge]]
+        +commandObserver: Observer[GraphCommand]
+    }
+
+    class GraphStateObject {
+        <<object>>
+        -nodesVar: Var[Set[GraphNode]]
+        -edgesVar: Var[Set[GraphEdge]]
+        +nodes: StrictSignal[Set[GraphNode]]
+        +edges: StrictSignal[Set[GraphEdge]]
+        +commandObserver: Observer[GraphCommand]
+    }
+
+    GraphStateObject --> GraphState : extends
+```
+
+```mermaid
+classDiagram
+    class AnimationState {
+        <<trait>>
+        +running: StrictSignal[Boolean]
+        +engine: StrictSignal[Option[js.Dynamic]]
+        ...
+        +animationObserver: Observer[AnimationCommand[js.Dynamic]]
+    }
+
+    class AnimationStateObject {
+        <<object>>
+        -runningVar: Var[Boolean]
+        -engineVar: Var[Option[js.Dynamic]]
+        +running: StrictSignal[Boolean]
+        +engine: StrictSignal[Option[js.Dynamic]]
+        ...
+        +animationObserver: Observer[AnimationCommand[js.Dynamic]]
+    }
+
+    AnimationStateObject --> AnimationState : extends
+``` 
+
+## Api
+    
+```mermaid
+classDiagram
+    direction TB
+
+    class Parser~T, A~ {
+        <<trait>>
+        +parse(t: T): Option[Set[A]]
+    }
+
+    class NodeParser {
+        <<object>>
+        +parse(jsonString: String): Option[Set[GraphNode]]
+    }
+
+    class EdgeParser {
+        <<object>>
+        +parse(jsonString: String): Option[Set[(Id, Id)]]
+    }
+
+    class GraphApiError {
+        <<sealed trait>>
+        +message: String
+    }
+
+    class ParsingError {
+        +message: String
+    }
+
+    class GraphAPIService {
+        <<trait>>
+        +addNodesFromJson(input: String): Option[GraphApiError]
+        +addEdgesFromJson(input: String): Option[GraphApiError]
+    }
+
+    class GraphAPI {
+        <<object>>
+        +addNodesFromJson(input: String): Option[GraphApiError]
+        +addEdgesFromJson(input: String): Option[GraphApiError]
+    }
+
+    Parser~T, A~ <|-- NodeParser
+    Parser~T, A~ <|-- EdgeParser
+
+    GraphApiError <|-- ParsingError
+
+    GraphAPI --> GraphAPIService
+    GraphAPI --> GraphApiError
+    GraphAPI --> NodeParser
+    GraphAPI --> EdgeParser
+```
+
 ## View
 
 ### Graph
 
-## Api

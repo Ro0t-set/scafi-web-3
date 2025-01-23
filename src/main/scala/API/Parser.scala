@@ -9,7 +9,7 @@ import scala.util.Try
 trait Parser[T, A]:
   def parse(t: T): Option[Set[A]]
 
-case object NodeParser extends Parser[String, GraphNode]:
+object NodeParser extends Parser[String, GraphNode]:
   override def parse(jsonString: String): Option[Set[GraphNode]] =
     Try {
       val jsonVal = ujson.read(jsonString)
@@ -30,7 +30,7 @@ case object NodeParser extends Parser[String, GraphNode]:
       }.toSet
     }.toOption
 
-case object EdgeParser extends Parser[String, (Id, Id)]:
+object EdgeParser extends Parser[String, (Id, Id)]:
   override def parse(jsonString: String): Option[Set[(Id, Id)]] =
     Try {
       val jsonVal = ujson.read(jsonString)
