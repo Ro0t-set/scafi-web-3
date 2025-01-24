@@ -19,8 +19,7 @@ class EngineController(
 
   def loadEngine(): Unit =
     animationObserver.onNext(PauseAnimation())
-
-    val newEngine = js.Dynamic.global.EngineImpl(
+    val engine = js.Dynamic.global.EngineImpl(
       xVar.now(),
       yVar.now(),
       zVar.now(),
@@ -29,5 +28,4 @@ class EngineController(
       distZVar.now(),
       edgeDistVar.now()
     )
-
-    animationObserver.onNext(SetEngine(newEngine))
+    animationObserver.onNext(SetEngine(engine))

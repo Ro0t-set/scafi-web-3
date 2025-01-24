@@ -177,3 +177,17 @@ def render(): Unit =
       onMountCallback(_ => initialize())
     )
 ```
+
+## Engine Import From JS
+    
+```scala 3
+val engine = js.Dynamic.global.EngineImpl(
+  xVar.now(),
+  yVar.now(),
+  zVar.now(),
+  distXVar.now(),
+  distYVar.now(),
+  distZVar.now(),
+  edgeDistVar.now()
+)
+```
