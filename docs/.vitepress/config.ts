@@ -8,7 +8,10 @@ export default withMermaid({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Introduzione', link: 'src/introduction.md' }
+      { text: 'Docs', link: 'src/introduction.md' },
+      { text: 'GitHub', link: 'https://github.com/Ro0t-set/PPS-25-ScafiWeb3' },
+      { text: 'Cucumber', link: 'cucumber/' },
+      { text: 'Demo', link: 'dist/' }
     ],
 
     sidebar: [
