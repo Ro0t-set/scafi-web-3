@@ -2,7 +2,6 @@
 
 ## Organizzazione del codice
 
-Il codice è organizzato in quattro package principali:
 
 ```mermaid
     flowchart TD

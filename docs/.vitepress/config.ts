@@ -10,8 +10,8 @@ export default withMermaid({
     nav: [
       { text: 'Docs', link: 'src/introduction.md' },
       { text: 'GitHub', link: 'https://github.com/Ro0t-set/PPS-25-ScafiWeb3' },
-      { text: 'Cucumber', link: 'cucumber/' },
-      { text: 'Demo', link: 'dist/' }
+      { text: 'Cucumber', link: 'cucumber/', target: '_self' },
+      { text: 'Demo', link: 'dist/', target: '_self' }
     ],
 
     sidebar: [
