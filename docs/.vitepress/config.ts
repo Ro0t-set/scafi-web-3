@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 import { withMermaid } from "vitepress-plugin-mermaid";
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  base: './',
+  base: '/PPS-25-ScafiWeb3/',
   title: "ScafiWeb3",
   description: "ScafiWeb3 doc",
   themeConfig: {

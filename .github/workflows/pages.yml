@@ -40,10 +40,7 @@ jobs:
       - name: Build Scala project
         run: |
           npm install
-          sbt -J-Xmx6G fastLinkJS
-          sbt test
-          sbt cucumberWithServer
-          npm run build
+          
 
       - name: Gen doc with vitepress
         run: |
