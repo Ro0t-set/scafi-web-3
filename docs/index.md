@@ -15,10 +15,10 @@ hero:
       link: https://github.com/Ro0t-set/PPS-25-ScafiWeb3
     - theme: alt
       text: Cucumber
-      link: ./cucumber
+      link: ./cucumber/
     - theme: alt
       text: Demo
-      link: ./dist
+      link: ./dist/
 
 features:
   - title: ✨ Compilazione aggregata
