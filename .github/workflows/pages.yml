@@ -40,14 +40,21 @@ jobs:
       - name: Build Scala project
         run: |
           npm install
-          
+          sbt -J-Xmx6G fastLinkJS
+          sbt test
+          sbt cucumberWithServer
+          npm run build
 
       - name: Gen doc with vitepress
         run: |
           npm run docs:build
           cp -r ./docs/.vitepress/dist/* ./site
 
-
+      - name: Copy HTML pages
+        run: |
+          cp -r ./dist ./site/
+          mkdir -p ./site/cucumber
+          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
