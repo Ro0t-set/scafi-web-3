@@ -35,6 +35,13 @@ object AnimationDomain:
   case class StartAnimation[Engine]()           extends AnimationCommand[Engine]
 ```
 
+### Uso dei Type Alias
+
+Nella parte relativa a GraphType, vengono definiti degli alias (Id, Color, Label) per rappresentare tipi comunemente utilizzati, come Int e String. Questo approccio migliora la leggibilità e l'auto-documentazione del codice, permettendo di distinguere semanticamente i diversi utilizzi di tipi primitivi all'interno del dominio.
+
+### Engine
+Nell' AnimationDomain, il tipo generico [Engine] viene introdotto per evitare dipendenze forti con un motore di rendering o un'implementazione specifica. Questo approccio consente al dominio di rimanere indipendente e riutilizzabile con qualsiasi tipo di "engine" che si voglia integrare.
+
 ## State
 
 ```scala 3
@@ -58,6 +65,8 @@ object GraphState extends GraphState:
     }
 
 ```
+
+Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'esterno sia possibile solo osservare lo stato e inviare comandi per modificarlo.
 
 ## Engine Loop
     

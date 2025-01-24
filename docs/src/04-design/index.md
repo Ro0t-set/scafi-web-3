@@ -306,6 +306,8 @@ classDiagram
 
 ### Graph
 
+Il package `graph` si occupa di visualizzare il grafo in 3D. In particolare, definisce le interfacce per la gestione dei nodi e degli archi, e per la visualizzazione del grafo. È stato usato il pattern **Adapter** per adattare le interfacce del dominio a quelle della libreria Three.js. In questo modo è stato possibile separare la logica dell'applicazione dalla libreria grafica.
+
 ```mermaid
 classDiagram
     class ThreeScene {

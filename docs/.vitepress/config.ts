@@ -25,7 +25,9 @@ export default withMermaid(
             { text: 'Requisiti', link: '/src/02-requirements/' },
             { text: 'Architettura', link: '/src/03-architectural-design/' },
             { text: 'Design', link: '/src/04-design/' },
-            { text: 'Implementazione', link: '/src/05-implementation/' }
+            { text: 'Implementazione', link: '/src/05-implementation/' },
+            { text: 'Testing', link: '/src/06-testing/' },
+            { text: 'Retrospettiva', link: '/src/07-retrospective/' }
           ]
         }
       ],
