@@ -8,19 +8,19 @@ export default withMermaid({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Introduzione', link: '/PPS-25-ScafiWeb3/introduction.md' }
+      { text: 'Introduzione', link: 'src/introduction.md' }
     ],
 
     sidebar: [
       {
         text: 'Documentazione',
         items: [
-          { text: 'Introduzione', link: '/PPS-25-ScafiWeb3/src/introduction.md' },
-          { text: 'Processo di sviluppo', link: '/PPS-25-ScafiWeb3/src/01-process/index.md' },
-          { text: 'Requisiti', link: '/PPS-25-ScafiWeb3/src/02-requirements/index.md' },
-          { text: 'Architettura', link: '/PPS-25-ScafiWeb3/src/03-architectural-design/index.md' },
-          { text: 'Design', link: '/PPS-25-ScafiWeb3/src/04-design/index.md' },
-          { text: 'Implementazione', link: '/PPS-25-ScafiWeb3/src/05-implementation/index.md' }
+          { text: 'Introduzione', link: 'src/introduction.md' },
+          { text: 'Processo di sviluppo', link: 'src/01-process/index.md' },
+          { text: 'Requisiti', link: 'src/02-requirements/index.md' },
+          { text: 'Architettura', link: 'src/03-architectural-design/index.md' },
+          { text: 'Design', link: 'src/04-design/index.md' },
+          { text: 'Implementazione', link: 'src/05-implementation/index.md' }
         ]
       }
     ],
