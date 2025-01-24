@@ -16,9 +16,11 @@ hero:
     - theme: alt
       text: Cucumber
       link: ./cucumber/index.html
+      external: true
     - theme: alt
       text: Demo
       link: ./dist/index.html
+      external: true
 
 features:
   - title: ✨ Compilazione aggregata

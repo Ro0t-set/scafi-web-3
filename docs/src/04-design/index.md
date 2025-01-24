@@ -39,11 +39,10 @@ Il package `view` è ulteriormente suddiviso in:
 
 - **`graph`**: Contiene il visualizzatore 3D del grafo.
 
-# Architettura
-
 ## Dominio
 
-Il dominio è il cuore dell'applicazione, dove sono definiti i concetti fondamentali. È formato da due concetti: Le entità e i comandi ad esse associate.
+
+Il dominio è il cuore dell'applicazione, dove sono definiti i concetti fondamentali. È formato da due concetti: Le entità e i comandi ad esse associate. Le entità sono rappresentate da nodi e archi, mentre i comandi sono azioni che possono essere eseguite sul grafo.
 
 ```mermaid
 classDiagram
@@ -104,8 +103,11 @@ classDiagram
     GraphDomain --> GraphCommand
 ```
 
+Per quanto riguarda il dominio dell'animazione, sono definiti i comandi per controllare l'animazione, come l'avvio, la pausa, l'avanzamento di un singolo passo o di più passi alla volta, il reset e il cambio di modalità di visualizzazione.
+
 ```mermaid
 classDiagram
+    
 
     class AnimationDomain {
         <<object>>
@@ -151,7 +153,11 @@ classDiagram
     AnimationDomain --> AnimationCommand~Engine~
 ```
 
+È importante notare come sia importante che tutto ciò che si trova in questo package non abbia dipendenze esterne, in modo da poter essere facilmente testato e riutilizzato.
+
 ## State
+
+Il package `state` si occupa di gestire lo stato dell'app andando a definire le strutture dati e le interfacce necessarie per mantenere lo stato dell'applicazione. Inoltre, definisce le interfacce per la gestione dei comandi e degli eventi. Lo stato dell'applicazione è totalmente reattivo, in modo da garantire una gestione efficiente e coerente degli aggiornamenti. Lo stato è modificabile solo tramite comandi.
 
 ```mermaid
 classDiagram
@@ -198,6 +204,8 @@ classDiagram
 ```
 
 ## Api
+
+Il package `api` definisce le interfacce e i parser necessari per comunicare con l'esterno. In particolare, definisce le interfacce per l'aggiunta di nodi e archi, e i relativi parser per convertire i dati in input in strutture dati utilizzabili dall'applicazione.
 
 ```mermaid
 classDiagram
@@ -251,6 +259,8 @@ classDiagram
 ```
 
 ## View
+
+La view è gestita per mezzo di componenti grafici riutilizzabili, seguendo un approccio modulare. Ogni componente ha una responsabilità specifica, favorendo il riuso e la manutenibilità del codice.
 
 ```mermaid
 classDiagram
