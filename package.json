@@ -6,15 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
     "@types/three": "^0.170.0",
     "css-loader": "^7.1.2",
+    "mermaid": "^11.4.1",
     "style-loader": "^4.0.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.11",
+    "vitepress": "^1.6.3",
+    "vitepress-plugin-mermaid": "^2.0.17",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   },
