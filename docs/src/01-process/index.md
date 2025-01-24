@@ -36,3 +36,7 @@ In caso di fallimento di un workflow, il membro del team che ha avviato l'esecuz
 La documentazione del progetto è redatta utilizzando il linguaggio Markdown e mantenuta in un branch dedicato. Successivamente, viene pubblicata su GitHub Pages per garantirne la consultazione online.
 
 Per la generazione della documentazione in formato HTML è stato utilizzato il tool [vitepress](https://vitepress.vuejs.org/) in maniera da integrare la documentazione con il progetto che gia utilizza _Vite_.
+
+::: warning
+Al momento dell'esame non é stato possibile generare la scala doc: [GitHub Issue](https://github.com/scala/scala3/issues/22447)
+:::

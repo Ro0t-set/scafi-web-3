@@ -1,8 +1,77 @@
 # Implementazione
 
+## Comunicazione Scastie - Applicazione
+
+Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne. Nel dettaglio, il codice compilato da Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
+
+Questa implementazione presenta sia vantaggi che svantaggi:
+
+- Vantaggi: Il codice di Scastie è completamente indipendente e può essere utilizzato per integrare qualsiasi libreria di aggregate computing, a condizione che rispetti il trait e il formato JSON previsto.
+- Svantaggi: L'uso di JSON implica la necessità di effettuare il parsing dei dati, un'operazione che in questo caso può risultare onerosa.
+Di seguito è riportato un diagramma Mermaid che illustra l'interazione tra Scastie e l'applicazione:
+
+
+Testo Riformulato
+Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne.
+
+Nel dettaglio, Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
+
+Questa implementazione presenta sia vantaggi che svantaggi:
+
+Vantaggi: Il codice di Scastie è completamente indipendente e può essere utilizzato per integrare qualsiasi libreria di aggregate computing, a condizione che rispetti il trait e il formato JSON previsto.
+Svantaggi: L'uso di JSON implica la necessità di effettuare il parsing dei dati, un'operazione che in questo caso può risultare onerosa.
+
+
+```mermaid
+graph TD
+        subgraph Global Js
+            Scastie[ScastieMain.js]
+            App[ApplicationMain.js]
+        end
+
+        App -->|JSON| Scastie
+```
+
+Come viene importato:
+```scala
+
+val engine = js.Dynamic.global.EngineImpl(
+  xVar.now(),
+  yVar.now(),
+  zVar.now(),
+  distXVar.now(),
+  distYVar.now(),
+  distZVar.now(),
+  edgeDistVar.now()
+)
+
+```
+
+Come viene esportato:
+
+```scala
+type Id = Int
+type Color = Int
+type Label = String
+
+final case class Position(x: Double, y: Double, z: Double)
+final case class Node(id: Id, position: Position, label: Label, color: Color)
+
+trait EngineApi:
+  def executeIterations(): Unit
+  def getNodes(): js.Array[js.Dynamic]
+  def getEdges(): js.Array[js.Dynamic]
+
+@JSExportTopLevel("EngineImpl")
+case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
+  stepx: Int,
+  stepy: Int,
+  stepz: Int
+)(proximityThreshold: Int) extends EngineApi: ...
+```
 ## Domanin
     
-```scala 3
+```scala
 sealed trait GraphType:
   type Id    = Int
   type Color = Int
@@ -44,7 +113,7 @@ Nell' AnimationDomain, il tipo generico [Engine] viene introdotto per evitare di
 
 ## State
 
-```scala 3
+```scala
 trait GraphState:
   val nodes: StrictSignal[Set[GraphNode]]
   val edges: StrictSignal[Set[GraphEdge]]
@@ -70,7 +139,7 @@ Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'e
 
 ## Engine Loop
     
-```scala 3
+```scala
   override def start(): Unit =
     def loop(): Unit =
       if running.now() then
@@ -84,7 +153,7 @@ Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'e
 
 ## Extension
 
-```scala 3
+```scala
 object DomainExtensions:
   extension (edge: GraphEdge)
     def object3dName: String =
@@ -135,7 +204,7 @@ object ThreeType:
       case _      => None
 ```
 
-```scala 3
+```scala
 def removeObject(obj: GenericObject3D): Unit =
       import ThreeType._
       obj match
@@ -163,7 +232,7 @@ def removeObject(obj: GenericObject3D): Unit =
 
 ## Laminar View
 
-```scala 3
+```scala
 def render(): Unit =
     val rootElement = div(
       scene.renderScene("three_canvas"),
@@ -187,16 +256,3 @@ def render(): Unit =
     )
 ```
 
-## Engine Import From JS
-    
-```scala 3
-val engine = js.Dynamic.global.EngineImpl(
-  xVar.now(),
-  yVar.now(),
-  zVar.now(),
-  distXVar.now(),
-  distYVar.now(),
-  distZVar.now(),
-  edgeDistVar.now()
-)
-```
