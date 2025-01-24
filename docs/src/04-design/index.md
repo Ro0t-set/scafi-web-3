@@ -1,7 +1,4 @@
-# Design
-
-## Organizzazione del codice
-
+# Organizzazione del codice
 
 ```mermaid
     flowchart TD
@@ -22,19 +19,31 @@
         N[scene] --> I
 ```
 
-- `domain`: contiene la logica e i concetti fondamentali del sistema
-- `state`: si occupa di gestire lo stato dell'applicazione e le sue transizioni
-- `view`: gestisce la presentazione dei dati e l'interazione con l'utente
-- `api`: contiene le interfacce ed il parser per comunicare con Scastie
+- **`domain`**: Rappresenta il cuore della logica applicativa, modellando i concetti fondamentali del sistema.
 
-A sua volta il package `view` è suddiviso in:
+- **`state`**: Si occupa della gestione dello stato dell'applicazione e delle sue transizioni. Questo package suggerisce l'uso di un approccio reattivo, dove lo stato è centrale e gli aggiornamenti vengono propagati automaticamente.
 
-- `components`: contiene componenti grafici riutilizzabili
-- `config` : contiene le configurazioni dell'applicazione
-- `player`: contiene il player per la gestione del grafo con funzioni di *Play*, *Pausa* e regolazione della velocità ed il controller per interagire con scastie
-- `graph`: contiene il visualizzatore 3D del grafo
+- **`view`**: Si concentra sulla presentazione e l'interazione con l'utente. La suddivisione in sottopackage rende evidente l'uso del **Component-Based Design**, dove ogni componente ha una responsabilità specifica. Questo favorisce il riuso e la manutenibilità del codice.
 
-## Domanin
+- **`api`**: Definisce le interfacce e i parser per comunicare con l'esterno.
+
+### Dettagli del package `view`
+
+Il package `view` è ulteriormente suddiviso in:
+
+- **`components`**: Contiene componenti grafici riutilizzabili, seguendo un approccio modulare.
+
+- **`config`**: Gestisce le configurazioni necessarie per personalizzare e parametrizzare l'applicazione.
+
+- **`player`**: Include il player per gestire l'esecuzione del grafo, con funzionalità di *Play*, *Pausa* e regolazione della velocità.
+
+- **`graph`**: Contiene il visualizzatore 3D del grafo.
+
+# Architettura
+
+## Dominio
+
+Il dominio è il cuore dell'applicazione, dove sono definiti i concetti fondamentali. È formato da due concetti: Le entità e i comandi ad esse associate.
 
 ```mermaid
 classDiagram
@@ -94,6 +103,7 @@ classDiagram
     GraphCommand <|-- SetEdgesByIds
     GraphDomain --> GraphCommand
 ```
+
 ```mermaid
 classDiagram
 
@@ -141,7 +151,6 @@ classDiagram
     AnimationDomain --> AnimationCommand~Engine~
 ```
 
-
 ## State
 
 ```mermaid
@@ -186,10 +195,10 @@ classDiagram
     }
 
     AnimationStateObject --> AnimationState : extends
-``` 
+```
 
 ## Api
-    
+
 ```mermaid
 classDiagram
     direction TB
@@ -322,4 +331,3 @@ classDiagram
     ThreeScene --> OrbitControls : initializes
 
 ```
-
