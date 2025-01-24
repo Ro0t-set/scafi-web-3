@@ -15,11 +15,11 @@ hero:
       link: https://github.com/Ro0t-set/PPS-25-ScafiWeb3
     - theme: alt
       text: Cucumber
-      link: ./cucumber/index.html
+      link: http://tommasopatriti.me/PPS-25-ScafiWeb3/cucumber
       external: true
     - theme: alt
       text: Demo
-      link: ./dist/index.html
+      link: http://tommasopatriti.me/PPS-25-ScafiWeb3/dist
       external: true
 
 features:
