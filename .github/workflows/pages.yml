@@ -49,7 +49,7 @@ jobs:
 
       - name: Copy HTML pages
         run: |
-          cp -r ./dist ./site/
+          
           mkdir -p ./site/cucumber
           cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
 
