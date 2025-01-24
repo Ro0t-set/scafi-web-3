@@ -47,11 +47,7 @@ jobs:
           npm run docs:build
           cp -r ./docs/.vitepress/dist/* ./site
 
-      - name: Copy HTML pages
-        run: |
-          
-          mkdir -p ./site/cucumber
-          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
