@@ -73,7 +73,7 @@ private object Node3dObj extends Node3d:
 
     drawLabel(textLabel)
 
-    val texture = new CanvasTexture(
+    val texture: CanvasTexture = new CanvasTexture(
       canvas,
       js.undefined,
       js.undefined,

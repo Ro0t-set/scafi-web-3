@@ -24,6 +24,7 @@ type JsonNode = js.Dynamic
 type JsonEdge = js.Dynamic
 
 object EngineLoopPlayer extends EngineLoopPlayer[JsonNode, JsonEdge]:
+  private final val loopInterval: Int = 8
 
   private def getEngineOrEmpty: js.Dynamic =
     engine.now().getOrElse {
@@ -51,5 +52,5 @@ object EngineLoopPlayer extends EngineLoopPlayer[JsonNode, JsonEdge]:
         for _ <- 1 to batchCount do getEngineOrEmpty.executeIterations()
         animationObserver.onNext(NextTickAdd(batchCount + 1))
         handleNewData(processNextBatch())
-        setTimeout(() => loop(), 8)
+        setTimeout(() => loop(), loopInterval)
     loop()

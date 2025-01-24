@@ -5,7 +5,7 @@ wartremoverErrors --= Seq(
   Wart.DefaultArguments
 )
 
-
+(Test / scalacOptions) += "-scalajs-genStaticForwardersForNonTopLevelObjects"
 
 enablePlugins(ScalafixPlugin)
 ThisBuild / semanticdbEnabled          := true
@@ -37,7 +37,6 @@ CucumberPlugin.plugin := {
 lazy val scafiWeb3 = project.in(file("."))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
-  .enablePlugins(ScalaUnidocPlugin)
   .settings(
     scalaVersion                    := "3.3.4",
     scalaJSUseMainModuleInitializer := true,
@@ -50,8 +49,6 @@ lazy val scafiWeb3 = project.in(file("."))
         .withSourceMap(true)
     },
 
-
-    
     libraryDependencies += "org.scala-js"  %%% "scalajs-dom" % "2.8.0",
     libraryDependencies += "com.raquo"     %%% "laminar"     % "17.2.0",
     libraryDependencies += "org.scalameta" %%% "munit"       % "1.0.3" % Test,
