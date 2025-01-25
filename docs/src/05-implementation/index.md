@@ -154,7 +154,6 @@ Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'e
 
 Questa funzione gestisce il loop di animazione, che viene eseguito ricorsivamente finché il flag `running` è impostato su `true`. Ad ogni iterazione, esegue un numero di batch definito dalla variabile reattiva `batch`, permettendo così di regolare dinamicamente la velocità di esecuzione dell'animazione. È importante notare che la chiamata ricorsiva viene effettuata tramite `setTimeout`, garantendo che il thread principale rimanga non bloccato, consentendo al sistema di gestire altre operazioni in parallelo.
 
-
 ## Three.js Types and Adapter
 
 Per l'implementazione del grafo 3D è stata scelta [Three.js](https://threejs.org/), una delle librerie più popolari in JavaScript per la creazione e gestione di scene e oggetti tridimensionali. Questa libreria offre un'ampia gamma di funzionalità, rendendola ideale per la visualizzazione e l'interazione con grafi in un contesto 3D.
@@ -231,7 +230,6 @@ def removeObject(obj: GenericObject3D): Unit =
 
 Nel codice viene wrappata la funzione generica`remove` con `removeObject` per eliminare definitivamente un oggetto 3D dalla scena. Viene utilizzato il pattern matching per identificare il tipo dell'oggetto e procedere con la rimozione in base alla sua tipologia. Questo approccio consente di gestire in modo efficiente la rimozione di oggetti, come gruppi di oggetti o linee, garantendo la corretta liberazione della memoria.
 
-
 ## Extension
 
 ```scala
@@ -248,7 +246,6 @@ object DomainExtensions:
 ```
 
 In questo modo viene esteso il dominio con funzionalità aggiuntive, come la generazione di nomi univoci per gli oggetti 3D rappresentanti nodi e archi. Questo permette di semplificare la gestione degli oggetti nella scena 3D, garantendo che ciascun oggetto abbia un nome univoco per identificarlo in modo univoco.
-
 
 ## Laminar View
 
