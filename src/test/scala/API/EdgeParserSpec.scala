@@ -7,9 +7,6 @@ import org.scalacheck.Prop.forAll
 
 class EdgeParserSpec extends FunSuite with ScalaCheckSuite:
 
-  override def scalaCheckInitialSeed =
-    "ahJ1K1TtodMObAWgkeAKimAUzfcI2uo7IG2CXJkbLkP="
-
   def validEdgeJsonGen: Gen[String] =
     for
       source <- Gen.choose(1, 1000)
