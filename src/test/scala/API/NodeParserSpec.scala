@@ -100,10 +100,9 @@ class NodeParserSpec extends FunSuite:
 
   test("parse returns None for invalid JSON") {
     val invalidJsonString =
-      """{ "some": "bad", "json": [ }""" // Malformed on purpose
+      """{ "some": "bad", "json": [ }"""
     val resultOpt = NodeParser.parse(invalidJsonString)
 
-    // Just verify we have None:
     assert(
       resultOpt.isEmpty,
       s"Expected None, but got $resultOpt"

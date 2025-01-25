@@ -10,7 +10,6 @@ Questa implementazione presenta sia vantaggi che svantaggi:
 - Svantaggi: L'uso di JSON implica la necessità di effettuare il parsing dei dati, un'operazione che in questo caso può risultare onerosa.
 Di seguito è riportato un diagramma Mermaid che illustra l'interazione tra Scastie e l'applicazione:
 
-
 Testo Riformulato
 Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne.
 
@@ -20,7 +19,6 @@ Questa implementazione presenta sia vantaggi che svantaggi:
 
 Vantaggi: Il codice di Scastie è completamente indipendente e può essere utilizzato per integrare qualsiasi libreria di aggregate computing, a condizione che rispetti il trait e il formato JSON previsto.
 Svantaggi: L'uso di JSON implica la necessità di effettuare il parsing dei dati, un'operazione che in questo caso può risultare onerosa.
-
 
 ```mermaid
 graph TD
@@ -33,6 +31,7 @@ graph TD
 ```
 
 Come viene importato:
+
 ```scala
 
 val engine = js.Dynamic.global.EngineImpl(
@@ -69,8 +68,9 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
   stepz: Int
 )(proximityThreshold: Int) extends EngineApi: ...
 ```
+
 ## Domanin
-    
+
 ```scala
 sealed trait GraphType:
   type Id    = Int
@@ -109,6 +109,7 @@ object AnimationDomain:
 Nella parte relativa a GraphType, vengono definiti degli alias (Id, Color, Label) per rappresentare tipi comunemente utilizzati, come Int e String. Questo approccio migliora la leggibilità e l'auto-documentazione del codice, permettendo di distinguere semanticamente i diversi utilizzi di tipi primitivi all'interno del dominio.
 
 ### Engine
+
 Nell' AnimationDomain, il tipo generico [Engine] viene introdotto per evitare dipendenze forti con un motore di rendering o un'implementazione specifica. Questo approccio consente al dominio di rimanere indipendente e riutilizzabile con qualsiasi tipo di "engine" che si voglia integrare.
 
 ## State
@@ -138,7 +139,7 @@ object GraphState extends GraphState:
 Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'esterno sia possibile solo osservare lo stato e inviare comandi per modificarlo.
 
 ## Engine Loop
-    
+
 ```scala
   override def start(): Unit =
     def loop(): Unit =
@@ -255,4 +256,3 @@ def render(): Unit =
       onMountCallback(_ => initialize())
     )
 ```
-

@@ -8,3 +8,4 @@ Feature: Unit Test Feature
       | state.AnimationStateSpec |
       | state.GraphStateSpec     |
       | API.NodeParserSpec       |
+      | API.EdgeParserSpec       |
