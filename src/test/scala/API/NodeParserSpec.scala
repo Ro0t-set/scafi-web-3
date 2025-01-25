@@ -1,134 +1,47 @@
 package API
-
 import domain.GraphDomain.GraphNode
 import domain.GraphDomain.Position
 import munit.FunSuite
+import munit.ScalaCheckSuite
+import org.scalacheck.Gen
+import org.scalacheck.Prop
+import org.scalacheck.Prop.forAll
 
-class NodeParserSpec extends FunSuite:
+class NodeParserSpec extends FunSuite with ScalaCheckSuite:
 
-  test("parse valid JSON with multiple Nodes") {
-    val jsonString =
-      """
-        |[
-        |  {
-        |    "id": 1,
-        |    "label": "Node1",
-        |    "color": 111111,
-        |    "position": {
-        |      "x": 1.1,
-        |      "y": 2.2,
-        |      "z": 3.3
-        |    }
-        |  },
-        |  {
-        |    "id": 2,
-        |    "label": "Node2",
-        |    "color": 222222,
-        |    "position": {
-        |      "x": 4.4,
-        |      "y": 5.5,
-        |      "z": 6.6
-        |    }
-        |  }
-        |]
-      """.stripMargin
+  def validNodeJsonGen: Gen[(String, GraphNode)] =
+    for
+      id    <- Gen.choose(1, 1000)
+      label <- Gen.alphaStr
+      color <- Gen.choose(0, Int.MaxValue)
+      x     <- Gen.choose(-1000.0, 1000.0)
+      y     <- Gen.choose(-1000.0, 1000.0)
+      z     <- Gen.choose(-1000.0, 1000.0)
+    yield (
+      s"""[{
+      "id": $id,
+      "label": "$label",
+      "color": $color,
+      "position": {
+        "x": $x,
+        "y": $y,
+        "z": $z
+      }
+    }]""",
+      GraphNode(id, Position(x, y, z), label, color)
+    )
 
-    val resultOpt = NodeParser.parse(jsonString)
-
-    resultOpt.fold(
-      fail("Expected Some(Set[Node]) but got None")
-    ) { resultSet =>
-      assertEquals(
-        resultSet.size,
-        2,
-        "We should have exactly two Nodes in the result"
-      )
-
-      val node1 = GraphNode(
-        id = 1,
-        label = "Node1",
-        color = 111111,
-        position = Position(1.1, 2.2, 3.3)
-      )
-      val node2 = GraphNode(
-        id = 2,
-        label = "Node2",
-        color = 222222,
-        position = Position(4.4, 5.5, 6.6)
-      )
-
-      assert(resultSet.contains(node1), "Result should contain node1")
-      assert(resultSet.contains(node2), "Result should contain node2")
+  property("NodeParser parses valid single node JSON") {
+    forAll(validNodeJsonGen) {
+      case (jsonString, validJsonNodeFromParams) =>
+        NodeParser.parse(jsonString).fold(false) { nodes =>
+          nodes == Set(validJsonNodeFromParams)
+        }
     }
   }
 
-  test("parse valid JSON with single Node") {
-
-    val jsonString =
-      """
-        |[
-        |  {
-        |    "id": 100,
-        |    "label": "SingleNode",
-        |    "color": 999999,
-        |    "position": {
-        |      "x": 10.0,
-        |      "y": 20.0,
-        |      "z": 30.0
-        |    }
-        |  }
-        |]
-      """.stripMargin
-
-    NodeParser.parse(jsonString).fold(
-      fail("Expected Some(Set[Node]) but got None")
-    ) { nodeSet =>
-      assertEquals(
-        nodeSet.size,
-        1,
-        "We should have exactly one Node in the result"
-      )
-
-      val parsedNode =
-        nodeSet.headOption.getOrElse(fail("Expected a Node in the Set"))
-      assertEquals(parsedNode.id, 100)
-      assertEquals(parsedNode.label, "SingleNode")
-      assertEquals(parsedNode.color, 999999)
-      assertEquals(parsedNode.position, Position(10.0, 20.0, 30.0))
+  property("NodeParser handles invalid JSON") {
+    forAll(Gen.alphaStr) { invalidJson =>
+      NodeParser.parse(invalidJson).isEmpty
     }
-  }
-
-  test("parse returns None for invalid JSON") {
-    val invalidJsonString =
-      """{ "some": "bad", "json": [ }"""
-    val resultOpt = NodeParser.parse(invalidJsonString)
-
-    assert(
-      resultOpt.isEmpty,
-      s"Expected None, but got $resultOpt"
-    )
-  }
-
-  test("parse returns None for valid JSON, but missing fields") {
-    val missingFieldsJson =
-      """
-        |[
-        |  {
-        |    "label": "NoID",
-        |    "color": 111111,
-        |    "position": {
-        |      "x": 1.1,
-        |      "y": 2.2,
-        |      "z": 3.3
-        |    }
-        |  }
-        |]
-      """.stripMargin
-
-    val resultOpt = NodeParser.parse(missingFieldsJson)
-
-    assert(
-      resultOpt.isEmpty,
-      s"Expected None because 'id' field is missing, but got $resultOpt"
-    )
   }

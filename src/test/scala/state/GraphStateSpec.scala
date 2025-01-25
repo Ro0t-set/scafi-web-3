@@ -23,7 +23,7 @@ class GraphStateSpec extends FunSuite with ScalaCheckSuite:
           Set(GraphNode(id, Position(x, y, z), label, color))
         GraphState.commandObserver.onNext(SetNodes(node))
         val result: Set[GraphNode] = GraphState.nodes.now()
-        assertEquals(result, node)
+        result == node
     }
   }
 
@@ -52,7 +52,7 @@ class GraphStateSpec extends FunSuite with ScalaCheckSuite:
         GraphState.commandObserver.onNext(SetEdges(edge))
 
         val result: Set[GraphEdge] = GraphState.edges.now()
-        assertEquals(result, edge)
+        result == edge
     }
   }
 
@@ -77,7 +77,7 @@ class GraphStateSpec extends FunSuite with ScalaCheckSuite:
 
         val result: Set[GraphEdge] = GraphState.edges.now()
 
-        assertEquals(result, Set(GraphEdge((node1, node2))))
+        result == Set(GraphEdge((node1, node2)))
     }
   }
 
@@ -102,6 +102,6 @@ class GraphStateSpec extends FunSuite with ScalaCheckSuite:
         ))))
 
         val result: Set[GraphEdge] = GraphState.edges.now()
-        assertEquals(result, Set.empty[GraphEdge])
+        result == Set.empty[GraphEdge]
     }
   }

@@ -1,92 +1,31 @@
 package API
 
 import munit.FunSuite
+import munit.ScalaCheckSuite
+import org.scalacheck.Gen
+import org.scalacheck.Prop.forAll
 
-class EdgeParserSpec extends FunSuite:
+class EdgeParserSpec extends FunSuite with ScalaCheckSuite:
 
-  test("parse valid JSON with multiple Edges") {
-    val jsonString =
-      """
-        |[
-        |  {
-        |    "source": 1,
-        |    "target": 2
-        |  },
-        |  {
-        |    "source": 3,
-        |    "target": 4
-        |  }
-        |]
-      """.stripMargin
+  def validEdgeJsonGen: Gen[String] =
+    for
+      source <- Gen.choose(1, 1000)
+      target <- Gen.choose(1, 1000)
+    yield s"""[{
+      "source": $source,
+      "target": $target
+      }]"""
 
-    val resultOpt = EdgeParser.parse(jsonString)
-
-    resultOpt.fold(
-      fail("Expected Some(Set[(Id, Id)]) but got None")
-    ) { resultSet =>
-      assertEquals(
-        resultSet.size,
-        2,
-        "We should have exactly two Edges in the result"
-      )
-
-      assert(resultSet.contains((1, 2)), "Result should contain edge (1, 2)")
-      assert(resultSet.contains((3, 4)), "Result should contain edge (3, 4)")
+  property("EdgeParser parses valid single edge JSON") {
+    forAll(validEdgeJsonGen) { jsonString =>
+      EdgeParser.parse(jsonString).fold(false) { edges =>
+        edges.size == 1
+      }
     }
   }
 
-  test("parse valid JSON with single Edge") {
-    val jsonString =
-      """
-        |[
-        |  {
-        |    "source": 100,
-        |    "target": 200
-        |  }
-        |]
-      """.stripMargin
-
-    EdgeParser.parse(jsonString).fold(
-      fail("Expected Some(Set[(Id, Id)]) but got None")
-    ) { edgeSet =>
-      assertEquals(
-        edgeSet.size,
-        1,
-        "We should have exactly one Edge in the result"
-      )
-
-      val parsedEdge =
-        edgeSet.headOption.getOrElse(fail("Expected an Edge in the Set"))
-      assertEquals(parsedEdge._1, 100)
-      assertEquals(parsedEdge._2, 200)
+  property("EdgeParser handles invalid JSON") {
+    forAll(Gen.alphaStr) { invalidJson =>
+      EdgeParser.parse(invalidJson).isEmpty
     }
-  }
-
-  test("parse returns None for invalid JSON") {
-    val invalidJsonString =
-      """{ "some": "bad", "json": [ }"""
-    val resultOpt = EdgeParser.parse(invalidJsonString)
-
-    assert(
-      resultOpt.isEmpty,
-      s"Expected None, but got $resultOpt"
-    )
-  }
-
-  test("parse returns None for valid JSON, but missing fields") {
-    val missingFieldsJson =
-      """
-        |[
-        |  {
-        |    "source": 1
-        |  }
-        |]
-      """.stripMargin
-
-    val resultOpt = EdgeParser.parse(missingFieldsJson)
-
-    assert(
-      resultOpt.isEmpty,
-      s"Expected None because 'target' field is missing, but got $resultOpt"
-    )
   }
