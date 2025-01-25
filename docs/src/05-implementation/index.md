@@ -148,28 +148,26 @@ Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'e
         for _ <- 1 to batchCount do getEngineOrEmpty.executeIterations()
         animationObserver.onNext(NextTickAdd(batchCount + 1))
         handleNewData(processNextBatch())
-        setTimeout(() => loop(), 8)
+        setTimeout(() => loop(), loopInterval)
     loop()
 ```
 
-## Extension
+Questa funzione gestisce il loop di animazione, che viene eseguito ricorsivamente finché il flag `running` è impostato su `true`. Ad ogni iterazione, esegue un numero di batch definito dalla variabile reattiva `batch`, permettendo così di regolare dinamicamente la velocità di esecuzione dell'animazione. È importante notare che la chiamata ricorsiva viene effettuata tramite `setTimeout`, garantendo che il thread principale rimanga non bloccato, consentendo al sistema di gestire altre operazioni in parallelo.
 
-```scala
-object DomainExtensions:
-  extension (edge: GraphEdge)
-    def object3dName: String =
-      val (n1, n2) = edge.nodes
-      val (minId, maxId) =
-        if n1.id < n2.id then (n1.id, n2.id) else (n2.id, n1.id)
-      s"edge-$minId-$maxId-$n1-$n2"
-
-  extension (node: GraphNode)
-    def object3dName: String = s"node-${node.id}"
-```
 
 ## Three.js Types and Adapter
 
-```scala 3
+Per l'implementazione del grafo 3D è stata scelta [Three.js](https://threejs.org/), una delle librerie più popolari in JavaScript per la creazione e gestione di scene e oggetti tridimensionali. Questa libreria offre un'ampia gamma di funzionalità, rendendola ideale per la visualizzazione e l'interazione con grafi in un contesto 3D.
+
+Durante il processo di tipizzazione da JavaScript a Scala, sono stati incontrati problemi nella risoluzione completa dell'albero dei tipi utilizzando i comandi `npm install --save @types/three` e successivamente sbt `fastLinkJS`. Questi problemi derivano principalmente dalle differenze tra i sistemi di tipi di JavaScript e Scala.js.
+
+Per ovviare a queste limitazioni, è stato necessario adottare due strategie:
+
+Aliasing: Sono stati definiti degli alias per rappresentare in Scala alcuni tipi complessi o mancanti di Three.js, semplificando la loro gestione.
+Casting: È stato utilizzato il casting esplicito per adattare i tipi dinamici di JavaScript alle strutture tipizzate di Scala. Questo ha permesso di sfruttare caratteristiche avanzate di Scala, come il pattern matching, mantenendo comunque la compatibilità con la libreria Three.js.
+Questa soluzione ha consentito di integrare Three.js nell'applicazione senza rinunciare ai vantaggi offerti dal sistema di tipi di Scala.
+
+```scala
 type GenericObject3D = Object3D[Object3DEventMap]
 type ThreeGroup      = Group[Object3DEventMap]
 type ThreePoints =
@@ -231,6 +229,27 @@ def removeObject(obj: GenericObject3D): Unit =
         case _ => ()
 ```
 
+Nel codice viene wrappata la funzione generica`remove` con `removeObject` per eliminare definitivamente un oggetto 3D dalla scena. Viene utilizzato il pattern matching per identificare il tipo dell'oggetto e procedere con la rimozione in base alla sua tipologia. Questo approccio consente di gestire in modo efficiente la rimozione di oggetti, come gruppi di oggetti o linee, garantendo la corretta liberazione della memoria.
+
+
+## Extension
+
+```scala
+object DomainExtensions:
+  extension (edge: GraphEdge)
+    def object3dName: String =
+      val (n1, n2) = edge.nodes
+      val (minId, maxId) =
+        if n1.id < n2.id then (n1.id, n2.id) else (n2.id, n1.id)
+      s"edge-$minId-$maxId-$n1-$n2"
+
+  extension (node: GraphNode)
+    def object3dName: String = s"node-${node.id}"
+```
+
+In questo modo viene esteso il dominio con funzionalità aggiuntive, come la generazione di nomi univoci per gli oggetti 3D rappresentanti nodi e archi. Questo permette di semplificare la gestione degli oggetti nella scena 3D, garantendo che ciascun oggetto abbia un nome univoco per identificarlo in modo univoco.
+
+
 ## Laminar View
 
 ```scala
@@ -255,4 +274,7 @@ def render(): Unit =
       },
       onMountCallback(_ => initialize())
     )
+
 ```
+
+Questo è il punto di ingresso dell'applicazione, dove viene definita la struttura della pagina web. Viene utilizzata la libreria Laminar per la creazione della vista, che permette di definire in modo dichiarativo la struttura del DOM e le interazioni tra i vari componenti. In particolare, vengono definiti i componenti principali della vista, come la scena 3D, i controlli per l'animazione e le impostazioni del motore di rendering. La vista viene aggiornata in modo reattivo in base allo stato dell'applicazione, garantendo una corretta sincronizzazione tra i dati e la rappresentazione grafica.
