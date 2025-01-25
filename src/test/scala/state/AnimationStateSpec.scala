@@ -23,7 +23,7 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
     while AnimationState.mode.now() != ViewMode.Mode3D do
       AnimationState.animationObserver.onNext(SwitchMode())
 
-  property("initial state validates default values") {
+  test("initial state validates default values") {
     Prop.all(
       Prop(AnimationState.batch.now() == 1),
       Prop(AnimationState.currentTick.now() == 0),
@@ -32,7 +32,7 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
     )
   }
 
-  property("SetEngine updates engine and resets state") {
+  test("SetEngine updates engine and resets state") {
     forAll(Gen.const(js.Dynamic.literal())) { mockEngine =>
       AnimationState.animationObserver.onNext(SetEngine(mockEngine))
       Prop.all(
@@ -43,14 +43,14 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
     }
   }
 
-  property("StartAnimation manages running state") {
+  test("StartAnimation manages running state") {
 
     AnimationState.animationObserver.onNext(StartAnimation())
     Prop(AnimationState.running.now())
 
   }
 
-  property("PauseAnimation stops animation") {
+  test("PauseAnimation stops animation") {
 
     AnimationState.animationObserver.onNext(StartAnimation())
     AnimationState.animationObserver.onNext(PauseAnimation())
@@ -58,7 +58,7 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
 
   }
 
-  property("NextTick increments current tick") {
+  test("NextTick increments current tick") {
 
     val initialTick = AnimationState.currentTick.now()
     AnimationState.animationObserver.onNext(NextTick())
@@ -66,14 +66,14 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
 
   }
 
-  property("AnimationBatch updates batch value") {
+  test("AnimationBatch updates batch value") {
     forAll(Gen.choose(1, 10)) { batchValue =>
       AnimationState.animationObserver.onNext(AnimationBatch(batchValue))
       Prop(AnimationState.batch.now() == batchValue)
     }
   }
 
-  property("Reset restores initial state") {
+  test("Reset restores initial state") {
 
     AnimationState.animationObserver.onNext(StartAnimation())
     AnimationState.animationObserver.onNext(NextTick())
@@ -85,7 +85,7 @@ class AnimationStateSpec extends FunSuite with ScalaCheckSuite:
 
   }
 
-  property("SwitchMode toggles between view modes") {
+  test("SwitchMode toggles between view modes") {
 
     val initialMode = AnimationState.mode.now()
     AnimationState.animationObserver.onNext(SwitchMode())
