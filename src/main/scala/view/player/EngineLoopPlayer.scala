@@ -24,7 +24,7 @@ type JsonNode = js.Dynamic
 type JsonEdge = js.Dynamic
 
 object EngineLoopPlayer extends EngineLoopPlayer[JsonNode, JsonEdge]:
-  private final val loopInterval: Int = 8
+  private final val loopInterval: Int = 1000 / 120
 
   private def getEngineOrEmpty: js.Dynamic =
     engine.now().getOrElse {
