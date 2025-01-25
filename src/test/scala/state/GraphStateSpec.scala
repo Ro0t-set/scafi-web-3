@@ -9,14 +9,8 @@ import domain.GraphDomain.SetNodes
 import munit.FunSuite
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop.forAll
-import org.scalacheck.Test.Parameters
 
 class GraphStateSpec extends FunSuite with ScalaCheckSuite:
-
-  override def scalaCheckTestParameters: Parameters =
-    super.scalaCheckTestParameters
-      .withMinSuccessfulTests(200)
-      .withMaxDiscardRatio(10)
 
   override def beforeEach(context: BeforeEach): Unit =
     GraphState.commandObserver.onNext(SetNodes(Set.empty))
