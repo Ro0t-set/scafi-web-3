@@ -1,4 +1,5 @@
 package state
+
 import domain.GraphDomain.GraphEdge
 import domain.GraphDomain.GraphNode
 import domain.GraphDomain.Position
@@ -6,60 +7,107 @@ import domain.GraphDomain.SetEdges
 import domain.GraphDomain.SetEdgesByIds
 import domain.GraphDomain.SetNodes
 import munit.FunSuite
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop.forAll
+import org.scalacheck.Test.Parameters
 
-class GraphStateSpec extends FunSuite:
-  val node1: GraphNode  = GraphNode(1, Position(1, 1, 1), "Node1", 111111)
-  val node2: GraphNode  = GraphNode(2, Position(2, 2, 2), "Node2", 222222)
-  val node3: GraphNode  = GraphNode(3, Position(3, 3, 3), "Node3", 333333)
-  val edge12: GraphEdge = GraphEdge((node1, node2))
-  val edge23: GraphEdge = GraphEdge((node2, node3))
-  val edge13: GraphEdge = GraphEdge((node1, node3))
+class GraphStateSpec extends FunSuite with ScalaCheckSuite:
 
-  test("initial state should be empty") {
-    assertEquals(
-      GraphState.nodes.now(),
-      Set.empty[GraphNode]
-    )
-    assertEquals(
-      GraphState.edges.now(),
-      Set.empty[GraphEdge]
-    )
-  }
-
-  test("SetEdgesByIds should create edges between existing nodes") {
-    // Setup nodes
-    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2, node3)))
-
-    val edgeIds = Set(
-      (1, 2),
-      (2, 3),
-      (1, 4)
-    )
-
-    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
-
-    assertEquals(
-      GraphState.edges.now(),
-      Set(edge12, edge23),
-      "Only edges between existing nodes should be created"
-    )
-  }
-
-  test("SetEdgesByIds should handle duplicate edges") {
-    GraphState.commandObserver.onNext(SetNodes(Set(node1, node2)))
-
-    // Add same edge twice
-    val edgeIds = Set((1, 2))
-    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
-    GraphState.commandObserver.onNext(SetEdgesByIds(edgeIds))
-
-    assertEquals(
-      GraphState.edges.now(),
-      Set(edge12),
-      "Duplicate edges should not be added"
-    )
-  }
+  override def scalaCheckTestParameters: Parameters =
+    super.scalaCheckTestParameters
+      .withMinSuccessfulTests(200)
+      .withMaxDiscardRatio(10)
 
   override def beforeEach(context: BeforeEach): Unit =
     GraphState.commandObserver.onNext(SetNodes(Set.empty))
     GraphState.commandObserver.onNext(SetEdges(Set.empty))
+
+  test("addNode should add a node to the state") {
+    forAll {
+      (id: Int, label: String, color: Int, x: Double, y: Double, z: Double) =>
+        val node: Set[GraphNode] =
+          Set(GraphNode(id, Position(x, y, z), label, color))
+        GraphState.commandObserver.onNext(SetNodes(node))
+        val result: Set[GraphNode] = GraphState.nodes.now()
+        assertEquals(result, node)
+    }
+  }
+
+  test("addEdge should add an edge to the state") {
+    forAll {
+      (
+          id1: Int,
+          label1: String,
+          color1: Int,
+          x1: Double,
+          y1: Double,
+          z1: Double,
+          id2: Int,
+          label2: String,
+          color2: Int,
+          x2: Double,
+          y2: Double,
+          z2: Double
+      ) =>
+        val node1 = GraphNode(id1, Position(x1, y1, z1), label1, color1)
+        val node2 = GraphNode(id2, Position(x2, y2, z2), label2, color2)
+        val nodes = Set(node1, node2)
+        val edge  = Set(GraphEdge((node1, node2)))
+
+        GraphState.commandObserver.onNext(SetNodes(nodes))
+        GraphState.commandObserver.onNext(SetEdges(edge))
+
+        val result: Set[GraphEdge] = GraphState.edges.now()
+        assertEquals(result, edge)
+    }
+  }
+
+  test("addEdgeById should add an edge to the state") {
+    forAll {
+      (
+          id1: Int,
+          label1: String,
+          color1: Int,
+          x1: Double,
+          y1: Double,
+          z1: Double
+      ) =>
+        val id2   = id1 + 1
+        val node1 = GraphNode(id1, Position(x1, y1, z1), label1, color1)
+        val node2 = GraphNode(id2, Position(x1, y1, z1), label1, color1)
+        val nodes = Set(node1, node2)
+
+        GraphState.commandObserver.onNext(SetNodes(nodes))
+
+        GraphState.commandObserver.onNext(SetEdgesByIds(Set((id1, id2))))
+
+        val result: Set[GraphEdge] = GraphState.edges.now()
+
+        assertEquals(result, Set(GraphEdge((node1, node2))))
+    }
+  }
+
+  test("edges can be added only if the nodes exist") {
+    forAll {
+      (
+          id1: Int,
+          label1: String,
+          color1: Int,
+          x1: Double,
+          y1: Double,
+          z1: Double
+      ) =>
+
+        val node1         = GraphNode(id1, Position(x1, y1, z1), label1, color1)
+        val nonExistentId = id1 + 1
+
+        GraphState.commandObserver.onNext(SetNodes(Set(node1)))
+        GraphState.commandObserver.onNext(SetEdgesByIds(Set((
+          id1,
+          nonExistentId
+        ))))
+
+        val result: Set[GraphEdge] = GraphState.edges.now()
+        assertEquals(result, Set.empty[GraphEdge])
+    }
+  }
