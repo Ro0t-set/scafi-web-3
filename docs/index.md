@@ -23,7 +23,7 @@ hero:
       external: true
 
 features:
-  - title: ✨ Compilazione aggregata
+  - title: ✨ Compilazione online
     details: Utilizzo di Scastie per la compilazione del programma aggregato.
   - title: 📤 Caricamento da account Scastie
     details: Possibilità di caricare codice direttamente dal proprio account Scastie.
@@ -34,11 +34,11 @@ features:
   - title: ⚙️ Personalizzazione grafo
     details: Modifica facilmente le dimensioni del grafo per adattarlo alle tue esigenze.
   - title: 📚 Esempi integrati
-    details: Inclusione di vari esempi di programmi aggregati per iniziare rapidamente (in sviluppo).
+    details: Inclusione di vari esempi di programmi aggregati per iniziare rapidamente.
   - title: 🥒 Test con Cucumber
-    details: Utilizzo di **Cucumber**, integrato con Selenium, per testare la grafica e la funzionalità.
+    details: Utilizzo di Cucumber, integrato con Selenium, per testare grafica e funzionalità.
   - title: 🚀 CI/CD avanzato
     details: Pipeline automatizzata per test e deploy, garantendo qualità e velocità.
   - title: ⚡ Alte prestazioni
-    details: Il grafo supporta oltre **30 aggiornamenti al secondo**, per simulazioni fluide e reattive.
+    details: Il grafo supporta oltre 30 aggiornamenti al secondo, per simulazioni fluide e reattive.
 ---
