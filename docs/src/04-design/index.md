@@ -27,7 +27,7 @@
 
 - **`api`**: Definisce le interfacce e i parser per comunicare con l'esterno.
 
-### Dettagli del package `view`
+## Dettagli del package `view`
 
 Il package `view` è ulteriormente suddiviso in:
 
@@ -40,7 +40,6 @@ Il package `view` è ulteriormente suddiviso in:
 - **`graph`**: Contiene il visualizzatore 3D del grafo.
 
 ## Dominio
-
 
 Il dominio è il cuore dell'applicazione, dove sono definiti i concetti fondamentali. È formato da due concetti: Le entità e i comandi ad esse associate. Le entità sono rappresentate da nodi e archi, mentre i comandi sono azioni che possono essere eseguite sul grafo.
 
