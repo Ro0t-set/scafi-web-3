@@ -48,81 +48,80 @@ object BrowserFactory:
         EdgeDriver(options)
 
 @SuppressWarnings(Array("org.wartremover.warts.All"))
-class WebPageSteps extends ScalaDsl with EN:
+class WebPageSteps extends ScalaDsl with EN {
+  private val TestConfig = {
+    val env     = System.getProperty("testEnv", "ci")
+    val browser = System.getProperty("browser", "firefox")
+    println(s"Test Configuration: env=$env, browser=$browser")
+    (env, env == "local", browser)
+  }
 
-  println(System.getProperty("testEnv", "ci"))
-  println(System.getProperty("browser", "firefox"))
+  private val (env, isLocal, browser) = TestConfig
+  private lazy val driver: WebDriver =
+    BrowserFactory.createDriver(browser, isLocal)
+  private lazy val timeOut = new WebDriverWait(driver, Duration.ofSeconds(10))
 
-  private val env     = System.getProperty("testEnv", "ci")
-  private val isLocal = env == "local"
-  var driver: WebDriver = BrowserFactory.createDriver(
-    System.getProperty("browser", "firefox"),
-    isLocal
-  )
+  private object Selectors {
+    val Canvas = "#app canvas"
+    val StartButton =
+      "#app > div > div.animation-controller > div.controls > button:nth-child(1)"
+  }
 
-  Given("I am on the Scafi Web Page") {
+  Given("I am on the Scafi Web Page") { () =>
     driver.get("http://localhost:8080")
   }
 
-  Then("the page title should start with {string}") {
-    (titleStartsWith: String) =>
-      WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(ExpectedConditions.titleContains(titleStartsWith))
+  Then("the page title should start with {string}") { (prefix: String) =>
+    timeOut.until(ExpectedConditions.titleContains(prefix))
   }
 
   Then("the engine {string} is loaded") { (engine: String) =>
-    WebDriverWait(driver, Duration.ofSeconds(10))
-      .until(ExpectedConditions.jsReturnsValue(s"return $engine.name"))
+    timeOut.until(ExpectedConditions.jsReturnsValue(s"return $engine.name"))
   }
 
-  Then("the canvas {string} is loaded") { (canvasClassName: String) =>
-    if !isLocal then println(s"Skipping canvas check in CI/CD mode (env=$env)")
-    else
-      WebDriverWait(driver, Duration.ofSeconds(10)).until(
-        ExpectedConditions.visibilityOfElementLocated(
-          By.xpath(s"//*[@id='$canvasClassName']/canvas")
-        )
-      )
+  Then("the canvas {string} is loaded") { (canvasId: String) =>
+    if (isLocal) {
+      timeOut.until(ExpectedConditions.visibilityOfElementLocated(
+        By.cssSelector(s"#$canvasId canvas")
+      ))
+    } else {
+      println(s"Skipping canvas check in CI/CD mode (env=$env)")
+    }
   }
 
   Then(
     "the graph 10x10x2 should support more than {string} updates per second"
-  ) {
-    (fps: String) =>
-      if !isLocal then
-        println(s"Skipping canvas check in CI/CD mode (env=$env)")
-      else
-        WebDriverWait(driver, Duration.ofSeconds(10))
-          .until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/button[1]")
-          ))
+  ) { (minFps: String) =>
+    if (isLocal) {
+      timeOut.until(ExpectedConditions.elementToBeClickable(
+        By.cssSelector(Selectors.StartButton)
+      )).click()
 
-        driver.findElement(
-          By.xpath("//*[@id=\"app\"]/div/div[3]/div[2]/button[1]")
-        ).click()
+      Thread.sleep(1000) // Allow initial tick collection
 
-        Thread.sleep(1000)
-
-        val currentTick: Long = driver
-          .asInstanceOf[JavascriptExecutor]
-          .executeScript(
-            "return AnimationState.currentTick." +
-              "Lcom_raquo_airstream_state_VarSignal__f_maybeLastSeenCurrentValue." +
-              "s_util_Success__f_value"
-          )
-          .asInstanceOf[Long]
-
-        println(s"Current tick: $currentTick")
-
-        assert(
-          currentTick > fps.toInt,
-          s"Expected currentTick to be > $fps but it was $currentTick"
-        )
+      val currentTick = getCurrentTick
+      println(s"Performance check - Current tick: $currentTick")
+      assert(
+        currentTick > minFps.toInt,
+        s"Expected > $minFps ticks, got $currentTick"
+      )
+    } else {
+      println(s"Skipping performance check in CI/CD mode (env=$env)")
+    }
   }
 
   After("@web") { (scenario: Scenario) =>
     println(s"[${scenario.getName}] => Tearing down driver. Mode: $env")
     if driver != null then
       driver.quit()
-
   }
+
+  private def getCurrentTick: Long = {
+    val jsExecutor = driver.asInstanceOf[JavascriptExecutor]
+    jsExecutor.executeScript(
+      """return AnimationState.currentTick
+        |  .Lcom_raquo_airstream_state_VarSignal__f_maybeLastSeenCurrentValue
+        |  .s_util_Success__f_value""".stripMargin
+    ).asInstanceOf[Long]
+  }
+}
