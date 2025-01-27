@@ -46,7 +46,7 @@ val engine = js.Dynamic.global.EngineImpl(
 
 ```
 
-Come viene esportato:
+Di seguito un esempio del boilerplate caricato e compilato tramite Scastie:
 
 ```scala
 type Id = Int
@@ -70,6 +70,8 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
 ```
 
 ## Domanin
+
+Di seguito il cuore dell'applicazione, il dominio, che definisce i tipi e le strutture dati utilizzate. Questo modulo è progettato per essere indipendente dall'implementazione specifica del motore di rendering, consentendo di riutilizzare il codice in contesti diversi. Da notate quindi che sono utilizzate sono tipi primitivi evitando qualunque riferimento a librerie esterne.
 
 ```scala
 sealed trait GraphType:
@@ -110,7 +112,7 @@ Nella parte relativa a GraphType, vengono definiti degli alias (Id, Color, Label
 
 ### Engine
 
-Nell' AnimationDomain, il tipo generico [Engine] viene introdotto per evitare dipendenze forti con un motore di rendering o un'implementazione specifica. Questo approccio consente al dominio di rimanere indipendente e riutilizzabile con qualsiasi tipo di "engine" che si voglia integrare.
+Nel' AnimationDomain, il tipo generico [Engine] viene introdotto per evitare dipendenze forti con un motore di rendering o un'implementazione specifica. Questo approccio consente al dominio di rimanere indipendente e riutilizzabile con qualsiasi tipo di "engine" che si voglia integrare.
 
 ## State
 
