@@ -46,7 +46,7 @@ private object Node3dObj extends Node3d:
     )
     val pointMaterial: PointsMaterial = PointsMaterial(
       new PointsMaterialParameters {
-        size = 15
+        size = 25
         color = nodeColor
       }
     )
