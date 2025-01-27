@@ -9,41 +9,51 @@ trait ViewModeCalculations:
 
 object ViewModeCalculations extends ViewModeCalculations:
 
-  private def bottomLeftPosition(nodes: Set[GraphNode]): (Double, Double) =
-    nodes.foldLeft((Double.MaxValue, Double.MaxValue)) {
-      case ((minX, minY), node) =>
-        val newX = if (node.position.x < minX) node.position.x else minX
-        val newY = if (node.position.y < minY) node.position.y else minY
-        (newX, newY)
-    }
+  private def coordinateBounds(
+      nodes: Set[GraphNode],
+      extract: GraphNode => Double,
+      compare: (Double, Double) => Double
+  ): Option[Double] =
+    nodes.iterator.map(extract).reduceOption(compare)
 
-  private def topRightNodePosition(nodes: Set[GraphNode]): (Double, Double) =
-    nodes.foldLeft((Double.MinValue, Double.MinValue)) {
-      case ((maxX, maxY), node) =>
-        val newX = if (node.position.x > maxX) node.position.x else maxX
-        val newY = if (node.position.y > maxY) node.position.y else maxY
-        (newX, newY)
-    }
+  private def minCoordinate(
+      nodes: Set[GraphNode],
+      extract: GraphNode => Double
+  ): Option[Double] =
+    coordinateBounds(nodes, extract, _ min _)
 
-  private def maxDepthNodePosition(nodes: Set[GraphNode]): Double =
-    nodes.foldLeft(Double.MinValue) {
-      case (maxDepth, node) =>
-        if (node.position.z > maxDepth) node.position.z else maxDepth
-    }
+  private def maxCoordinate(
+      nodes: Set[GraphNode],
+      extract: GraphNode => Double
+  ): Option[Double] =
+    coordinateBounds(nodes, extract, _ max _)
+
+  private def bottomLeftPosition(nodes: Set[GraphNode])
+      : Option[(Double, Double)] =
+    for
+      minX <- minCoordinate(nodes, _.position.x)
+      minY <- minCoordinate(nodes, _.position.y)
+    yield (minX, minY)
+
+  private def topRightPosition(nodes: Set[GraphNode])
+      : Option[(Double, Double)] =
+    for
+      maxX <- maxCoordinate(nodes, _.position.x)
+      maxY <- maxCoordinate(nodes, _.position.y)
+    yield (maxX, maxY)
+
+  private def maxDepthNodePosition(nodes: Set[GraphNode]): Option[Double] =
+    maxCoordinate(nodes, _.position.z)
 
   override def maxDepth(nodes: Set[GraphNode]): Double =
-    maxDepthNodePosition(nodes)
+    maxDepthNodePosition(nodes).getOrElse(Double.MinValue)
 
   override def calculateCameraPosition(nodes: Set[GraphNode]): Option[Vector3] =
-    val (minX, minY) = bottomLeftPosition(nodes)
-    val (maxX, maxY) = topRightNodePosition(nodes)
-    if minX == Double.MaxValue || minY == Double.MaxValue || maxX == Double.MinValue || maxY == Double.MinValue
-    then None
-    else
-      Some(
-        Vector3(
-          (minX + maxX) / 2,
-          (minY + maxY) / 2,
-          Math.max(maxX, maxY)
-        )
-      )
+    for
+      (minX, minY) <- bottomLeftPosition(nodes)
+      (maxX, maxY) <- topRightPosition(nodes)
+    yield Vector3(
+      (minX + maxX) / 2,
+      (minY + maxY) / 2,
+      Math.max(maxX, maxY)
+    )
