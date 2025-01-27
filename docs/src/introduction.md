@@ -24,3 +24,9 @@
 - `npm run build`
 - `npm run docs:dev`
 - `npm run docs:build`
+
+## Example Photos
+
+![Scafi3 screen](img/ScaFi%20Web%203.jpeg)
+
+![Gradient Example](img/gradient.png)
