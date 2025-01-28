@@ -2,15 +2,7 @@
 
 ## Comunicazione Scastie - Applicazione
 
-Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne. Nel dettaglio, il codice compilato da Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
 
-Questa implementazione presenta sia vantaggi che svantaggi:
-
-- Vantaggi: Il codice di Scastie è completamente indipendente e può essere utilizzato per integrare qualsiasi libreria di aggregate computing, a condizione che rispetti il trait e il formato JSON previsto.
-- Svantaggi: L'uso di JSON implica la necessità di effettuare il parsing dei dati, un'operazione che in questo caso può risultare onerosa.
-Di seguito è riportato un diagramma Mermaid che illustra l'interazione tra Scastie e l'applicazione:
-
-Testo Riformulato
 Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne.
 
 Nel dettaglio, Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
@@ -46,7 +38,7 @@ val engine = js.Dynamic.global.EngineImpl(
 
 ```
 
-Di seguito un esempio del boilerplate caricato e compilato tramite Scastie:
+Di seguito un esempio dei parte del boilerplate caricato e compilato tramite Scastie:
 
 ```scala
 type Id = Int
@@ -71,7 +63,7 @@ case class EngineImpl(ncols: Int, nrows: Int, ndepth: Int)(
 
 ## Domanin
 
-Di seguito il cuore dell'applicazione, il dominio, che definisce i tipi e le strutture dati utilizzate. Questo modulo è progettato per essere indipendente dall'implementazione specifica del motore di rendering, consentendo di riutilizzare il codice in contesti diversi. Da notate quindi che sono utilizzate sono tipi primitivi evitando qualunque riferimento a librerie esterne.
+Di seguito il cuore dell'applicazione, il dominio, che definisce i tipi e le strutture dati utilizzate. Questo modulo è progettato per essere indipendente dall'implementazione specifica del motore di rendering, consentendo di riutilizzare il codice in contesti diversi. Da notare quindi che sono stati usati solo tipi primitivi evitando qualunque riferimento a librerie esterne.
 
 ```scala
 sealed trait GraphType:
@@ -154,7 +146,7 @@ Questo codice definisce uno stato reattivo per un grafo, evidenziando come all'e
     loop()
 ```
 
-Questa funzione gestisce il loop di animazione, che viene eseguito ricorsivamente finché il flag `running` è impostato su `true`. Ad ogni iterazione, esegue un numero di batch definito dalla variabile reattiva `batch`, permettendo così di regolare dinamicamente la velocità di esecuzione dell'animazione. È importante notare che la chiamata ricorsiva viene effettuata tramite `setTimeout`, garantendo che il thread principale rimanga non bloccato, consentendo al sistema di gestire altre operazioni in parallelo.
+Questa funzione gestisce il loop di animazione, che viene eseguito ricorsivamente finché il flag `running` è impostato su `true`. Ad ogni iterazione, esegue un numero di batch definito dalla variabile reattiva `batch`, permettendo così di regolare dinamicamente la velocità di esecuzione dell'animazione. È importante notare che la chiamata ricorsiva viene effettuata tramite `setTimeout`, garantendo che il thread principale rimanga non bloccato, consentendo al sistema di gestire altre operazioni. Al contrario il ciclo regolato dal batch blocca l'event loop, quindi impostare un batch troppo grande potrebbe causare rallentamenti significativi.
 
 ## Three.js Types and Adapter
 
@@ -234,7 +226,7 @@ Nel codice viene wrappata la funzione generica`remove` con `removeObject` per el
 
 ### Ottimizzazione dell rendering
 
-Per come è strutturato il codice del dominio, gli unici comandi diposnibili sono `SetNodes` e `SetEdges`, andando quindi a caricare ogni volta l'intero grafo. Questo approccio, seppur semplice, può risultare inefficiente in caso di grafi molto grandi, in quanto richiede di ricaricare l'intero grafo ad ogni aggiornamento. Per questo motivo, lo stato del grafo si tiene in memoria delle copie degli oggetti gia caricati, in modo da evitare di ricaricare oggetti già presenti che non sono stati modificati.
+Per come è strutturato il dominio, gli unici comandi disponibili sono `SetNodes` e `SetEdges`, andando quindi a caricare ogni volta l'intero grafo. Questo approccio, seppur semplice, può risultare inefficiente in caso di grafi molto grandi, in quanto richiede di ricaricare l'intero grafo ad ogni aggiornamento. Per questo motivo, lo stato del grafo si tiene in memoria delle copie degli oggetti già caricati, in modo da evitare di ricaricare oggetti presenti che non sono stati modificati.
 
 ```scala
 
@@ -270,7 +262,7 @@ object DomainExtensions:
     def object3dName: String = s"node-${node.id}"
 ```
 
-In questo modo viene esteso il dominio con funzionalità aggiuntive, come la generazione di nomi univoci per gli oggetti 3D rappresentanti nodi e archi. Questo permette di semplificare la gestione degli oggetti nella scena 3D, garantendo che ciascun oggetto abbia un nome univoco per identificarlo in modo univoco.
+In questo modo viene esteso il dominio con funzionalità aggiuntive, come la generazione di nomi univoci per gli oggetti 3D rappresentanti nodi e archi. Questo permette di semplificare la gestione degli oggetti nella scena 3D, garantendo che ciascun oggetto abbia un nome per identificarlo.
 
 ## Laminar View
 
