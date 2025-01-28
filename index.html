@@ -17,13 +17,13 @@
         </select>
 
         <label for="user">User:</label>
-        <input type="text" id="user" name="user" readonly>
+        <input type="text" id="user" name="user">
 
         <label for="base64UUID">Base64 UUID:</label>
-        <input type="text" id="base64UUID" name="base64UUID" readonly>
+        <input type="text" id="base64UUID" name="base64UUID">
 
         <label for="update">Update:</label>
-        <input type="number" id="update" name="update" readonly>
+        <input type="number" id="update" name="update">
 
         <button type="submit">Update Scastie</button>
     </form>
@@ -43,10 +43,9 @@
         { user: "Ro0t-set", base64UUID: "TUxH2aJOQZSCeeJwm8qSQw", update: 2, label: "nbr" },
         { user : "Ro0t-set", base64UUID : "GX1MBSz5S96dOQxx6cczQQ", update : 6, label : "led Split" },
         { user : "Ro0t-set", base64UUID : "zxnzXiKSSb2v9AlKA66kzg", update : 2, label : "gradient" },
-        { user : "Ro0t-set", base64UUID : "ZhztwFjDRt2L64VyHD9NTw", update : 7, label : "sphere" },
+        { user : "Ro0t-set", base64UUID : "ZhztwFjDRt2L64VyHD9NTw", update : 9, label : "sphere" },
     ];
 
-    // Function to load Scastie
     function loadScastie(user, base64UUID, update) {
         document.getElementById('code').innerHTML = '';
         scastie.Embedded('#code', {
