@@ -12,14 +12,14 @@ hero:
       link: /src/introduction.md
     - theme: alt
       text: GitHub
-      link: https://github.com/Ro0t-set/PPS-25-ScafiWeb3
+      link: https://github.com/Ro0t-set/PPS-24-ScafiWeb3
     - theme: alt
       text: Cucumber
-      link: http://tommasopatriti.me/PPS-25-ScafiWeb3/cucumber
+      link: http://tommasopatriti.me/PPS-24-ScafiWeb3/cucumber
       external: true
     - theme: alt
       text: Demo
-      link: http://tommasopatriti.me/PPS-25-ScafiWeb3/dist
+      link: http://tommasopatriti.me/PPS-24-ScafiWeb3/dist
       external: true
 
 features:

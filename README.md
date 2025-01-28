@@ -4,19 +4,19 @@
 
 
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Ro0t-set/PPS-25-ScafiWeb3/pages.yml?branch=dev)](https://github.com/Ro0t-set/PPS-25-ScafiWeb3/actions/workflows/pages.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Ro0t-set/PPS-24-ScafiWeb3/pages.yml?branch=dev)](https://github.com/Ro0t-set/PPS-24-ScafiWeb3/actions/workflows/pages.yml)
 ---
 
 **Access the official documentation**:  
-👉 [Scafi Web 3D Docs](https://www.tommasopatriti.me/PPS-25-ScafiWeb3/) 👈
+👉 [Scafi Web 3D Docs](https://www.tommasopatriti.me/PPS-24-ScafiWeb3/) 👈
 
 ---
 
 ## How to Run the Project
 
 ```bash
-git clone https://github.com/Ro0t-set/PPS-25-ScafiWeb3.git
-cd PPS-25-ScafiWeb3
+git clone https://github.com/Ro0t-set/PPS-24-ScafiWeb3.git
+cd PPS-24-ScafiWeb3
 npm install
 sbt fastLinkJS
 npm run dev

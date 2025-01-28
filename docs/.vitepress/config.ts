@@ -4,14 +4,14 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 // https://vitepress.dev/reference/site-config
 export default withMermaid(
   defineConfig({
-    base: '/PPS-25-ScafiWeb3/',
+    base: '/PPS-24-ScafiWeb3/',
     title: "ScafiWeb3",
     description: "ScafiWeb3 doc",
     themeConfig: {
       // https://vitepress.dev/reference/default-theme-config
       nav: [
         { text: 'Docs', link: '/src/introduction' }, // Fixed relative link
-        { text: 'GitHub', link: 'https://github.com/Ro0t-set/PPS-25-ScafiWeb3' },
+        { text: 'GitHub', link: 'https://github.com/Ro0t-set/PPS-24-ScafiWeb3' },
         { text: 'Cucumber', link: '/cucumber/index.html', target: '_blank', rel: 'noopener noreferrer' },
         { text: 'Demo', link: '/dist/index.html', target: '_blank', rel: 'noopener noreferrer' }
       ],

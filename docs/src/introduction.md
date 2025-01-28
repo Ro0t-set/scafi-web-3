@@ -5,8 +5,8 @@
 ## How to run the project
 
 ```bash
-git clone https://github.com/Ro0t-set/PPS-25-ScafiWeb3.git
-cd PPS-25-ScafiWeb3
+git clone https://github.com/Ro0t-set/PPS-24-ScafiWeb3.git
+cd PPS-24-ScafiWeb3
 npm install
 sbt fastLinkJS
 npm run dev
