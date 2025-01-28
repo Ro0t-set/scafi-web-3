@@ -542,3 +542,4 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,vs,scala,osx,java
+.bsp
