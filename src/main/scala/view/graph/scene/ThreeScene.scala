@@ -31,6 +31,7 @@ final class ThreeScene(config: SceneConfig) extends GraphScene:
 
   private val renderer = initRenderer(config)
   private val controls = initControls
+  scene.background = Color(config.backgroundColor)
 
   private def initCamera(config: SceneConfig): ThreeCamera =
     val cam = CameraFactory.createPerspectiveCamera(

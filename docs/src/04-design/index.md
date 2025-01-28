@@ -152,7 +152,7 @@ classDiagram
     AnimationDomain --> AnimationCommand~Engine~
 ```
 
-È importante notare come sia importante che tutto ciò che si trova in questo package non abbia dipendenze esterne, in modo da poter essere facilmente testato e riutilizzato.
+È importante notare come tutto ciò che si trova in questo package non abbia dipendenze esterne, in modo da poter essere facilmente testato e riutilizzato.
 
 ## State
 

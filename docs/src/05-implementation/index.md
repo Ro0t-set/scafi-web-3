@@ -232,6 +232,29 @@ def removeObject(obj: GenericObject3D): Unit =
 
 Nel codice viene wrappata la funzione generica`remove` con `removeObject` per eliminare definitivamente un oggetto 3D dalla scena. Viene utilizzato il pattern matching per identificare il tipo dell'oggetto e procedere con la rimozione in base alla sua tipologia. Questo approccio consente di gestire in modo efficiente la rimozione di oggetti, come gruppi di oggetti o linee, garantendo la corretta liberazione della memoria.
 
+### Ottimizzazione dell rendering
+
+Per come è strutturato il codice del dominio, gli unici comandi diposnibili sono `SetNodes` e `SetEdges`, andando quindi a caricare ogni volta l'intero grafo. Questo approccio, seppur semplice, può risultare inefficiente in caso di grafi molto grandi, in quanto richiede di ricaricare l'intero grafo ad ogni aggiornamento. Per questo motivo, lo stato del grafo si tiene in memoria delle copie degli oggetti gia caricati, in modo da evitare di ricaricare oggetti già presenti che non sono stati modificati.
+
+```scala
+
+override def setNodes(newNodes: Set[GraphNode]): Unit =
+  val (nodesToAdd, nodesToRemove) = calculateNodeDiff(newNodes)
+  removeNodes(nodesToRemove)
+  addNodes(nodesToAdd)
+  state = state.copy(currentNodes = newNodes)
+
+private def addNodes(nodesToAdd: Set[GraphNode]): Unit =
+  val newObjects =
+    for
+      node <- nodesToAdd.toSeq
+      nodeObject = NodeFactory(node)
+    yield
+      sceneWrapper.addObject(nodeObject)
+      node.object3dName -> nodeObject
+  state = state.copy(nodeObjects = state.nodeObjects ++ newObjects)
+```
+
 ## Extension
 
 ```scala
