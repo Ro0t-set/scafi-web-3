@@ -54,3 +54,7 @@ D'altra parte l'approccio BDD è stato adottato per testare l'interfaccia grafic
         Then the engine "EngineImpl" is loaded
         Then the graph 10x10x2 should support more than "30" updates per second
 ```
+
+### Cucumber - CI/CD
+
+Purtroppo alcuni test cucumber devono per forza essere eseguiti in un ambiente grafico, quindi non possono essere eseguiti in un ambiente headless. Le github actions non supportano l'ambiente grafico, quindi non è possibile eseguire alcuni test cucumber in CI/CD. Per ovviare a questo problema, sono stati creati dei [comandi personalizzati](../introduction.md) tramite sbt.

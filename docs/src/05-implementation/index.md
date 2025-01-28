@@ -285,3 +285,15 @@ def render(): Unit =
 ```
 
 Questo è il punto di ingresso dell'applicazione, dove viene definita la struttura della pagina web. Viene utilizzata la libreria Laminar per la creazione della vista, che permette di definire in modo dichiarativo la struttura del DOM e le interazioni tra i vari componenti. In particolare, vengono definiti i componenti principali della vista, come la scena 3D, i controlli per l'animazione e le impostazioni del motore di rendering. La vista viene aggiornata in modo reattivo in base allo stato dell'applicazione, garantendo una corretta sincronizzazione tra i dati e la rappresentazione grafica.
+
+## Scastie - Caricamento del codice
+
+L'editor e il codice vengono caricati nella pagina tramite JavaScript. Questo permette di integrare facilmente Scastie nell'applicazione, consentendo agli utenti di compilare e visualizzare il codice direttamente dalla pagina web.
+
+```javascript
+scastie.Embedded('#code', {
+            user: user,
+            base64UUID: base64UUID,
+            update: parseInt(update)
+        });
+```
