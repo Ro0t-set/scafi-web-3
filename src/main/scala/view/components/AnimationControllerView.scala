@@ -54,19 +54,22 @@ case class AnimationControllerView() extends ViewComponent:
 
   private def renderBatchSlider: Element =
     div(
-      cls := "slider-container",
-      label(
-        i(cls := "fas fa-sliders-h"),
-        " Animation Batch"
-      ),
-      input(
-        idAttr  := "batch-slider",
-        `type`  := "range",
-        minAttr := "1",
-        maxAttr := "2048",
-        value   := "1",
-        onInput.mapToValue.map(_.toInt) --> (batchSize =>
-          animationObserver.onNext(AnimationBatch(batchSize))
+      div(
+        cls := "slider-container",
+        label(
+          i(cls := "fas fa-sliders-h"),
+          " Animation Batch"
+        ),
+        input(
+          idAttr  := "batch-slider",
+          `type`  := "range",
+          minAttr := "1",
+          maxAttr := "2048",
+          value   := "1",
+          onInput.mapToValue.map(_.toInt) --> (batchSize =>
+            animationObserver.onNext(AnimationBatch(batchSize))
+          )
         )
-      )
+      ),
+      p("Warning: Too large a batch size may cause performance issues.")
     )

@@ -72,7 +72,6 @@ startNpmServer := {
 
 
 lazy val cucumberWithServer = taskKey[Unit]("Run Cucumber tests with npm server")
-
 cucumberWithServer := {
   startNpmServer.value
   try {

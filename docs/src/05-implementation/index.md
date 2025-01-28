@@ -2,7 +2,6 @@
 
 ## Comunicazione Scastie - Applicazione
 
-
 Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne.
 
 Nel dettaglio, Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
