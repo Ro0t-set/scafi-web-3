@@ -8,6 +8,8 @@
 
 - **View**: Si basa su un design a componenti, ovvero su piccoli moduli (UI Components) che si occupano ciascuno di una parte di interfaccia. Gestisce la presentazione dei dati e l’interazione con l’utente.
 
+- **Graph Infrastructure**: Si occupa di gestire la visualizzazione del grafo 3D. Include la logica per la rappresentazione e la manipolazione del grafo, e la comunicazione con la libreria Three.js.
+
 ## Architettura Generale
 
 ```mermaid
@@ -20,7 +22,18 @@
 
 ## Architettura del Grafo 3D
 
-## Pattenr Architetturali
+```mermaid
+    flowchart TD
+        A[Adapter] --> B[Three.js]
+        F[Components Factory] --> A
+        D[Graph View] --> F
+        C[3D GraphState]
+        D[Graph View] --> C
+        D[Graph View] --> A
+        E[View] --> D[Graph View]
+```
+
+## Principali Pattenr Architetturali
 
 - **Component-Based Design**: La View è organizzata in componenti riutilizzabili, ognuno responsabile di un aspetto specifico dell’interfaccia. Questo semplifica la manutenzione e promuove la riusabilità.
 

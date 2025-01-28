@@ -101,10 +101,8 @@ classDiagram
 3. Visualizzatore 3D del grafo.
 4. Player per la gestione del grafo con funzioni di *Play*, *Pausa* e regolazione della velocità.
 5. Possibilità di modificare le dimensioni del grafo.
-6. Inclusione di vari esempi di programmi aggregati (da aggiungere).
-7. Utilizzo di *Cucumber* per i test, integrato con *Selenium* per testare la grafica.
-8. CI/CD per test e deploy.
-9. Il grafo supporta più di 30 aggiornamenti al secondo.
+6. Inclusione di vari esempi di programmi aggregati.
+7. Il grafo deve supportare più di 30 aggiornamenti al secondo.
 
 ## Non funzionali
 
@@ -121,9 +119,7 @@ classDiagram
 3. Nascondere il boilerplate Scastie.
 4. Cambiare la visualizzazione da 3D a 2D.
 
-## Implementazione
-
-Utilizzo di:
+## Tecnologie ed Implementazione
 
 ### Ambiente
 
@@ -141,7 +137,7 @@ Utilizzo di:
 - MUnit 1.0.x
 - Selenium 4.1.x
 
-### Build
+### Compilazione del Programma Aggregato
 
 - Scastie (embedded)
 
@@ -149,13 +145,13 @@ Utilizzo di:
 
 - Scalafmt 2.5.x
 - Scalafix 0.14.x
-- sbt-wartremover 3.2.x
+- Wartremover 3.2.x
 
 ### CI/CD
 
 - GitHub Actions
 
-### Documentazione e deployment
+### Documentazione e Deployment
 
 - vite 6.x.x
 - vitepress 1.x.x
