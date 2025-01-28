@@ -8,7 +8,7 @@
 
 - **View**: Si basa su un design a componenti, ovvero su piccoli moduli (UI Components) che si occupano ciascuno di una parte di interfaccia. Gestisce la presentazione dei dati e l’interazione con l’utente.
 
-- **Graph Infrastructure**: Rappresenta il motore per il rendering e l’integrazione con librerie esterne (adattate tramite l’Adapter Pattern). Ciò permette di mantenere disaccoppiati i livelli più alti (Domain/State/View) dalla logica specifica di rendering.
+## Architettura Generale
 
 ```mermaid
     flowchart TD
@@ -17,6 +17,8 @@
         C --> D[Graph Infrastructure]
         E[Scastie] -->|API| B[State]
 ```
+
+## Architettura del Grafo 3D
 
 ## Pattenr Architetturali
 
