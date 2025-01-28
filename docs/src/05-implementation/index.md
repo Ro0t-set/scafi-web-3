@@ -2,7 +2,6 @@
 
 ## Comunicazione Scastie - Applicazione
 
-
 Il principio fondamentale che regola l'interazione tra Scastie e l'applicazione si basa sul concetto delle facade types di JavaScript. Questi tipi permettono di definire interfacce Scala che corrispondono ai tipi JavaScript, consentendo l'interoperabilità con librerie esterne.
 
 Nel dettaglio, Scastie espone delle API accessibili tramite JavaScript, che vengono utilizzate per interagire con l'applicazione. La comunicazione tra i due avviene attraverso l'uso di js.Dynamic, una funzionalità di Scala.js che consente di interagire con oggetti JavaScript senza una tipizzazione esplicita. Per rappresentare i dati scambiati viene utilizzato il formato JSON.
@@ -226,7 +225,7 @@ Nel codice viene wrappata la funzione generica`remove` con `removeObject` per el
 
 ### Ottimizzazione dell rendering
 
-Per come è strutturato il dominio, gli unici comandi disponibili sono `SetNodes` e `SetEdges`, andando quindi a caricare ogni volta l'intero grafo. Questo approccio, seppur semplice, può risultare inefficiente in caso di grafi molto grandi, in quanto richiede di ricaricare l'intero grafo ad ogni aggiornamento. Per questo motivo, lo stato del grafo si tiene in memoria delle copie degli oggetti già caricati, in modo da evitare di ricaricare oggetti presenti che non sono stati modificati.
+Per come è strutturato il dominio, gli unici comandi disponibili sono `SetNodes` e `SetEdges`, andando quindi a caricare ogni volta l'intero grafo. Questo approccio, seppur semplice, può risultare inefficiente in caso di grafi molto grandi, in quanto richiede di ricaricare l'intero grafo ad ogni aggiornamento. Per questo motivo, lo stato del grafo si tiene in memoria delle copie degli oggetti già caricati, in modo da evitare di ricaricare oggetti presenti che non sono stati modificati. Avere questo approccio è stato fondamentale per rispettare il requisito funzionale n.7, ovvero supportare più di 30 aggiornamenti al secondo.
 
 ```scala
 
