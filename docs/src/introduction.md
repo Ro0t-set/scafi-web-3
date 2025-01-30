@@ -2,6 +2,8 @@
 
 ![logo](img/logo.png)
 
+Con questo progetto si pone l' obiettivo di avere in grado di facilitare lo sviluppo di applicazioni distribuite basate. Le due principali funzionalità offerte sono la visualizzazione di un ambiente 3D e la possibilità di scrivere e compilare codice runtime. L'implementazione è stata fortemente vincolata dall'uso di Scastie, che è un servizio online che permette di scrivere e compilare codice Scala in tempo reale.
+
 ## How to run the project
 
 ```bash
