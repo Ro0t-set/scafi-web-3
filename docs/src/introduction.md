@@ -26,6 +26,10 @@ npm run dev
 - `npm run docs:dev`
 - `npm run docs:build`
 
+## Example Code
+
+[Git repo](https://github.com/Ro0t-set/Scafi3DScastieExamples.git)
+
 ## Example Photos
 
 ![Scafi3 screen](img/screen.jpeg)
