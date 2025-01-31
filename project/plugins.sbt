@@ -7,3 +7,4 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.0")
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.2.10")
 addSbtPlugin("com.waioeka.sbt" % "cucumber-plugin" % "0.3.1")
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.3.0")

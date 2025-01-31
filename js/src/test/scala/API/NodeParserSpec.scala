@@ -1,4 +1,5 @@
 package API
+
 import domain.GraphDomain.GraphNode
 import domain.GraphDomain.Position
 import munit.FunSuite

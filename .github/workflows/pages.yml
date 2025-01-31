@@ -39,6 +39,9 @@ jobs:
 
       - name: Build Scala project
         run: |
+          cd js
+          npm install
+          cd ..
           npm install
           sbt -J-Xmx6G fastLinkJS
           sbt test
@@ -54,7 +57,7 @@ jobs:
         run: |
           cp -r ./dist ./site/
           mkdir -p ./site/cucumber
-          cp ./target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
+          cp ./cucumber/target/test-reports/cucumber/cucumber.html ./site/cucumber/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

@@ -4,16 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "dev": "./node_modules/.bin/vite",
+    "build": "./node_modules/.bin/vite build",
+    "preview": "./node_modules/.bin/vite preview",
+    "docs:dev": "./node_modules/.bin/vitepress dev docs",
+    "docs:build": "./node_modules/.bin/vitepress build docs",
+    "docs:preview": "./node_modules/.bin/vitepress preview docs"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
-    "@types/three": "^0.170.0",
     "css-loader": "^7.1.2",
     "mermaid": "^11.4.1",
     "style-loader": "^4.0.0",
@@ -24,10 +23,7 @@
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   },
-  "dependencies": {
-    "three": "^0.171.0"
-  },
-  "main": "main.js",
+  "main": "js/main.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
