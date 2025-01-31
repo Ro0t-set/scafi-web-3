@@ -9,6 +9,8 @@ Con questo progetto si pone l' obiettivo di avere in grado di facilitare lo svil
 ```bash
 git clone https://github.com/Ro0t-set/PPS-24-ScafiWeb3.git
 cd PPS-24-ScafiWeb3
+cd js && npm install
+cd ..
 npm install
 sbt fastLinkJS
 npm run dev

@@ -13,7 +13,7 @@ object NodeParser extends Parser[String, GraphNode]:
     Try {
       val jsonVal = ujson.read(jsonString)
       jsonVal.arr.map { nodeJson =>
-        val idValue = nodeJson("id").num.toInt
+        val idValue    = nodeJson("id").num.toInt
         val labelValue = nodeJson("label").str
         val colorValue = nodeJson("color").num.toInt
         val posJson    = nodeJson("position")

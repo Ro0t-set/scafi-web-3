@@ -24,6 +24,9 @@ jobs:
           cache: 'sbt'
       - name: Run tests
         run: |
+          cd js
+          npm install
+          cd ..
           npm install
           sbt -J-Xmx6G fastLinkJS
           sbt test
