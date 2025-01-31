@@ -1,29 +1,48 @@
 package analysis
 
 import com.tngtech.archunit.core.importer.ClassFileImporter
-import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition
 import munit.FunSuite
 
 class DependencySpec extends FunSuite:
 
-  test(
-    "The package 'domain' should not depend on other packages within this project"
-  ) {
-    val importedClasses = new ClassFileImporter()
-      .importPackages("domain")
+  private def noDependTest(
+      testName: String,
+      importRoot: String,
+      packageToCheck: String,
+      forbiddenPackages: Seq[String],
+      becauseMsg: String
+  ): Unit =
+    test(testName) {
+      val importedClasses = new ClassFileImporter()
+        .importPackages(importRoot)
 
-    val allowedPackages = Seq(
-      "domain..",
-      "java..",
-      "scala.."
-    )
+      val rule = ArchRuleDefinition.noClasses()
+        .that()
+        .resideInAPackage(packageToCheck)
+        .should()
+        .dependOnClassesThat()
+        .resideInAnyPackage(forbiddenPackages: _*)
+        .because(becauseMsg)
 
-    val rule = classes()
-      .that()
-      .resideInAPackage("domain..")
-      .should()
-      .onlyDependOnClassesThat()
-      .resideInAnyPackage(allowedPackages: _*)
-    rule.check(importedClasses)
+      rule.check(importedClasses)
+    }
 
-  }
+  noDependTest(
+    testName =
+      "Domain package should only depend on itself and standard libraries",
+    importRoot = "domain..",
+    packageToCheck = "..domain..",
+    forbiddenPackages = Seq("..laminar..", "..state..", "..js.."),
+    becauseMsg =
+      "Domain layer should be isolated from infrastructure and application layers"
+  )
+
+  noDependTest(
+    testName = "State package should only depend on itself and Laminar",
+    importRoot = "state..",
+    packageToCheck = "..state..",
+    forbiddenPackages = Seq("..view..", "..API.."),
+    becauseMsg =
+      "State layer should be isolated from infrastructure and application layers"
+  )
