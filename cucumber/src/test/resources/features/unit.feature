@@ -9,3 +9,4 @@ Feature: Unit Test Feature
       | state.GraphStateSpec     |
       | API.NodeParserSpec       |
       | API.EdgeParserSpec       |
+      | analysis.DependencySpec  |

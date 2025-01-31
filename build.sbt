@@ -1,7 +1,7 @@
 import sbt.Keys.javaOptions
 
 lazy val root = project.in(file("."))
-  .aggregate(scafiWeb3, scafiWeb3Cucumber)
+  .aggregate(scafiWeb3, scafiWeb3Cucumber, scafiWeb3StaticAnalysis)
   .enablePlugins(ScalafixPlugin)
   .enablePlugins(ScalafmtPlugin)
   .enablePlugins(WartRemover)
@@ -36,6 +36,16 @@ lazy val scafiWeb3 = project.in(file("js"))
       "org.scalameta" %%% "munit-scalacheck" % "1.1.0" % Test,
     )
   )
+
+lazy val scafiWeb3StaticAnalysis = project.in(file("analysis"))
+  .dependsOn(scafiWeb3)
+  .settings(
+    scalaVersion := "3.3.4",
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit" % "1.1.0" % Test,
+      "com.tngtech.archunit" % "archunit" % "1.3.0"  % Test,
+  )
+)
 
 lazy val scafiWeb3Cucumber = project.in(file("cucumber"))
   .enablePlugins(CucumberPlugin)
