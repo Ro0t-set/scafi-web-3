@@ -1,6 +1,3 @@
-import sbt.Keys.javaOptions
-import scala.collection.immutable.Seq
-
 val projectsScalaVersion = "3.3.4"
 
 lazy val testsLibrary = Def.setting(Seq(
