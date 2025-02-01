@@ -1,4 +1,12 @@
 import sbt.Keys.javaOptions
+import scala.collection.immutable.Seq
+
+val projectsScalaVersion = "3.3.4"
+
+lazy val testsLibrary = Def.setting(Seq(
+  "org.scalameta" %%% "munit" % "1.1.0" % Test,
+  "org.scalameta" %%% "munit-scalacheck" % "1.1.0" % Test,
+))
 
 lazy val root = project.in(file("."))
   .aggregate(scafiWeb3, scafiWeb3Cucumber, scafiWeb3StaticAnalysis)
@@ -14,7 +22,7 @@ lazy val root = project.in(file("."))
     ThisBuild / semanticdbVersion := scalafixSemanticdb.revision,
     ThisBuild / scalacOptions ++= List("-Wunused:all"),
     ThisBuild / scalafixOnCompile := true,
-    ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.5.1",
+    ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.6.0",
     ThisBuild / evictionErrorLevel := Level.Info
   )
 
@@ -24,33 +32,32 @@ lazy val scafiWeb3 = project.in(file("js"))
   .enablePlugins(ScalaJSPlugin)
   .enablePlugins(ScalablyTypedConverterExternalNpmPlugin)
   .settings(
-    scalaVersion := "3.3.4",
+    scalaVersion := projectsScalaVersion,
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
     externalNpm := baseDirectory.value,
-    libraryDependencies ++= Seq(
+    coverageExcludedPackages := "<empty>;state\\..*;view\\..*",
+
+      libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "2.8.0",
       "com.raquo" %%% "laminar" % "17.2.0",
       "com.lihaoyi" %%% "upickle" % "4.1.0",
-      "org.scalameta" %%% "munit" % "1.1.0" % Test,
-      "org.scalameta" %%% "munit-scalacheck" % "1.1.0" % Test,
-    )
+    ) ++ testsLibrary.value,
   )
 
 lazy val scafiWeb3StaticAnalysis = project.in(file("analysis"))
   .dependsOn(scafiWeb3)
   .settings(
-    scalaVersion := "3.3.4",
+    scalaVersion := projectsScalaVersion,
     libraryDependencies ++= Seq(
-      "org.scalameta" %%% "munit" % "1.1.0" % Test,
       "com.tngtech.archunit" % "archunit" % "1.3.0"  % Test,
-  )
+  ) ++ testsLibrary.value,
 )
 
 lazy val scafiWeb3Cucumber = project.in(file("cucumber"))
   .enablePlugins(CucumberPlugin)
   .settings(
-    scalaVersion := "3.3.4",
+    scalaVersion := projectsScalaVersion,
     libraryDependencies ++= Seq(
       "io.cucumber" %% "cucumber-scala" % "8.25.1" % Test,
       "io.cucumber" % "cucumber-junit" % "7.20.1" % Test,
@@ -64,9 +71,8 @@ lazy val scafiWeb3Cucumber = project.in(file("cucumber"))
       s"-Dbrowser=${System.getProperty("browser", "firefox")}"
     ),
     CucumberPlugin.plugin := {
-      import com.waioeka.sbt.Plugin._
+      import com.waioeka.sbt.Plugin.*
       val cucumberDir = CucumberPlugin.cucumberTestReports.value
-      println(cucumberDir)
       List(HtmlPlugin(new File(cucumberDir, "cucumber.html")))
     }
   )
