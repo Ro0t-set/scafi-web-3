@@ -42,4 +42,9 @@ jobs:
           distribution: 'temurin'
           cache: 'sbt'
       - name: Check scalafmt format
-        run: sbt scalafmtCheckAll
+        run: |
+          cd js
+          npm install
+          cd ..
+          npm install
+          sbt scalafmtCheckAll

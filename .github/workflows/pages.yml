@@ -41,7 +41,7 @@ jobs:
           npm install
           sbt -J-Xmx6G fastLinkJS
           sbt test
-          sbt scafiWeb3StaticAnalysis/test coverage
+          sbt coverage scafiWeb3StaticAnalysis/test
           sbt coverageReport 
           sbt cucumberWithServer
           npm run build
